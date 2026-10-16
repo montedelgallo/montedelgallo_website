@@ -936,8 +936,11 @@ echo "==> Asserting the home page (both languages: copy, sections, real project 
 # tags of the growth system.
 assert_contains "$EN_HOME" 'We build the software your business runs on.' \
   "the English home must carry the hero headline of the approved design"
+# The proof rail prints each number in a <b>. The needle has to name it: +150% is
+# also the pill of the dashboard beside it (<span class="pill">+150%</span>), so
+# ">+150%<" would stay satisfied by the pill after the number of the rail changed.
 for stat in '+140%' '+150%' '600+'; do
-  assert_contains "$EN_HOME" ">$stat<" "the hero shows three proof numbers"
+  assert_contains "$EN_HOME" "<b>$stat</b>" "the hero's proof rail shows three proof numbers, each in a <b>"
 done
 for tag in Build Ship Rank; do
   assert_contains "$EN_HOME" ">$tag</span>" "the growth system shows a Build / Ship / Rank tag"
