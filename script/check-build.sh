@@ -597,18 +597,29 @@ Lato italiano di una coppia tradotta.
 PAGE
 # A single-source page, like the home: in each language it lists the featured
 # projects of that language through the card include.
+#
+# It also holds a canary. Liquid's assign is global and an include shares the
+# variables of the page that includes it, so an include that assigns t, lang or p
+# overwrites the page's own. On the home page t is the whole i18n tree, which the
+# sections after the cards (who we are, process, final call to action) read: they
+# would print blanks, without any error. So the page sets t, lang and p to a
+# known value before the cards and prints them after.
 cat >"$FIXTURE/cards-test.html" <<'PAGE'
 ---
 layout: default
 title: Project cards
 permalink: /cards-test/
 ---
+{%- assign t = "keep" -%}
+{%- assign lang = "keep" -%}
+{%- assign p = "keep" -%}
 {%- assign featured = site.projects | where: "featured", true | where: "lang", site.active_lang -%}
 <div class="pgrid">
 {%- for project in featured %}
 {% include project-card.html project=project %}
 {%- endfor %}
 </div>
+<p id="canary">{{ t }} {{ lang }} {{ p }}</p>
 PAGE
 
 (cd "$FIXTURE" && BUNDLE_GEMFILE="$ROOT_DIR/Gemfile" bundle exec jekyll build --quiet) ||
@@ -693,7 +704,8 @@ echo "==> Asserting the project cards (the include the home page and the project
 # built in both languages in the fixture: it lists the featured projects of the
 # language being built, the way the home page will. The cards must be exactly the
 # featured projects, each with a real, lazy-loaded image that has a non-empty
-# alt, and a link to a page that exists.
+# alt, and a link to a page that exists; and the include must leave the
+# variables of the page that includes it alone (the canary).
 check_project_cards() {
   bundle exec ruby - "$@" <<'RUBY'
 require "json"
@@ -705,11 +717,15 @@ text_of = ->(node) { node ? node.text.gsub(/\s+/, " ").strip : "" }
 featured = JSON.parse(ENV.fetch("PROJECTS_JSON")).map { |pair| pair[lang] }.select { |doc| doc["featured"] }
 expected = featured.map { |doc| prefix + doc["permalink"] }.sort
 
-cards = Nokogiri::HTML5(File.read(page_file, encoding: "utf-8")).css("a.pcard")
+page = Nokogiri::HTML5(File.read(page_file, encoding: "utf-8"))
+cards = page.css("a.pcard")
 errors = []
 errors << "the #{lang} cards page has #{cards.size} project card(s), at least 3 are needed" if cards.size < 3
 links = cards.map { |card| card["href"] }.sort
 errors << "the #{lang} cards page links to #{links.inspect}, but the featured #{lang} projects are #{expected.inspect}" unless links == expected
+
+canary = text_of.(page.at_css("#canary"))
+errors << "the #{lang} cards page lost its own variables to the card include (an include shares them): t, lang and p should still read \"keep keep keep\" after the cards, found #{canary.inspect}" unless canary == "keep keep keep"
 
 cards.each do |card|
   at = "#{lang} card #{card["href"]}"
@@ -737,7 +753,7 @@ check_project_cards en "$FX/cards-test/index.html" "$FX" ||
   fail "the English project cards are wrong (see the list above)"
 check_project_cards it "$FX/it/cards-test/index.html" "$FX" ||
   fail "the Italian project cards are wrong (see the list above)"
-pass "project cards: exactly the featured projects in each language, each with a real lazy-loaded image, non-empty alt, sector, title, metric and a link to a built page"
+pass "project cards: exactly the featured projects in each language, each with a real lazy-loaded image, non-empty alt, sector, title, metric and a link to a built page; the include leaves the page's own t, lang and p alone"
 
 echo "==> Asserting the UI strings (EN and IT define the same keys, every nav entry is complete)"
 bundle exec ruby -ryaml -e '
