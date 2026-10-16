@@ -1,0 +1,49 @@
+// Element resets and accessibility basics.
+
+*,
+*::before,
+*::after{
+  box-sizing:border-box;
+}
+
+html,
+body{
+  margin:0;
+}
+
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--body);
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+
+a{
+  color:inherit;
+  text-decoration:none;
+}
+
+img{
+  max-width:100%;
+}
+
+// Visible keyboard focus. The ring colour is emerald, which is too faint on the
+// dark bands: a dark section can set --focus to a light colour
+// (for example var(--emerald-xl)) to keep the ring visible there.
+:focus-visible{
+  outline:2px solid var(--focus,var(--emerald));
+  outline-offset:3px;
+}
+
+// Honour the visitor's reduced-motion setting: no animation or transition
+// anywhere, including the pulsing status dots. Pseudo-elements are listed
+// because `*` does not match them.
+@media (prefers-reduced-motion:reduce){
+  *,
+  *::before,
+  *::after{
+    animation:none!important;
+    transition:none!important;
+  }
+}

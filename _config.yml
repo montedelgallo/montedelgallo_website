@@ -32,6 +32,10 @@ collections:
 # --- Styles ------------------------------------------------------------------
 sass:
   style: compressed
+  # No source maps: jekyll-polyglot makes Jekyll 4 generate them improperly
+  # (see its README), and without them the output is identical in every
+  # environment (no .map file, no sourceMappingURL comment).
+  sourcemap: never
 
 # --- Plugins -----------------------------------------------------------------
 plugins:

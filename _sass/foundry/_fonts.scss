@@ -1,0 +1,54 @@
+// Self-hosted web fonts. Nothing is loaded from a font CDN.
+//
+// Files: assets/fonts/. Each one is the Latin subset in WOFF2 (Basic Latin,
+// Latin-1 with the Italian accents, general punctuation, the euro sign), taken
+// from the Google Fonts CSS2 API requests below. All three families are under
+// the SIL Open Font License 1.1.
+//   Archivo:wght@700;800;900
+//   Hanken+Grotesk:wght@400;500;600;700
+//   IBM+Plex+Mono:wght@500;600
+// A character outside that subset (for example the arrow U+2192) is drawn by
+// the next font in the stack.
+//
+// Archivo and Hanken Grotesk are variable fonts: a single file holds every
+// weight, so one @font-face covers the whole weight range the design uses.
+// IBM Plex Mono is static: one file per weight. A weight outside a family's
+// declared set is matched to the nearest declared one.
+//
+// The URLs are relative to the compiled CSS (assets/css/main.css), so they keep
+// working under any baseurl or host.
+
+// Display: headings, numbers, brand.
+@font-face{
+  font-family:"Archivo";
+  font-style:normal;
+  font-weight:700 900;
+  font-display:swap;
+  src:url("../fonts/archivo-latin-wght-normal.woff2") format("woff2");
+}
+
+// Body: running text, navigation, buttons.
+@font-face{
+  font-family:"Hanken Grotesk";
+  font-style:normal;
+  font-weight:400 700;
+  font-display:swap;
+  src:url("../fonts/hanken-grotesk-latin-wght-normal.woff2") format("woff2");
+}
+
+// Mono: eyebrows, labels, figures.
+@font-face{
+  font-family:"IBM Plex Mono";
+  font-style:normal;
+  font-weight:500;
+  font-display:swap;
+  src:url("../fonts/ibm-plex-mono-latin-500-normal.woff2") format("woff2");
+}
+
+@font-face{
+  font-family:"IBM Plex Mono";
+  font-style:normal;
+  font-weight:600;
+  font-display:swap;
+  src:url("../fonts/ibm-plex-mono-latin-600-normal.woff2") format("woff2");
+}

@@ -18,7 +18,7 @@ The output is plain static files, so it can be deployed to any host. It is built
 bundle install               # install the gems (first run, and after Gemfile changes)
 bundle exec jekyll serve     # dev server: http://localhost:4000 (EN) and http://localhost:4000/it/ (IT)
 bundle exec jekyll build     # one-off build into _site/
-bash script/check-build.sh   # clean build, then assert the build emits both languages
+bash script/check-build.sh   # clean build, then assert both languages, the design-system CSS and the self-hosted fonts
 ```
 
 ## Continuous integration

@@ -1,0 +1,8 @@
+---
+---
+// Sass entry point, compiled to /assets/css/main.css. The empty front matter
+// above is what makes Jekyll compile this file; the partials are in _sass/foundry/.
+@use "foundry/tokens";
+@use "foundry/fonts";
+@use "foundry/base";
+@use "foundry/components";

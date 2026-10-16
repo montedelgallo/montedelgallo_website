@@ -1,0 +1,42 @@
+// Foundry design tokens: the single place where colour and type are defined.
+// The values are fixed by the design (tasks/2026-10-16-mdg-site-design.md,
+// section 4); change them there first.
+//
+// Keep every declaration compact, with no space after the colon
+// (--emerald:#0A6B45). Sass emits custom properties verbatim, and
+// script/check-build.sh greps the compiled CSS for these exact strings.
+:root{
+  // Surfaces and ink
+  --bg:#EEF1EF;
+  --surface:#F8FAF9;
+  --surface-2:#FFFFFF;
+  --ink:#0E1A14;
+  --ink-2:#33463D;
+  --muted:#5C6B64;
+
+  // Hairlines and the blueprint grid
+  --line:rgba(14,26,20,.14);
+  --line-2:rgba(14,26,20,.28);
+  --grid:rgba(14,26,20,.055);
+
+  // Emerald accent
+  --emerald:#0A6B45;
+  --emerald-d:#064A30;
+  --emerald-l:#17A86C;
+  --emerald-xl:#49D39A;
+
+  // Dark bands (growth system, final call to action, footer)
+  --dark:#0C1712;
+  --dark-em:#0A5C3C;
+
+  // Type stacks. The web fonts are self-hosted (see _fonts.scss). Each stack
+  // ends in real system fonts, which show until the web font arrives
+  // (font-display: swap). ui-monospace is Safari-only, so the common platform
+  // monospaces are named as well.
+  --display:"Archivo",system-ui,sans-serif;
+  --body:"Hanken Grotesk",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+
+  // One committed light world: no dark-mode variants.
+  color-scheme:light;
+}
