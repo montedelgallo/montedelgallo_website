@@ -4,7 +4,9 @@
 
   Front matter a page can set: title, meta_title, description, image (see
   _data/site_meta.yml). A page that sets none gets the site defaults of its
-  language.
+  language. A collection item that has a `summary` (a project) uses it as its
+  description when it sets no `description`, so its page does not repeat the
+  home page's.
 
   Canonical and hreflang are written here and not with polyglot's I18n_Headers
   tag: that tag finds a page's other languages only through `lang:` + `page_id:`
@@ -28,7 +30,7 @@
 {%- else -%}
   {%- assign seo_title = meta.title -%}
 {%- endif -%}
-{%- assign seo_description = page.description | default: meta.description -%}
+{%- assign seo_description = page.description | default: page.summary | default: meta.description -%}
 {%- assign seo_image = page.image | default: site.data.site_meta.share_image -%}
 
 {%- comment -%} The canonical URL is the page's own, in its own language: for a fallback copy that is the original, not the copy. {%- endcomment -%}

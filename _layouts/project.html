@@ -1,0 +1,48 @@
+---
+layout: default
+---
+{%- comment -%}
+  The page of one project (a document of the `projects` collection, see
+  _projects/). Deliberately minimal: title, cover, summary, headline metric,
+  stack and the document body. The card on the home page
+  (_includes/project-card.html) reads the same front matter.
+
+  The labels (Year, Built with) come from _data/i18n/<lang>.yml in the language
+  of the document, which is the language being built, except on a fallback copy
+  of another language's document (see lang-url.html).
+{%- endcomment -%}
+{%- assign lang = page.lang | default: site.active_lang -%}
+{%- assign t = site.data.i18n[lang].projects -%}
+<article class="pad">
+  <div class="wrap">
+    <header>
+      <p class="eyebrow">{{ page.sector | escape }}</p>
+      <h1 class="h2">{{ page.title | escape }}</h1>
+      <p class="lede">{{ page.summary | escape }}</p>
+    </header>
+    {%- comment %} The cover is the largest image above the fold, so it is not lazy-loaded. 1200x675 is the size of every cover. {% endcomment %}
+    <img class="project__cover" src="{{ page.cover | relative_url }}" alt="{{ page.cover_alt | default: page.title | escape }}" width="1200" height="675" decoding="async" fetchpriority="high">
+    <div class="project__meta">
+      <p class="project__metric"><em>{{ page.metric.value | escape }}</em> {{ page.metric.label | escape }}</p>
+      <dl class="project__facts">
+        <div>
+          <dt>{{ t.year | escape }}</dt>
+          <dd>{{ page.year }}</dd>
+        </div>
+        <div>
+          <dt>{{ t.stack | escape }}</dt>
+          <dd>
+            <ul class="project__stack">
+              {%- for item in page.stack %}
+              <li>{{ item | escape }}</li>
+              {%- endfor %}
+            </ul>
+          </dd>
+        </div>
+      </dl>
+    </div>
+    <div class="project__body">
+      {{ content }}
+    </div>
+  </div>
+</article>

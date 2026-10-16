@@ -18,7 +18,7 @@ The output is plain static files, so it can be deployed to any host. It is built
 bundle install               # install the gems (first run, and after Gemfile changes)
 bundle exec jekyll serve     # dev server: http://localhost:4000 (EN) and http://localhost:4000/it/ (IT)
 bundle exec jekyll build     # one-off build into _site/
-bash script/check-build.sh   # clean build, then assert both languages, the design-system CSS, the self-hosted fonts, the page shell (hreflang, navigation, footer, language switch) and the links (html-proofer)
+bash script/check-build.sh   # clean build, then assert both languages, the design-system CSS, the self-hosted fonts, the page shell (hreflang, navigation, footer, language switch), the featured projects (documents, real covers, detail pages, cards) and the links (html-proofer)
 ```
 
 ## Where things live
@@ -29,7 +29,18 @@ bash script/check-build.sh   # clean build, then assert both languages, the desi
   compares them). Read as `site.data.i18n[site.active_lang].<key>`.
 - `_data/nav.yml`: where the header and footer links point, per language. `_data/site_meta.yml`: SEO defaults,
   the booking URL and the company facts (VAT number, phone, email).
-- `_sass/foundry/`: the design system (`_shell.scss` styles the header, footer and section helpers).
+- `_sass/foundry/`: the design system (`_shell.scss` styles the header, footer and section helpers,
+  `_projects.scss` the project card and the project page).
+- `_projects/`: the projects, one Markdown document per language (the Italian ones in `_projects/it/`),
+  tied together by a shared `page_id`. Front matter: `title, lang, page_id, permalink, sector, year,
+  stack, summary, metric {value, label}, cover, cover_alt, featured`; `featured: true` puts a project
+  on the home page. Permalinks are written without the `/it/` prefix: `/projects/<slug>/` in English,
+  `/progetti/<slug>/` in Italian (keep the slugs of the old WordPress site). The body is the text of
+  the project page (`_layouts/project.html`); `_includes/project-card.html` renders one project as a
+  card, inside `<div class="pgrid">`.
+- `assets/img/projects/`: the project covers, real images and never placeholders, shared by both
+  languages. Make a cover 1200x675 (16:9): `cwebp -q 82 -m 6 -sharp_yuv -resize 1200 675 in.jpg -o
+  assets/img/projects/<name>-cover.webp`. Write `cover_alt` as a description of the picture.
 - A page that is one file rendered in both languages (the home) has no `lang:` in its front matter. A page
   written once per language has `lang:` and a shared `page_id:` (see `_includes/lang-url.html`); an
   English-only one adds `lang-exclusive: [en]`, so nothing is built under `/it/`. Permalinks never carry

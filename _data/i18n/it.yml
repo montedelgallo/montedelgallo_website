@@ -25,6 +25,11 @@ nav:
 cta:
   book_call: "Prenota una call"
 
+projects:
+  view: "Vedi il progetto"
+  year: "Anno"
+  stack: "Realizzato con"
+
 footer:
   tagline: "Boutique di sviluppo software. Sistemi su misura, automazione e AI — realizzati a Roma."
   company: "Azienda"

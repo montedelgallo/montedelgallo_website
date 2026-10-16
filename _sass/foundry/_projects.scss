@@ -1,0 +1,171 @@
+// Projects: the card (_includes/project-card.html), shown on the home page and
+// on the project index, and the project page (_layouts/project.html). The card
+// is a port of the mockup's work card (design/home-foundry-mockup.html), with
+// its own class names so that it does not depend on the section around it.
+
+// ---------- card grid ----------
+// Three across; one column on a phone. minmax(0,1fr) lets a column shrink below
+// the width of its content, so a long word cannot make the page scroll sideways.
+.pgrid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:18px;
+}
+
+@media (max-width:820px){
+  .pgrid{
+    grid-template-columns:minmax(0,1fr);
+  }
+}
+
+// ---------- project card ----------
+.pcard{
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+  background:var(--surface-2);
+  border:1px solid var(--line);
+  border-radius:10px;
+  transition:border-color .15s,transform .15s;
+}
+
+.pcard:hover{
+  border-color:var(--line-2);
+  transform:translateY(-3px);
+}
+
+// The cover is the first thing in the card; its hairline separates it from the text.
+.pcard__thumb{
+  display:block;
+  width:100%;
+  height:auto;
+  border-bottom:1px solid var(--line);
+}
+
+.pcard__body{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  flex:1;
+  padding:18px 18px 20px;
+}
+
+.pcard__sector{
+  font-family:var(--mono);
+  font-size:.68rem;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:var(--muted);
+}
+
+.pcard__title{
+  font-family:var(--body);
+  font-weight:600;
+  font-size:.98rem;
+  margin:0;
+  color:var(--ink-2);
+}
+
+// The metric sits at the bottom of the card, so cards of different height line up.
+.pcard__metric{
+  font-family:var(--display);
+  font-weight:800;
+  font-size:1.9rem;
+  letter-spacing:-.02em;
+  line-height:1.05;
+  margin-top:auto;
+  // When it takes two lines, break between the figure and its label.
+  text-wrap:balance;
+}
+
+.pcard__metric em{
+  font-style:normal;
+  color:var(--emerald);
+}
+
+.pcard__more{
+  font-family:var(--mono);
+  font-size:.76rem;
+  color:var(--emerald);
+}
+
+// ---------- project page ----------
+.project__cover{
+  display:block;
+  width:100%;
+  height:auto;
+  margin-top:clamp(24px,3vw,36px);
+  border:1px solid var(--line);
+  border-radius:10px;
+}
+
+// The headline metric on the left, the facts (year, stack) next to it.
+.project__meta{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:flex-end;
+  gap:20px 48px;
+  margin-top:clamp(24px,3vw,36px);
+}
+
+.project__metric{
+  font-family:var(--display);
+  font-weight:800;
+  font-size:clamp(1.6rem,3vw,2.2rem);
+  letter-spacing:-.02em;
+  line-height:1.05;
+  margin:0;
+}
+
+.project__metric em{
+  font-style:normal;
+  color:var(--emerald);
+}
+
+.project__facts{
+  display:flex;
+  flex-wrap:wrap;
+  gap:16px 40px;
+  margin:0;
+}
+
+.project__facts dt{
+  font-family:var(--mono);
+  font-size:.68rem;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin:0 0 6px;
+}
+
+.project__facts dd{
+  margin:0;
+}
+
+.project__stack{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  list-style:none;
+  margin:0;
+  padding:0;
+}
+
+.project__stack li{
+  font-family:var(--mono);
+  font-size:.76rem;
+  color:var(--ink-2);
+  border:1px solid var(--line-2);
+  border-radius:5px;
+  padding:4px 10px;
+}
+
+.project__body{
+  max-width:62ch;
+  margin-top:clamp(24px,3vw,36px);
+  color:var(--ink-2);
+}
+
+.project__body p{
+  margin:0 0 1em;
+}

@@ -30,6 +30,11 @@ nav:
 cta:
   book_call: "Book a call"
 
+projects: # the project card and the project page
+  view: "View project"
+  year: "Year"
+  stack: "Built with"
+
 footer:
   tagline: "Software development boutique. Custom systems, automation and AI — built in Roma."
   company: "Company"

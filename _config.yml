@@ -25,9 +25,21 @@ markdown: kramdown
 kramdown:
   input: GFM
 
+# Projects: one document per language per project, in _projects/ (the Italian
+# ones in _projects/it/), tied together by a shared `page_id`. Each document
+# sets its own `permalink`, because the slugs differ by language (/projects/<slug>/
+# in English, /progetti/<slug>/ in Italian). Permalinks never carry the /it/
+# prefix: jekyll-polyglot adds it itself.
 collections:
   projects:
     output: true
+
+defaults:
+  - scope:
+      path: ""
+      type: projects
+    values:
+      layout: project
 
 # --- Styles ------------------------------------------------------------------
 sass:

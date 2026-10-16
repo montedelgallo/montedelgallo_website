@@ -1,0 +1,31 @@
+{%- comment -%}
+  One project as a card: the real cover, sector, title, headline metric and a
+  link to the project page. Used by the home page ("Selected work") and, later,
+  by the project index.
+
+    {% raw %}{% include project-card.html project=p %}{% endraw %}
+
+  `project` is a document of the `projects` collection; everything shown comes
+  from its front matter (_projects/). Put the cards in <div class="pgrid">. The
+  title is an <h3>, for a card that sits under a section's <h2>.
+
+  The cover is lazy-loaded (cards are below the fold) and carries its size, so
+  the page does not jump when it arrives; every cover is 1200x675. The alt text
+  is `cover_alt`, which describes the picture, and falls back to the title.
+
+  The link is written as a plain root-relative path: in the Italian build
+  jekyll-polyglot puts /it/ in front of it. The labels are in the language of
+  the document.
+{%- endcomment -%}
+{%- assign p = include.project -%}
+{%- assign lang = p.lang | default: site.active_lang -%}
+{%- assign t = site.data.i18n[lang].projects -%}
+<a class="pcard" href="{{ p.url | relative_url }}">
+  <img class="pcard__thumb" src="{{ p.cover | relative_url }}" alt="{{ p.cover_alt | default: p.title | escape }}" width="1200" height="675" loading="lazy" decoding="async">
+  <div class="pcard__body">
+    <span class="pcard__sector">{{ p.sector | escape }}</span>
+    <h3 class="pcard__title">{{ p.title | escape }}</h3>
+    <div class="pcard__metric"><em>{{ p.metric.value | escape }}</em> {{ p.metric.label | escape }}</div>
+    <span class="pcard__more">{{ t.view | escape }} <span class="arrow" aria-hidden="true">→</span></span>
+  </div>
+</a>
