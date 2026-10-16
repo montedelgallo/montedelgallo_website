@@ -1,0 +1,287 @@
+---
+layout: default
+title: About
+lang: en
+page_id: about
+permalink: /about/
+description: "Monte del Gallo is a software boutique in Rome: our story, our manifesto, how we work and the team behind the code."
+---
+{%- comment -%}
+  The About hub, English side: one page with four sections that have stable ids, the
+  anchors the old WordPress pages now redirect to (_data/redirects.yml):
+
+    #story       the old /about/ "who we are" and /our-story/
+    #manifesto   the old /manifesto/
+    #process     the old /our-process/
+    #team        the team grid (_includes/team-grid.html, _data/team.yml)
+
+  Its Italian side is it/chi-siamo.html (permalink /chi-siamo/, the same page_id); the
+  two are one pair for jekyll-polyglot. The words are written here, once per language,
+  not in _data/i18n. The text is the live site's; the pictures of the live pages (a
+  generated hero, stock photos) are left out. Styles: _sass/foundry/_pages.scss.
+{%- endcomment -%}
+<section class="hero hero--page">
+  <svg class="hero__range" aria-hidden="true" focusable="false"><use href="#mdg-range"/></svg>
+  <div class="wrap">
+    <div>
+      <p class="eyebrow">About · Roma · Software Boutique</p>
+      <h1>A software boutique, not the usual software house.</h1>
+      <p class="hero__sub">We are a Rome-based startup studio and software development boutique. We build high-performance websites, bespoke software, mobile apps and AI integrations for companies that need practical growth, not unnecessary complexity.</p>
+      <div class="hero__cta">
+        <a class="btn btn--solid" href="{{ site.data.site_meta.booking_url }}">Book a 30-minute call</a>
+        <a class="btn btn--ghost" href="/projects/">See projects <span class="arrow" aria-hidden="true">→</span></a>
+      </div>
+      <div class="stats">
+        <div><b>+140%</b><span>direct bookings</span></div>
+        <div><b>+150%</b><span>online sales</span></div>
+        <div><b>-25%</b><span>operating costs</span></div>
+        <div><b>600+</b><span>served structures</span></div>
+      </div>
+      <nav class="pnav" aria-label="On this page">
+        <a href="#story">Our story</a>
+        <a href="#manifesto">Manifesto</a>
+        <a href="#process">How we work</a>
+        <a href="#team">Team</a>
+      </nav>
+    </div>
+  </div>
+</section>
+
+<section class="pad" id="story">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Our story · Started in Rome in 2019</p>
+      <h2 class="h2">Perspective first. Then useful software.</h2>
+      <p class="lede">MonteDelGallo was born in Rome to help companies turn operational complexity into clear, owned and measurable digital systems.</p>
+    </div>
+
+    <div class="pcols">
+      <div><p class="eyebrow">I. Origin</p><h3 class="psub">A studio built against digital noise.</h3></div>
+      <div class="project__body">
+        <p>MonteDelGallo started from a simple frustration: many digital projects become heavier than the problems they were meant to solve. More meetings, more features and more layers rarely create better software.</p>
+        <p>We chose a different shape: a compact senior team that works close to the business, ships useful versions quickly and keeps every decision tied to measurable impact.</p>
+        <p>The goal is not to write more code. The goal is to build the right system, with the right amount of code.</p>
+      </div>
+    </div>
+
+    <div class="pcols">
+      <div><p class="eyebrow">II. The name</p><h3 class="psub">Monte del Gallo is a place of perspective.</h3></div>
+      <div class="project__body">
+        <p>Monte del Gallo is a hill in Rome, close to the Gianicolo. From there the city opens up: layers, streets, domes, routes and hidden connections become easier to read.</p>
+        <p>That is how we approach software. Before choosing a framework, drawing an interface or automating a workflow, we climb high enough to understand the whole landscape.</p>
+      </div>
+    </div>
+    <h3 class="psub psub--sm">Rome roots. Product discipline.</h3>
+    <p class="lede">A local base with an international way of building: direct, lean and accountable.</p>
+    <div class="svc pcells pcells--4">
+      <div class="svc__cell"><h3>Roma</h3><p>base and culture</p></div>
+      <div class="svc__cell"><h3>2019</h3><p>studio founded</p></div>
+      <div class="svc__cell"><h3>Boutique</h3><p>senior and focused</p></div>
+      <div class="svc__cell"><h3>Measure</h3><p>impact over noise</p></div>
+    </div>
+
+    <div class="pcols">
+      <div><p class="eyebrow">III. Who we are</p><h3 class="psub">Senior engineering with a lean, creative process.</h3></div>
+      <div class="project__body">
+        <p>MonteDelGallo combines creativity and technical depth to deliver solutions that answer real business needs. We focus on the essential: clear architecture, measurable outcomes, fast iterations and software that teams can actually use every day.</p>
+        <p>Our work sits at the intersection of visibility and operations: websites built to convert, SEO and GEO for search and AI engines, custom management systems, AI agents, e-commerce, cloud and data analysis.</p>
+      </div>
+    </div>
+    <h3 class="psub psub--sm">Three choices that keep the work sharp.</h3>
+    <div class="svc pcells pcells--3">
+      <div class="svc__cell"><h3>Less is more</h3><p>Every feature must earn its place. Fewer moving parts make software clearer and easier to maintain.</p></div>
+      <div class="svc__cell"><h3>Stay lean</h3><p>Small teams move faster. Communication stays direct and progress stays visible.</p></div>
+      <div class="svc__cell"><h3>Use constraints</h3><p>Budget, timing and legacy systems are not obstacles. They make priorities visible and turn design into a sharper decision.</p></div>
+    </div>
+
+    <div class="pcols">
+      <div><p class="eyebrow">IV. Today</p><h3 class="psub">Small by design, broad by capability.</h3></div>
+      <div class="project__body">
+        <p>Today MonteDelGallo works across high-performance websites, custom platforms, mobile apps, AI and data workflows, digital signage and operational tools.</p>
+        <p>We stay close to founders, operators and internal teams because the best software is rarely born from a brief alone. It comes from understanding how people actually work, where time is lost and where a product can create leverage.</p>
+        <ul class="project__stack"><li>Web</li><li>AI</li><li>Data</li><li>Mobile</li><li>Ops</li><li>Signage</li></ul>
+      </div>
+    </div>
+
+    <h3 class="psub psub--sm">Technology that speaks the language of your business.</h3>
+    <p class="lede">From hospitality and property management to e-commerce and internal platforms, we build around real workflows and measurable outcomes.</p>
+    <div class="svc pcells pcells--4">
+      <div class="svc__cell"><h3>Real people, Italian support</h3><p>Onboarding, training and support without hiding behind anonymous tickets.</p></div>
+      <div class="svc__cell"><h3>Field experience</h3><p>Platforms used every day by hundreds of businesses in Italy.</p></div>
+      <div class="svc__cell"><h3>We integrate with what you have</h3><p>Payroll, invoicing, PMS, CRMs and vertical systems without forced migrations.</p></div>
+      <div class="svc__cell"><h3>Italian regulatory know-how</h3><p>From hospitality compliance to public tenders, we understand local constraints.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="pad psec--alt" id="manifesto">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Manifesto · Design, code and growth</p>
+      <h2 class="h2">Less noise. More leverage.</h2>
+      <p class="lede">A clear way to build software: simple interfaces, solid foundations and measurable outcomes.</p>
+    </div>
+    <div class="stats stats--words">
+      <div><b>01</b><span>Clarity before features</span></div>
+      <div><b>02</b><span>Own the system</span></div>
+      <div><b>03</b><span>Measure every decision</span></div>
+    </div>
+
+    <div class="mflist">
+      <article class="mf">
+        <p class="mf__n">I.</p>
+        <div class="project__body">
+          <h3>Brilliant software is so simple — that’s why it’s so complicated.</h3>
+          <p>The best products in the world feel effortless to use. Behind that effortlessness are thousands of decisions, each one deliberate, each one in service of clarity. We don’t add features — we remove friction. We don’t build complexity — we distill it until only the essential remains.</p>
+          <p class="mf__tag">Less, but better.</p>
+        </div>
+      </article>
+      <article class="mf">
+        <p class="mf__n">II.</p>
+        <div class="project__body">
+          <h3>We are craftspeople, not factories.</h3>
+          <p>MonteDelGallo was founded in 2019 in Rome with a deliberate choice: stay small. We don’t scale by hiring hundreds. We scale by being excellent. Every person on our team is both a thinker and a maker. There are no spectators here.</p>
+          <p>We chose the name after Monte del Gallo — the highest point of the Gianicolo, where Rome stretches out beneath you in every direction. Great software requires that kind of perspective. You need to see the whole landscape before writing the first line.</p>
+          <p class="mf__tag">Coded with care in Roma.</p>
+        </div>
+      </article>
+      <article class="mf">
+        <p class="mf__n">III.</p>
+        <div class="project__body">
+          <h3>Constraints are gifts.</h3>
+          <p>Unlimited budgets produce bloated software. Unlimited timelines produce software that never ships. We embrace constraints — of time, of budget, of scope — because they force creativity. The narrower the frame, the sharper the picture.</p>
+          <p>When a client tells us “we only have this much time and this much money,” we don’t see a problem. We see the creative brief.</p>
+        </div>
+      </article>
+      <article class="mf">
+        <p class="mf__n">IV.</p>
+        <div class="project__body">
+          <h3>Technology serves people, not the other way around.</h3>
+          <p>We don’t choose technologies because they’re trendy. We choose them because they’re right. A Rails monolith can outperform a microservices architecture when it’s built with care. A static page can outperform a SPA when simplicity is what the user needs.</p>
+          <p>The most elegant technology choice is the one your users never think about.</p>
+        </div>
+      </article>
+      <article class="mf">
+        <p class="mf__n">V.</p>
+        <div class="project__body">
+          <h3>We build with you, not for you.</h3>
+          <p>We’re not vendors. We’re partners. We won’t disappear into a black box and emerge months later with a deliverable. You’ll see every decision, question every trade-off, and feel the product take shape week by week. Your knowledge of the problem and our knowledge of the craft — that’s the combination that produces great work.</p>
+        </div>
+      </article>
+      <article class="mf">
+        <p class="mf__n">VI.</p>
+        <div class="project__body">
+          <h3>Ship, learn, iterate. Repeat forever.</h3>
+          <p>Software is never finished. The best products are living systems that evolve with their users. We don’t believe in big-bang launches followed by neglect. We believe in continuous delivery, continuous learning, and continuous improvement. Ship early. Listen hard. Make it better.</p>
+        </div>
+      </article>
+      <article class="mf">
+        <p class="mf__n">VII.</p>
+        <div class="project__body">
+          <h3>Code is a team sport.</h3>
+          <p>Lone geniuses are a myth. The best software comes from diverse minds challenging each other — designers who code, engineers who sketch, strategists who prototype. We hire people who are curious about everything, not just their specialty.</p>
+          <p>We share what we learn. We open-source what we can. We write about our mistakes as openly as our successes. Knowledge compounds when it’s shared.</p>
+        </div>
+      </article>
+    </div>
+
+    <div class="pclose">
+      <p class="eyebrow">This is what we believe</p>
+      <p class="pclose__big">Build less. Build better.</p>
+      <p class="lede">If this resonates with you — whether as a client, a collaborator, or a future teammate — we should talk.</p>
+      <p class="pclose__btn"><a class="btn btn--solid" href="{{ site.data.site_meta.booking_url }}">Get in touch</a></p>
+    </div>
+  </div>
+</section>
+
+<section class="pad" id="process">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">How we work · Lean delivery · Measurable work</p>
+      <h2 class="h2">How we turn ideas into reality.</h2>
+      <p class="lede">Every great product follows a path. Ours has been refined across 50+ projects: four phases designed to minimize risk and maximize value.</p>
+    </div>
+    <p class="pnote">Understand → Design → Build → Launch. A clear process keeps the work calm: each phase has a purpose, a concrete output and a decision point before we move forward.</p>
+    <div class="steps steps--phases">
+      <div>
+        <div class="num">01</div>
+        <h3>Discovery</h3>
+        <p>Before we write a single line of code, we need to understand your world. We sit with you, ask hard questions, map the landscape, and uncover what success actually looks like.</p>
+        <ul>
+          <li>Stakeholder interviews &amp; workshops</li>
+          <li>Technical landscape audit</li>
+          <li>User research &amp; persona mapping</li>
+          <li>Scope definition &amp; success metrics</li>
+        </ul>
+        <p class="steps__dur">Duration: 1–2 weeks</p>
+      </div>
+      <div>
+        <div class="num">02</div>
+        <h3>Strategy &amp; Design</h3>
+        <p>We architect the system, design the experience, and plan every sprint. You’ll see wireframes, prototypes, and technical specs — and approve each before we move forward.</p>
+        <ul>
+          <li>System architecture &amp; tech selection</li>
+          <li>Wireframes &amp; interactive prototypes</li>
+          <li>UI design (pixel-perfect mockups)</li>
+          <li>Sprint plan &amp; milestone roadmap</li>
+        </ul>
+        <p class="steps__dur">Duration: 2–3 weeks</p>
+      </div>
+      <div>
+        <div class="num">03</div>
+        <h3>Development</h3>
+        <p>This is where the magic happens. Agile sprints, continuous integration, and regular demos keep you in control. You’ll feel the product taking shape, week by week.</p>
+        <ul>
+          <li>2-week agile sprints with demos</li>
+          <li>Continuous integration &amp; testing</li>
+          <li>Code reviews &amp; quality assurance</li>
+          <li>Staging environment for your review</li>
+        </ul>
+        <p class="steps__dur">Duration: 4–16 weeks (depends on scope)</p>
+      </div>
+      <div>
+        <div class="num">04</div>
+        <h3>Launch &amp; Beyond</h3>
+        <p>Launch day is a beginning, not an end. We deploy to production, monitor performance, gather real user feedback, and iterate. We stay with you as long as you need us.</p>
+        <ul>
+          <li>Production deployment &amp; monitoring</li>
+          <li>Performance optimization</li>
+          <li>User feedback analysis &amp; iteration</li>
+          <li>Ongoing maintenance &amp; support packages</li>
+        </ul>
+        <p class="steps__dur">Duration: Ongoing</p>
+      </div>
+    </div>
+
+    <h3 class="psub psub--sm">Less theatre. More visible work.</h3>
+    <div class="svc pcells pcells--4">
+      <div class="svc__cell"><h3>Full Transparency</h3><p>You see everything: code, decisions, trade-offs. No black boxes.</p></div>
+      <div class="svc__cell"><h3>Ship Fast</h3><p>Small teams, no overhead. We ship usable increments every two weeks.</p></div>
+      <div class="svc__cell"><h3>Zero Risk</h3><p>You own the code from day one. No lock-in, no surprises.</p></div>
+      <div class="svc__cell"><h3>True Partnership</h3><p>We’re not vendors — we’re collaborators invested in your outcome.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="pad psec--alt" id="team">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Our team</p>
+      <h2 class="h2">The people behind the code.</h2>
+      <p class="lede">A compact multidisciplinary team: software engineering, design, data, cloud, WordPress and business development working close to the client.</p>
+    </div>
+    {% include team-grid.html %}
+  </div>
+</section>
+
+<section class="cta">
+  <svg class="cta__range" aria-hidden="true" focusable="false"><use href="#mdg-range"/></svg>
+  <div class="wrap">
+    <p class="eyebrow">Start with a call</p>
+    <h2>Let’s build something useful together.</h2>
+    <p>Tell us what you want to improve. In 30 minutes we can understand where software, visibility and AI can create measurable leverage.</p>
+    <div class="cta__btns">
+      <a class="btn btn--solid" href="{{ site.data.site_meta.booking_url }}">Book a 30-minute call</a>
+    </div>
+  </div>
+</section>

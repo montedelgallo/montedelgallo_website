@@ -1,0 +1,562 @@
+// The company and product pages: the About hub (about.html, it/chi-siamo.html), the
+// Startup Studio, the Product Lab, Careers and MotioForge Studio (and their Italian
+// sides), and the team grid (_includes/team-grid.html).
+//
+// These pages are built from what the site already has, so this file holds only what is
+// new:
+//   - the head of a page is the home's hero (.hero, _home.scss) with the two buttons and
+//     the proof numbers (.stats), in one column (.hero--page), or beside a picture
+//     (.hero--split);
+//   - the text is the project page's reading column (.project__body, _project-detail.scss)
+//     with its headings, lists, links and chips (.project__stack);
+//   - a grid of short items is the services grid (.svc / .svc__cell, _home.scss) made a
+//     little more flexible (.pcells);
+//   - the numbered phases are the home's steps (.steps, _home.scss);
+//   - the closing band is the home's call to action (.cta, _home.scss);
+//   - the screenshots are the project page's shots (.project__shots).
+// Nothing in here sets a colour that is not a token (_tokens.scss).
+
+// ---------- the head of a page ----------
+// One column, a smaller headline than the home's, and room for a long one.
+.hero--page .wrap{
+  grid-template-columns:minmax(0,1fr);
+  gap:0;
+}
+
+.hero--page h1{
+  font-size:clamp(2.1rem,5vw,3.6rem);
+  max-width:22ch;
+}
+
+// MotioForge: the headline and its text beside the editor's screenshot (the proof numbers
+// sit in a second row under both).
+.hero--split .wrap:first-of-type{
+  grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);
+  gap:clamp(28px,4vw,48px);
+  padding-bottom:clamp(28px,3vw,40px);
+}
+
+.hero--split .wrap + .wrap{
+  display:block;
+  padding-block:0 clamp(40px,5vw,64px);
+}
+
+.hero--split .stats{
+  margin-top:0;
+}
+
+@media (max-width:860px){
+  .hero--split .wrap:first-of-type{
+    grid-template-columns:minmax(0,1fr);
+  }
+}
+
+.mfshot{
+  display:block;
+  width:100%;
+  height:auto;
+  border:1px solid var(--line-2);
+  border-radius:10px;
+  background:var(--surface-2);
+  box-shadow:0 22px 44px -26px rgba(14,26,20,.55);
+}
+
+// The tags under the hero text.
+.pchips{
+  margin-top:26px;
+}
+
+// The way around the page, under the buttons: anchors to its sections.
+.pnav{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:28px;
+}
+
+.pnav a{
+  font-family:var(--mono);
+  font-size:.76rem;
+  letter-spacing:.06em;
+  color:var(--emerald);
+  border:1px solid var(--line-2);
+  border-radius:5px;
+  padding:8px 12px;
+  transition:background .15s;
+}
+
+.pnav a:hover{
+  background:var(--surface);
+}
+
+// A section on the lighter surface, to tell two bands apart.
+.psec--alt{
+  background:var(--surface);
+}
+
+// ---------- headings and text ----------
+// A subsection: the heading on the left and the text on the right, from 820px.
+.pcols{
+  display:grid;
+  grid-template-columns:minmax(0,5fr) minmax(0,7fr);
+  gap:clamp(18px,4vw,64px);
+  margin-top:clamp(36px,5vw,64px);
+  padding-top:clamp(28px,4vw,48px);
+  border-top:1px solid var(--line);
+}
+
+.pcols:first-child{
+  margin-top:0;
+  padding-top:0;
+  border-top:0;
+}
+
+// ...but under a .sec-head, as the first thing in a section's .wrap, the heading itself
+// is the section's, so the rule above is for the ones that follow it.
+.sec-head + .pcols{
+  margin-top:clamp(28px,4vw,44px);
+}
+
+// The project page puts its text in the first column from 900px (.project__body in
+// _project-detail.scss): here the text is the second column, so say so.
+.pcols > :first-child{
+  grid-column:1;
+  grid-row:1;
+}
+
+.pcols > .project__body{
+  grid-column:2;
+  grid-row:1;
+}
+
+@media (max-width:820px){
+  .pcols{
+    grid-template-columns:minmax(0,1fr);
+  }
+
+  .pcols > :first-child,
+  .pcols > .project__body{
+    grid-column:1;
+    grid-row:auto;
+  }
+}
+
+.pcols .sec-head{
+  max-width:none;
+}
+
+// The heading of a subsection, smaller than the section's (.h2).
+.psub{
+  font-family:var(--display);
+  font-weight:800;
+  font-size:clamp(1.35rem,2.4vw,1.8rem);
+  letter-spacing:-.02em;
+  line-height:1.1;
+  margin:.4em 0 0;
+  text-wrap:balance;
+}
+
+// A subsection heading that follows a block, with its own space above.
+.psub--sm{
+  font-size:clamp(1.15rem,2vw,1.4rem);
+  margin:clamp(40px,5vw,60px) 0 0;
+}
+
+// A line of text under a heading, outside the reading column.
+.pnote{
+  max-width:68ch;
+  margin:clamp(18px,2.4vw,28px) 0 0;
+  color:var(--ink-2);
+}
+
+.project__body.pnote > :last-child{
+  margin-bottom:0;
+}
+
+// A small label in the text ("Stack").
+.plabel{
+  font-family:var(--mono);
+  font-size:.68rem;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin:1.4em 0 .6em;
+}
+
+// A button inside the text keeps the button's colours, not the link's.
+.project__body a.btn{
+  text-decoration:none;
+}
+
+.project__body a.btn--solid{
+  color:var(--bg);
+}
+
+.project__body a.btn--ghost{
+  color:var(--ink);
+}
+
+// A link inside the dark band.
+.cta .plink{
+  color:#fff;
+  text-decoration:underline;
+  text-underline-offset:3px;
+}
+
+// ---------- grids of short items ----------
+// The services grid with the number of columns the content asks for (the default is
+// four), two on a tablet and one on a phone. The cell has no icon here, so its title
+// does not need the room the icon leaves above it.
+.pcells--2{
+  grid-template-columns:repeat(2,minmax(0,1fr));
+}
+
+.pcells--3{
+  grid-template-columns:repeat(3,minmax(0,1fr));
+}
+
+.pcells--4{
+  grid-template-columns:repeat(4,minmax(0,1fr));
+}
+
+.pcells .svc__cell{
+  min-height:0;
+}
+
+.pcells .svc__cell h3{
+  margin:0 0 8px;
+}
+
+// A grid of three with five items: the last cell takes the two columns that are left.
+@media (min-width:981px){
+  .pcells--3 > .svc__cell:last-child:nth-child(3n+2){
+    grid-column:span 2;
+  }
+}
+
+@media (max-width:980px){
+  .pcells--3,
+  .pcells--4{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+}
+
+@media (max-width:560px){
+  .pcells--2,
+  .pcells--3,
+  .pcells--4{
+    grid-template-columns:minmax(0,1fr);
+  }
+}
+
+// What a cell may carry besides its title and text: a small label above it, and the
+// technologies under it.
+.pcell__tag,
+.svc__cell .pcell__tag{
+  font-family:var(--mono);
+  font-size:.68rem;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin:0 0 10px;
+}
+
+.pcell__stack,
+.svc__cell .pcell__stack{
+  font-family:var(--mono);
+  font-size:.76rem;
+  color:var(--emerald);
+  margin:0 0 10px;
+}
+
+.svc__cell .pcell__stack:last-child{
+  margin:14px 0 0;
+}
+
+// ---------- the manifesto ----------
+// A row per principle: its numeral (in emerald: it is read, so it is not an outline like
+// the steps' numbers) and its text.
+.stats--words{
+  margin-top:clamp(24px,3vw,34px);
+}
+
+.stats--words b{
+  color:var(--emerald);
+}
+
+.mflist{
+  margin-top:clamp(36px,5vw,56px);
+  border-top:1px solid var(--line);
+}
+
+.mf{
+  display:grid;
+  grid-template-columns:88px minmax(0,1fr);
+  gap:clamp(12px,2.5vw,32px);
+  padding:clamp(24px,3.5vw,36px) 0;
+  border-bottom:1px solid var(--line);
+}
+
+.mf > .mf__n{
+  grid-column:1;
+  grid-row:1;
+}
+
+.mf > .project__body{
+  grid-column:2;
+  grid-row:1;
+}
+
+.mf__n{
+  font-family:var(--display);
+  font-weight:800;
+  font-size:1.5rem;
+  line-height:1.2;
+  color:var(--emerald);
+  margin:0;
+}
+
+.mf h3{
+  font-family:var(--display);
+  font-weight:800;
+  font-size:clamp(1.25rem,2vw,1.55rem);
+  letter-spacing:-.02em;
+  line-height:1.15;
+  color:var(--ink);
+  margin:0 0 .6em;
+  text-wrap:balance;
+}
+
+.mf .mf__tag{
+  font-family:var(--mono);
+  font-size:.78rem;
+  letter-spacing:.06em;
+  color:var(--emerald);
+}
+
+@media (max-width:520px){
+  .mf{
+    grid-template-columns:minmax(0,1fr);
+    gap:6px;
+  }
+
+  .mf > .mf__n,
+  .mf > .project__body{
+    grid-column:1;
+    grid-row:auto;
+  }
+}
+
+// The line that closes the manifesto.
+.pclose{
+  margin-top:clamp(40px,5vw,64px);
+}
+
+.pclose__big{
+  font-family:var(--display);
+  font-weight:800;
+  font-size:clamp(2rem,5vw,3.4rem);
+  letter-spacing:-.03em;
+  line-height:1;
+  margin:.3em 0 0;
+  text-wrap:balance;
+}
+
+.pclose__btn{
+  margin:24px 0 0;
+}
+
+// ---------- the phases of the process ----------
+// The home's steps with a list of what each phase delivers and how long it takes.
+.steps--phases ul{
+  list-style:none;
+  margin:14px 0 0;
+  padding:0;
+  font-size:.89rem;
+  color:var(--ink-2);
+}
+
+.steps--phases li{
+  position:relative;
+  padding-left:1.1em;
+  margin:0 0 .45em;
+}
+
+.steps--phases li::before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:.55em;
+  width:6px;
+  height:6px;
+  border-radius:1px;
+  background:var(--emerald);
+}
+
+.steps .steps__dur{
+  font-family:var(--mono);
+  font-size:.72rem;
+  letter-spacing:.04em;
+  color:var(--emerald);
+  margin-top:14px;
+}
+
+// ---------- the team ----------
+// A square portrait per member. Where there is no portrait the tile carries the
+// initials on the blueprint grid of the hero.
+.team{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(min(100%,176px),1fr));
+  gap:clamp(18px,2.4vw,28px);
+  list-style:none;
+  margin:clamp(28px,4vw,44px) 0 0;
+  padding:0;
+}
+
+.team__member{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  min-width:0;
+}
+
+.team__photo,
+.team__ph{
+  display:block;
+  width:100%;
+  aspect-ratio:1 / 1;
+  border:1px solid var(--line);
+  border-radius:10px;
+}
+
+.team__photo{
+  height:auto;
+  object-fit:cover;
+  background:var(--surface-2);
+}
+
+.team__ph{
+  display:grid;
+  place-items:center;
+  font-family:var(--display);
+  font-weight:800;
+  font-size:clamp(2rem,4vw,2.8rem);
+  letter-spacing:-.02em;
+  color:var(--emerald);
+  background-color:var(--surface-2);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:22px 22px;
+}
+
+.team__badge{
+  font-family:var(--mono);
+  font-size:.66rem;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:var(--emerald);
+  margin:0 0 4px;
+}
+
+.team__name{
+  font-family:var(--display);
+  font-weight:700;
+  font-size:1.05rem;
+  letter-spacing:-.01em;
+  line-height:1.2;
+  margin:0;
+}
+
+.team__role{
+  font-size:.89rem;
+  color:var(--muted);
+  margin:3px 0 0;
+}
+
+// ---------- the open positions ----------
+.jobs{
+  list-style:none;
+  margin:clamp(24px,3vw,36px) 0 0;
+  padding:0;
+  border-top:1px solid var(--line);
+}
+
+.job{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px 24px;
+  padding:20px 0;
+  border-bottom:1px solid var(--line);
+}
+
+.job h3{
+  font-family:var(--display);
+  font-weight:700;
+  font-size:1.15rem;
+  letter-spacing:-.01em;
+  margin:0;
+}
+
+.job__meta{
+  font-family:var(--mono);
+  font-size:.76rem;
+  color:var(--muted);
+  margin:4px 0 0;
+}
+
+// ---------- MotioForge ----------
+// The two screenshots of the interface: bigger text under each than in a project's
+// gallery, because it is a sentence and not a caption.
+.pshots{
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));
+  margin-top:clamp(24px,3vw,36px);
+}
+
+.pshots figcaption{
+  font-family:var(--body);
+  font-size:.92rem;
+  letter-spacing:0;
+  line-height:1.5;
+  color:var(--ink-2);
+}
+
+.pshots figcaption strong{
+  color:var(--ink);
+}
+
+// The downloads: one card each, the button at the bottom.
+.dls{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));
+  gap:18px;
+  margin-top:38px;
+}
+
+.dl{
+  display:flex;
+  flex-direction:column;
+  background:var(--surface-2);
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:22px 22px 24px;
+}
+
+.dl h3{
+  font-family:var(--display);
+  font-weight:700;
+  font-size:1.15rem;
+  letter-spacing:-.01em;
+  margin:0 0 8px;
+}
+
+.dl p{
+  color:var(--ink-2);
+  font-size:.92rem;
+  margin:0 0 14px;
+}
+
+.dl p:last-child{
+  margin:auto 0 0;
+  padding-top:6px;
+}

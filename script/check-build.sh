@@ -1026,6 +1026,32 @@ permalink: /post-cards-test/
 </div>
 <p id="canary">{{ t }} {{ lang }} {{ p }}</p>
 PAGE
+# The same canary for the team grid, and the proof of its placeholder. The page sets t,
+# lang and p to a known value, renders the grid through team-grid.html with a list of
+# members of its own (in its front matter: the first has no portrait, so it must get the
+# initials tile; the second has one), and prints the three after the grid. The real
+# team all has portraits, so without this the placeholder would never be exercised.
+cat >"$FIXTURE/team-grid-test.html" <<'PAGE'
+---
+layout: default
+title: Team grid
+permalink: /team-grid-test/
+fx_members:
+  - name: "Ada Lovelace"
+    role: { en: "Analyst", it: "Analista" }
+  - name: "Grace"
+    role: { en: "Compiler engineer", it: "Ingegnera di compilatori" }
+    badge: { en: "Admiral", it: "Ammiraglia" }
+    photo: /assets/team/giuseppe.webp
+    photo_w: 480
+    photo_h: 480
+---
+{%- assign t = "keep" -%}
+{%- assign lang = "keep" -%}
+{%- assign p = "keep" -%}
+{% include team-grid.html members=page.fx_members %}
+<p id="canary">{{ t }} {{ lang }} {{ p }}</p>
+PAGE
 # A project with `featured: false`, as an English and an Italian document tied by
 # page_id, like the real ones. Every real project is featured, so without this
 # pair nothing ever gives the featured filter of the home something to drop. The
@@ -1641,9 +1667,16 @@ entries.each_with_index do |entry, index|
   (errors << "#{at} must be a map with from and to"; next) unless entry.is_a?(Hash) && entry["from"].is_a?(String) && entry["to"].is_a?(String)
   from, to = entry["from"], entry["to"]
   errors << "#{at}: from #{from.inspect} must be a path starting and ending with /" unless from.match?(%r{\A/.*/\z})
-  errors << "#{at}: to #{to.inspect} must be a path starting and ending with /" unless to.match?(%r{\A/.*/\z})
+  # A `to` may end in an #anchor (an old page that became a section of another page).
+  to_path, to_anchor = to.split("#", 2)
+  errors << "#{at}: to #{to.inspect} must be a path starting and ending with /, optionally followed by #anchor" unless to_path.to_s.match?(%r{\A/.*/\z}) && (to_anchor.nil? || to_anchor.match?(/\A[A-Za-z][\w-]*\z/))
   errors << "#{at}: from and to are the same" if from == to
-  errors << "#{at}: to #{to} is not a page of the built site" unless built.(to)
+  if !built.(to_path.to_s)
+    errors << "#{at}: to #{to} is not a page of the built site"
+  elsif to_anchor
+    target = File.read(File.join(site_dir, to_path, "index.html"), encoding: "utf-8")
+    errors << "#{at}: to #{to}: the page has no element with id=\"#{to_anchor}\"" unless target.match?(/\sid="#{Regexp.escape(to_anchor)}"/)
+  end
   errors << "#{at}: from #{from} is a page of the built site: a redirect would shadow it" if built.(from)
   errors << "#{at}: #{from} or #{to} has an /it/it/ prefix" if (from + to).include?("/it/it/")
 end
@@ -2818,6 +2851,315 @@ RUBY
 }
 check_blog_redirects || fail "_data/redirects.yml does not map every article's old URL (see the list above)"
 pass "_data/redirects.yml maps all 9 old root URLs of the articles to their new pages"
+
+echo "==> Asserting the company pages (About hub, Startup Studio, Product Lab, Careers, MotioForge)"
+# Five pages, each an English and an Italian document tied by a shared page_id, each with
+# a bare permalink (no /it/ prefix: polyglot adds it). The live site's our-story,
+# manifesto and our-process pages (and their Italian ones) are folded into the About hub
+# as sections with stable ids; _data/redirects.yml maps their old URLs to those anchors.
+#
+# company_pages prints one line per page: page_id|en source|en permalink|it source|it permalink
+company_pages() {
+  cat <<'PAGES'
+about|about.html|/about/|it/chi-siamo.html|/chi-siamo/
+startup-studio|startup-studio.html|/startup-studio/|it/studio-startup.html|/studio-startup/
+product-lab|product-lab.html|/product-lab/|it/laboratorio-prodotto.html|/laboratorio-prodotto/
+careers|careers.html|/careers/|it/lavora-con-noi.html|/lavora-con-noi/
+motioforge|motioforge.html|/motioforge/|it/motioforge.html|/motioforge/
+PAGES
+}
+
+# check_company_pages <site-dir> <site-url>
+# Per page and language: the document says what the manifest says (lang, page_id, bare
+# permalink, title, description), the page was built at its URL, in its language, with
+# one <h1>, no skipped heading level, and a body that is not a stub; the canonical and
+# hreflang tags are reciprocal (each page names the other, and the other names it back),
+# and the language switch leads to the other page.
+check_company_pages() {
+  bundle exec ruby - "$@" <<'RUBY'
+# encoding: utf-8
+require "nokogiri"
+require "yaml"
+
+site_dir, site_url = ARGV
+errors = []
+min_words = { "about" => 900, "startup-studio" => 250, "product-lab" => 250, "careers" => 140, "motioforge" => 600 }
+rows = ENV.fetch("COMPANY_PAGES").lines.map { |line| line.strip.split("|") }
+rows.each do |page_id, en_src, en_url, it_src, it_url|
+  pair = { "en" => [en_src, en_url, en_url], "it" => [it_src, it_url, "/it#{it_url}"] }
+  seen = {}
+  pair.each do |lang, (src, permalink, url)|
+    at = "#{page_id} (#{lang})"
+    unless File.file?(src)
+      errors << "#{at}: #{src} does not exist"
+      next
+    end
+    match = File.read(src, encoding: "utf-8").match(/\A---[ \t]*\n(.*?)\n---[ \t]*\n/m)
+    (errors << "#{at}: #{src} has no front matter"; next) unless match
+    front = YAML.safe_load(match[1]) || {}
+    errors << "#{at}: lang should be #{lang}" unless front["lang"] == lang
+    errors << "#{at}: page_id should be #{page_id}" unless front["page_id"] == page_id
+    errors << "#{at}: permalink should be #{permalink} (bare, polyglot adds /it/), it is #{front["permalink"].inspect}" unless front["permalink"] == permalink
+    errors << "#{at}: no title" if front["title"].to_s.strip.empty?
+    errors << "#{at}: the description (meta) should be a real sentence" if front["description"].to_s.strip.size < 60
+    file = File.join(site_dir, url, "index.html")
+    (errors << "#{at}: #{url} was not built (#{file})"; next) unless File.size?(file)
+    html = Nokogiri::HTML5(File.read(file, encoding: "utf-8"))
+    seen[lang] = html
+    errors << "#{at}: <html lang> should be #{lang}" unless html.at_css("html")["lang"] == lang
+    errors << "#{at}: <title> should hold #{front["title"].inspect}" unless html.at_css("title")&.text.to_s.include?(front["title"].to_s)
+    main = html.at_css("main")
+    (errors << "#{at}: no <main>"; next) unless main
+    h1 = main.css("h1")
+    errors << "#{at}: main must hold exactly one <h1>, it holds #{h1.size}" unless h1.size == 1
+    levels = main.css("h1,h2,h3,h4,h5,h6").map { |node| node.name[1].to_i }
+    levels.each_cons(2) { |a, b| errors << "#{at}: the headings skip a level (h#{a} then h#{b})" if b > a + 1 }
+    words = main.text.split.size
+    errors << "#{at}: the body has #{words} words, a real page has at least #{min_words[page_id]}" if words < min_words[page_id]
+    ids = main.css("[id]").map { |node| node["id"] }
+    ids.tally.each { |id, n| errors << "#{at}: id=#{id.inspect} appears #{n} times" if n > 1 }
+    main.css("a[href^='#']").each do |a|
+      errors << "#{at}: the link #{a["href"]} points at no id of the page" unless a["href"] == "#" || ids.include?(a["href"][1..])
+    end
+    errors << "#{at}: an image has no alt attribute" if main.css("img:not([alt])").any?
+    errors << "#{at}: an <img> has no width and height (the page would jump when it loads)" if main.css("img").any? { |img| img["width"].to_s.empty? || img["height"].to_s.empty? }
+  end
+  # reciprocal hreflang: read both pages' alternates and canonical, and the switch
+  pair.each do |lang, (_src, _permalink, url)|
+    html = seen[lang] or next
+    at = "#{page_id} (#{lang})"
+    link = ->(rel, hreflang = nil) { html.css("link[rel='#{rel}']").find { |l| hreflang.nil? || l["hreflang"] == hreflang }&.[]("href") }
+    errors << "#{at}: canonical should be #{site_url}#{url}, it is #{link.("canonical").inspect}" unless link.("canonical") == "#{site_url}#{url}"
+    errors << "#{at}: hreflang=en should be #{site_url}#{en_url}" unless link.("alternate", "en") == "#{site_url}#{en_url}"
+    errors << "#{at}: hreflang=it should be #{site_url}/it#{it_url}" unless link.("alternate", "it") == "#{site_url}/it#{it_url}"
+    errors << "#{at}: hreflang=x-default should be #{site_url}#{en_url}" unless link.("alternate", "x-default") == "#{site_url}#{en_url}"
+    other = lang == "en" ? "it" : "en"
+    target = other == "en" ? en_url : "/it#{it_url}"
+    sw = html.css("a.langsw__link").find { |a| a["hreflang"] == other }
+    errors << "#{at}: the language switch to #{other} should lead to #{target}, it leads to #{sw&.[]("href").inspect}" unless sw && sw["href"] == target
+    errors << "#{at}: the switch target #{target} was not built" unless File.size?(File.join(site_dir, target, "index.html"))
+  end
+end
+abort(errors.map { |e| "  - #{e}" }.join("\n")) unless errors.empty?
+RUBY
+}
+COMPANY_PAGES="$(company_pages)" check_company_pages "$SITE_DIR" "$SITE_URL" ||
+  fail "a company page is wrong (see the list above)"
+pass "5 pages in 2 languages (10 pages) at bare permalinks: documents agree with the manifest, one <h1>, no skipped heading, a real body, reciprocal canonical/hreflang and a language switch that lands on the other page"
+
+# The links on those pages stay in the page's language, and no /it/it/ is built.
+co_en_pages=() co_it_pages=()
+while IFS='|' read -r _ _ en_url _ it_url; do
+  co_en_pages+=("$SITE_DIR${en_url}index.html")
+  co_it_pages+=("$SITE_DIR/it${it_url}index.html")
+done < <(company_pages)
+check_link_prefixes en "${co_en_pages[@]}" ||
+  fail "an English company page has a link into the Italian site (see the list above)"
+check_link_prefixes it "${co_it_pages[@]}" ||
+  fail "an Italian company page has an internal link that is not under /it/ (see the list above)"
+double_co="$(find "$SITE_DIR" \( -path '*/it/it' -o -path '*/it/it/*' \) -print || true)"
+[[ -z "$double_co" ]] || fail "the build wrote ${double_co%%$'\n'*}: a permalink with the /it/ prefix was prefixed a second time"
+pass "every root-relative link on the ${#co_en_pages[@]} English and ${#co_it_pages[@]} Italian company pages stays in the page's language; no /it/it/"
+
+# The About hub: four sections with stable ids (the redirects of the old story, manifesto
+# and process pages point at them), each with an <h2>, in this order, and a small in-page
+# navigation to them.
+check_about_hub() {
+  bundle exec ruby - "$@" <<'RUBY'
+# encoding: utf-8
+require "nokogiri"
+
+lang, file = ARGV
+errors = []
+main = Nokogiri::HTML5(File.read(file, encoding: "utf-8")).at_css("main")
+wanted = %w[story manifesto process team]
+found = main.css("section[id]").map { |node| node["id"] } & wanted
+errors << "#{lang}: the About hub should have the sections #{wanted.inspect} in this order, it has #{found.inspect}" unless found == wanted
+wanted.each do |id|
+  section = main.at_css("section##{id}")
+  next errors << "#{lang}: no <section id=\"#{id}\">" unless section
+  errors << "#{lang}: section ##{id} has no <h2>" unless section.at_css("h2")
+  errors << "#{lang}: section ##{id} is a stub (#{section.text.split.size} words)" if section.text.split.size < 60
+  errors << "#{lang}: nothing in the page links to ##{id}" unless main.css("a[href='##{id}']").any?
+end
+errors << "#{lang}: the manifesto should state at least 7 principles (found #{main.css("#manifesto .mf").size} .mf)" if main.css("#manifesto .mf").size < 7
+errors << "#{lang}: the process should have 4 phases (found #{main.css("#process .steps > div").size})" unless main.css("#process .steps > div").size == 4
+abort(errors.map { |e| "  - #{e}" }.join("\n")) unless errors.empty?
+RUBY
+}
+check_about_hub en "$SITE_DIR/about/index.html" || fail "the English About hub is wrong (see the list above)"
+check_about_hub it "$SITE_DIR/it/chi-siamo/index.html" || fail "the Italian About hub is wrong (see the list above)"
+pass "About hub (EN + IT): story, manifesto, process and team sections with stable ids, each with an <h2> and a body, linked from the page, 7+ manifesto principles, 4 process phases"
+
+# The team grid (_includes/team-grid.html, _data/team.yml). The data names every member
+# with a role and badge in both languages; the grid shows each member as a name, a role
+# and a portrait: a real image (read by its magic bytes, not trusted by its name) with
+# alt text, or, for a member without one, a Foundry initials tile. The includes shares
+# the page's variables, so it may not assign t, lang or p (the fixture page is a canary).
+check_team_grid() {
+  bundle exec ruby - "$@" <<'RUBY'
+# encoding: utf-8
+require "nokogiri"
+require "yaml"
+
+lang, file, root, mode = ARGV
+errors = []
+team = YAML.safe_load(File.read("_data/team.yml", encoding: "utf-8"))
+html = Nokogiri::HTML5(File.read(file, encoding: "utf-8"))
+text_of = ->(node) { node ? node.text.gsub(/\s+/, " ").strip : "" }
+
+real_image = lambda do |public_path|
+  path = File.join(root, public_path)
+  return "#{public_path} is not in the built site" unless File.size?(path)
+  head = File.binread(path, 12).bytes
+  size = File.size(path)
+  jpeg = head[0, 3] == [0xFF, 0xD8, 0xFF]
+  png = head[0, 8] == [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A]
+  webp = head[0, 4] == "RIFF".bytes && head[8, 4] == "WEBP".bytes
+  return "#{public_path} is not a JPEG, PNG or WEBP image (starts #{head.first(4).map { |b| "%02x" % b }.join})" unless jpeg || png || webp
+  return "#{public_path} is only #{size} bytes: not a real image" if size < 1000
+  if webp
+    declared = File.binread(path, 4, 4).unpack1("V") + 8
+    return "#{public_path} is a damaged WEBP (header says #{declared} bytes, file has #{size})" unless declared == size
+  end
+  nil
+end
+
+members = html.css("main .team__member")
+if mode == "fixture"
+  errors << "#{lang}: canary: the page lost its own variables to the team include, t, lang and p should read \"keep keep keep\", found #{text_of.(html.at_css("#canary")).inspect}" unless text_of.(html.at_css("#canary")) == "keep keep keep"
+  errors << "#{lang}: the fixture has 2 members, the grid shows #{members.size}" unless members.size == 2
+  first, second = members
+  if first
+    errors << "#{lang}: a member without a portrait should show the initials tile (.team__ph) reading AL" unless text_of.(first.at_css(".team__ph")) == "AL"
+    errors << "#{lang}: a member without a portrait must not have an <img>" if first.at_css("img")
+    errors << "#{lang}: the role should be #{lang == "it" ? "Analista" : "Analyst"}" unless text_of.(first.at_css(".team__role")) == (lang == "it" ? "Analista" : "Analyst")
+  end
+  if second
+    img = second.at_css("img")
+    errors << "#{lang}: a member with a portrait shows it as an <img> with alt text" unless img && !img["alt"].to_s.strip.empty?
+    errors << "#{lang}: no initials tile on a member that has a portrait" if second.at_css(".team__ph")
+    errors << "#{lang}: the badge should be #{lang == "it" ? "Ammiraglia" : "Admiral"}" unless text_of.(second.at_css(".team__badge")) == (lang == "it" ? "Ammiraglia" : "Admiral")
+    msg = img && real_image.(img["src"]) and errors << "#{lang}: #{msg}"
+  end
+else
+  data = team["members"]
+  errors << "#{lang}: the grid shows #{members.size} member(s), _data/team.yml has #{data.size}" unless members.size == data.size
+  errors << "#{lang}: at least 10 members are expected (the live About page lists 9, the blog welcomes a tenth)" if data.size < 10
+  names = members.map { |m| text_of.(m.at_css(".team__name")) }
+  ["Giovanni Panasiti", "Claudio Aiello", "Mouaz El Molkey", "Marco Cherubini", "Francesco", "Niccolò", "Davide", "Emanuela", "Giuseppe", "Carlo"].each do |name|
+    errors << "#{lang}: #{name} is missing from the team grid (it shows #{names.inspect})" unless names.include?(name)
+  end
+  data.each_with_index do |member, i|
+    node = members[i] or next
+    errors << "#{lang}: member #{i + 1} should be #{member["name"].inspect}, the grid shows #{text_of.(node.at_css(".team__name")).inspect}" unless text_of.(node.at_css(".team__name")) == member["name"]
+    errors << "#{lang}: #{member["name"]}: the data has no #{lang} role" if member.dig("role", lang).to_s.strip.empty?
+    errors << "#{lang}: #{member["name"]}: the role should read #{member.dig("role", lang).inspect}, it reads #{text_of.(node.at_css(".team__role")).inspect}" unless text_of.(node.at_css(".team__role")) == member.dig("role", lang)
+    img = node.at_css("img")
+    if img
+      errors << "#{lang}: #{member["name"]}: the portrait has no alt text" if img["alt"].to_s.strip.empty?
+      errors << "#{lang}: #{member["name"]}: the portrait alt text should name the person" unless img["alt"].to_s.include?(member["name"])
+      errors << "#{lang}: #{member["name"]}: the portrait has no width and height" if img["width"].to_s.empty? || img["height"].to_s.empty?
+      msg = real_image.(img["src"]) and errors << "#{lang}: #{member["name"]}: #{msg}"
+    else
+      errors << "#{lang}: #{member["name"]}: neither a portrait nor the initials tile" unless node.at_css(".team__ph")
+    end
+  end
+  # The portraits are the team's own and stay in the language-independent assets folder.
+  errors << "#{lang}: the team portraits are not under /assets/team/" if members.any? { |m| m.at_css("img") && !m.at_css("img")["src"].to_s.start_with?("/assets/team/") }
+end
+abort(errors.map { |e| "  - #{e}" }.join("\n")) unless errors.empty?
+RUBY
+}
+check_team_grid en "$SITE_DIR/about/index.html" "$SITE_DIR" site || fail "the English team grid is wrong (see the list above)"
+check_team_grid it "$SITE_DIR/it/chi-siamo/index.html" "$SITE_DIR" site || fail "the Italian team grid is wrong (see the list above)"
+check_team_grid en "$FX/team-grid-test/index.html" "$FX" fixture || fail "the English team grid fixture is wrong (see the list above)"
+check_team_grid it "$FX/it/team-grid-test/index.html" "$FX" fixture || fail "the Italian team grid fixture is wrong (see the list above)"
+pass "team grid (EN + IT): every member of _data/team.yml with name and role in the page's language, a real portrait with alt text or the initials tile, the placeholder proven on a fixture, the include leaves the page's t, lang and p alone"
+if grep -nE '\{%-?[[:space:]]*(assign|capture)[[:space:]]+(t|lang|p)[[:space:]]*(=|-?%\})|\{%-?[[:space:]]*for[[:space:]]+(t|lang|p)[[:space:]]+in[[:space:]]' _includes/team-grid.html; then
+  fail "_includes/team-grid.html assigns (or loops with) t, lang or p (see the rule in index.html): give the variable a prefix of its own"
+fi
+pass "the team grid include assigns no t, lang or p"
+
+# MotioForge: the download links point at the files that are already live on the old
+# server, as absolute external URLs (the 214 MB archive and the PDFs must not be copied
+# into the repository), the Robotic Lab project and the MotioForge page link to each
+# other in both languages.
+MF_UPLOADS="https://montedelgallo.com/wp-content/uploads/"
+check_motioforge() {
+  bundle exec ruby - "$@" <<'RUBY'
+# encoding: utf-8
+require "nokogiri"
+
+lang, file, site_dir = ARGV
+errors = []
+main = Nokogiri::HTML5(File.read(file, encoding: "utf-8")).at_css("main")
+uploads = "https://montedelgallo.com/wp-content/uploads/"
+wanted = [uploads + "motioforge/MotioForge_Studio.zip", uploads + "2026/09/MotioForge_Studio_overview_it.pdf", uploads + "2026/09/MotioForge_Studio_overview_en.pdf"]
+hrefs = main.css("a[href]").map { |a| a["href"] }
+wanted.each { |url| errors << "#{lang}: no link to #{url}" unless hrefs.include?(url) }
+hrefs.grep(/\.(zip|pdf)(\z|[?#])/i).each do |href|
+  errors << "#{lang}: the download link #{href} must be an absolute #{uploads} URL" unless href.start_with?(uploads)
+end
+errors << "#{lang}: the Download section (#download) is missing" unless main.at_css("section#download")
+errors << "#{lang}: the demo section (#demo) is missing" unless main.at_css("#demo")
+errors << "#{lang}: the demo should link to the video on YouTube (https://www.youtube.com/watch?v=Rz0HOyaC8jU)" unless hrefs.include?("https://www.youtube.com/watch?v=Rz0HOyaC8jU")
+errors << "#{lang}: the page must not embed a third-party frame" if main.css("iframe").any?
+robotic = lang == "it" ? "/it/progetti/mdg-robotic-lab/" : "/projects/mdg-robotic-lab/"
+errors << "#{lang}: the page should link back to the Robotic Lab project (#{robotic})" unless hrefs.include?(robotic)
+errors << "#{lang}: the contact address info@montedelgallo.com should be a mailto link" unless hrefs.include?("mailto:info@montedelgallo.com")
+abort(errors.map { |e| "  - #{e}" }.join("\n")) unless errors.empty?
+RUBY
+}
+check_motioforge en "$SITE_DIR/motioforge/index.html" "$SITE_DIR" || fail "the English MotioForge page is wrong (see the list above)"
+check_motioforge it "$SITE_DIR/it/motioforge/index.html" "$SITE_DIR" || fail "the Italian MotioForge page is wrong (see the list above)"
+# No archive, PDF or large file of any kind in the repository or in the output.
+big_files="$(find . \( -path ./.git -o -path ./_site -o -path ./vendor -o -path ./.bundle -o -path ./node_modules -o -path ./.jekyll-cache -o -path ./.superpowers \) -prune -o -type f \( -iname '*.zip' -o -iname '*.pdf' -o -iname '*.exe' -o -iname '*.dmg' -o -size +3M \) -print)"
+[[ -z "$big_files" ]] || fail "a download or large file is in the repository: ${big_files%%$'\n'*} (the MotioForge files stay on $MF_UPLOADS)"
+site_big="$(find "$SITE_DIR" -type f \( -iname '*.zip' -o -iname '*.pdf' -o -size +3M \) -print)"
+[[ -z "$site_big" ]] || fail "the built site ships ${site_big%%$'\n'*}: a download or a large file was copied into the site"
+pass "MotioForge (EN + IT): the Beta archive and both PDFs are absolute https://montedelgallo.com/wp-content/uploads/ links, the demo opens on YouTube (no embedded frame), mailto contact; no archive, PDF or file over 3 MB in the repository or in the built site"
+
+# The Robotic Lab project links to MotioForge in its own language, and MotioForge links
+# back (above): both ends of the connection resolve to built pages.
+for spec in "en|$SITE_DIR/projects/mdg-robotic-lab/index.html|/motioforge/|$SITE_DIR/motioforge/index.html" \
+  "it|$SITE_DIR/it/progetti/mdg-robotic-lab/index.html|/it/motioforge/|$SITE_DIR/it/motioforge/index.html"; do
+  IFS='|' read -r lang page href target <<<"$spec"
+  assert_file "$page" "the $lang Robotic Lab project page"
+  require_contains "$page" "href=\"$href\"" "the $lang Robotic Lab project must link to MotioForge at $href (it was mentioned, unlinked)"
+  assert_file "$target" "the $lang MotioForge page the Robotic Lab links to"
+done
+pass "the Robotic Lab project links to MotioForge in both languages (/motioforge/, /it/motioforge/) and the pages exist"
+
+# The old URLs that became sections of the About hub, and the old Italian MotioForge URL,
+# are in the redirect map with their new targets (anchors included; the map itself,
+# anchors resolved, is validated above).
+check_company_redirects() {
+  bundle exec ruby - <<'RUBY'
+require "yaml"
+
+entries = YAML.safe_load(File.read("_data/redirects.yml", encoding: "utf-8"))
+want = {
+  "/our-story/" => "/about/#story",
+  "/manifesto/" => "/about/#manifesto",
+  "/our-process/" => "/about/#process",
+  "/it/storia/" => "/it/chi-siamo/#story",
+  "/it/manifesto-monte-del-gallo/" => "/it/chi-siamo/#manifesto",
+  "/it/metodo/" => "/it/chi-siamo/#process",
+  "/it/motioforge-2/" => "/it/motioforge/",
+}
+errors = []
+want.each do |from, to|
+  entry = entries.find { |e| e.is_a?(Hash) && e["from"] == from }
+  if entry.nil? then errors << "the old URL #{from} is not in _data/redirects.yml"
+  elsif entry["to"] != to then errors << "#{from} redirects to #{entry["to"].inspect}, it should be #{to}"
+  end
+end
+abort(errors.map { |e| "  - #{e}" }.join("\n")) unless errors.empty?
+RUBY
+}
+check_company_redirects || fail "_data/redirects.yml does not map the old About, manifesto, process and MotioForge URLs (see the list above)"
+pass "_data/redirects.yml maps the 6 folded About pages to their sections and /it/motioforge-2/ to /it/motioforge/"
 
 echo "==> Validating links, images and scripts in the built site (html-proofer, internal only)"
 # Only internal checks: external URLs (the booking page, hreflang and canonical

@@ -83,4 +83,4 @@ Una gerarchia pulita per macchine complesse.
 
 ## Dal laboratorio al prodotto
 
-Il software di authoring del movimento sviluppato nell'MdG Robotic Lab è oggi MotioForge Studio, disponibile come Beta pubblica per Windows: editor di timeline, supporto a servomotori su bus e PWM, audio sincronizzato con lip-sync e un assistente AI integrato.
+Il software di authoring del movimento sviluppato nell'MdG Robotic Lab è oggi [MotioForge Studio](/motioforge/), disponibile come Beta pubblica per Windows: editor di timeline, supporto a servomotori su bus e PWM, audio sincronizzato con lip-sync e un assistente AI integrato.

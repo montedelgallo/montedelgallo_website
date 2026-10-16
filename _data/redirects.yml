@@ -59,3 +59,27 @@
   to: /blog/saladil-revolutionizing-wordpress-support-one-ticket-at-a-time/
 - from: /get-ready-for-your-next-react-job-interview/
   to: /blog/get-ready-for-your-next-react-job-interview/
+
+# About hub. The live our-story, manifesto and our-process pages (and the Italian storia,
+# manifesto-monte-del-gallo and metodo pages) are now sections of the About hub, with stable
+# ids: #story, #manifesto, #process (#team is the team grid). The old /about/ and
+# /it/chi-siamo/ kept their address. The Startup Studio, Product Lab and Careers pages
+# kept theirs too (/startup-studio/, /product-lab/, /careers/ and /it/studio-startup/,
+# /it/laboratorio-prodotto/, /it/lavora-con-noi/).
+- from: /our-story/
+  to: /about/#story
+- from: /manifesto/
+  to: /about/#manifesto
+- from: /our-process/
+  to: /about/#process
+- from: /it/storia/
+  to: /it/chi-siamo/#story
+- from: /it/manifesto-monte-del-gallo/
+  to: /it/chi-siamo/#manifesto
+- from: /it/metodo/
+  to: /it/chi-siamo/#process
+
+# MotioForge. The English page kept its address (/motioforge/). The Italian page lived at
+# /it/motioforge-2/ (a WordPress "-2" duplicate slug) and now sits at /it/motioforge/.
+- from: /it/motioforge-2/
+  to: /it/motioforge/

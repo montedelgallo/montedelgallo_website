@@ -1,0 +1,244 @@
+---
+layout: default
+title: MotioForge Studio
+lang: it
+page_id: motioforge
+permalink: /motioforge/
+description: "MotioForge Studio è il software desktop per animare sistemi animatronici ed elettromeccanici su un’unica timeline visuale. Scarica la Beta per Windows."
+---
+{%- comment -%}
+  MotioForge Studio, lato italiano (il /it/motioforge-2/ attuale, che _data/redirects.yml
+  manda qui). Il permalink è /motioforge/ con lang: it, quindi la pagina è costruita su
+  /it/motioforge/ (polyglot aggiunge /it/); stesso page_id della pagina inglese
+  (motioforge.html). Il testo è quello della pagina italiana attuale.
+
+  I download NON sono nel repository: l'archivio Beta (circa 200 MB) e i due PDF restano
+  dov'erano, nella cartella uploads del sito attuale, e sono collegati con il loro URL
+  assoluto https://montedelgallo.com/wp-content/uploads/ (script/check-build.sh lo
+  verifica, e che nessun archivio o PDF sia nel repository). Le tre schermate sono
+  copiate in assets/img/motioforge/ (WebP). La demo è un link al video su YouTube, non un
+  frame incorporato. I tre link di download sono dentro {% raw %}{% static_href %}{% endraw %}: senza, jekyll-polyglot metterebbe /it/ nell'indirizzo dei link
+  della pagina italiana (https://montedelgallo.com/it/wp-content/...), che non esistono.
+{%- endcomment -%}
+<section class="hero hero--page hero--split">
+  <svg class="hero__range" aria-hidden="true" focusable="false"><use href="#mdg-range"/></svg>
+  <div class="wrap">
+    <div>
+      <p class="eyebrow">Prodotto · Beta 4.0.0 · Windows 10 / 11</p>
+      <h1>Dai vita a ciò che costruisci.</h1>
+      <p class="hero__sub">MotioForge Studio è il software desktop per animare sistemi animatronici ed elettromeccanici: servomotori, luci, relè e audio, tutti coordinati su un’unica timeline visuale. Nessun codice, nessun foglio di calcolo.</p>
+      <div class="hero__cta">
+        <a class="btn btn--solid" href="#download">Scarica la Beta</a>
+        <a class="btn btn--ghost" href="#demo">Guarda la demo <span class="arrow" aria-hidden="true">→</span></a>
+      </div>
+      <ul class="project__stack pchips">
+        <li>Animatronica</li><li>Show control</li><li>Servo bus</li><li>Servo PWM</li><li>Audio &amp; lip-sync</li><li>Assistente AI</li>
+      </ul>
+    </div>
+    <img class="mfshot" src="/assets/img/motioforge/timeline-editor.webp" alt="Timeline editor di MotioForge Studio con tracce servo colorate, uscita switch e forma d'onda audio" width="1920" height="1039" decoding="async" fetchpriority="high">
+  </div>
+  <div class="wrap">
+    <div class="stats">
+      <div><b>4.0.0</b><span>Versione Beta</span></div>
+      <div><b>5</b><span>Tipi di elemento hardware</span></div>
+      <div><b>1</b><span>Timeline visuale</span></div>
+      <div><b>0</b><span>Righe di codice richieste</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="pad" id="about">
+  <div class="wrap">
+    <div class="pcols">
+      <div class="sec-head">
+        <p class="eyebrow">Cos’è</p>
+        <h2 class="h2">Un timeline editor per il movimento reale.</h2>
+      </div>
+      <div class="project__body">
+        <p>MotioForge Studio trasforma un insieme di servomotori, schede di controllo e altoparlanti in un sistema animatronico programmabile. L’operatore disegna i movimenti su una timeline grafica, come in un editor video o musicale, ma invece di fotogrammi e note lavora con posizioni angolari e comandi hardware reali.</p>
+        <p><strong>Automazione Robotica e Ambientale per la Spettacolarità.</strong></p>
+        <p>MotioForge Studio nasce dall’<a href="/progetti/mdg-robotic-lab/">MdG Robotic Lab</a>, dove è stato sviluppato per la prima volta il software di authoring del movimento.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="pad psec--alt">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Cosa puoi fare</p>
+      <h2 class="h2">Movimento, luci e suono in un solo progetto.</h2>
+    </div>
+    <div class="svc pcells pcells--3">
+      <div class="svc__cell"><h3>Sequenze di movimento precise</h3><p>Controllo su posizione, velocità e accelerazione per uno o più servomotori.</p></div>
+      <div class="svc__cell"><h3>Uscite digitali sincronizzate</h3><p>Attiva interruttori, relè, LED e attuatori pneumatici in sync con il movimento.</p></div>
+      <div class="svc__cell"><h3>Audio coordinato</h3><p>Riproduci file audio e genera movimenti automatici sincronizzati con voce o musica.</p></div>
+      <div class="svc__cell"><h3>Più dispositivi in parallelo</h3><p>Gestisci molti dispositivi su un unico dominio hardware, ciascuno sulla sua porta.</p></div>
+      <div class="svc__cell"><h3>Ciclo o trigger</h3><p>Riproduci in loop continuo oppure attiva l’animazione su comando manuale o software.</p></div>
+      <div class="svc__cell"><h3>Progetti portabili</h3><p>Domini e animazioni salvati in file standard, trasportabili su qualsiasi macchina.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="pad">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Come funziona</p>
+      <h2 class="h2">Dal collegamento hardware al movimento in quattro passi.</h2>
+    </div>
+    <div class="steps">
+      <div><div class="num">01</div><h3>Definisci l’hardware</h3><p>Crei un dominio che descrive la configurazione fisica: porte di comunicazione, elementi collegati (servo, switch, moduli audio) e i relativi parametri: corsa minima e massima, posizione di riposo, modello hardware.</p></div>
+      <div><div class="num">02</div><h3>Crea un’animazione</h3><p>Nel dominio aggiungi un’animazione: un progetto con la sua timeline, da eseguire una sola volta, in ciclo continuo o su attivazione esterna.</p></div>
+      <div><div class="num">03</div><h3>Disegna i movimenti</h3><p>Ogni servomotore è una traccia orizzontale. Tracci un segmento trascinando il mouse: l’altezza è la posizione angolare, la larghezza è il tempo. Aggiungi, modifica, copia e affina fino al comportamento desiderato.</p></div>
+      <div><div class="num">04</div><h3>Esegui e metti a punto</h3><p>Con un clic parte la riproduzione: MotioForge Studio invia i comandi in tempo reale e il personaggio si muove esattamente come disegnato. Interrompi, riposiziona il playhead e ripeti fino al risultato finale.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="pad psec--alt">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Hardware</p>
+      <h2 class="h2">Cinque tipi di elemento, un’unica timeline.</h2>
+    </div>
+    <div class="svc pcells pcells--3">
+      <div class="svc__cell"><h3>Servo Bus</h3><p>Servo seriali (ST3215 e compatibili) su porta condivisa. Controllo preciso di posizione, velocità e accelerazione.</p></div>
+      <div class="svc__cell"><h3>Servo PWM</h3><p>Servo standard su pin digitali o expander I²C (es. PCA9685), pilotati a 50 Hz.</p></div>
+      <div class="svc__cell"><h3>Switch</h3><p>Uscita digitale (relè, solenoide, LED, valvola). On/off o commutata in sync con i segmenti dell’animazione.</p></div>
+      <div class="svc__cell"><h3>Audio</h3><p>Riproduzione file, controllo volume e generazione automatica di movimenti labiali (ampiezza o fonemi).</p></div>
+      <div class="svc__cell"><h3>Pulsante Trigger</h3><p>Pulsante fisico su hardware DEIMOS: quando premuto attiva l’animazione configurata.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="pad">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Interfaccia</p>
+      <h2 class="h2">Fatta per chi lavora sul palco, non sul codice.</h2>
+    </div>
+    <ul class="project__shots pshots">
+      <li>
+        <figure>
+          <img src="/assets/img/motioforge/start-window.webp" alt="Finestra di avvio di MotioForge Studio per creare o aprire un dominio" width="818" height="474" loading="lazy" decoding="async">
+          <figcaption><strong>Finestra di avvio · Domini in un colpo d’occhio.</strong> Crei o apri un dominio, gestisci porte ed elementi e carichi il firmware DEIMOS sull’Arduino, tutto dalla schermata iniziale.</figcaption>
+        </figure>
+      </li>
+      <li>
+        <figure>
+          <img src="/assets/img/motioforge/audio-properties.webp" alt="Finestra proprietà del segmento audio di MotioForge Studio con associazioni di frequenza per il lip-sync" width="590" height="537" loading="lazy" decoding="async">
+          <figcaption><strong>Proprietà audio · Movimenti labiali dal suono.</strong> Colleghi un servo al volume, imposti le bande bass/mid/high e generi automaticamente i segmenti sincronizzati con l’audio.</figcaption>
+        </figure>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<section class="pad psec--alt" id="demo">
+  <div class="wrap">
+    <div class="pcols">
+      <div class="sec-head">
+        <p class="eyebrow">Demo</p>
+        <h2 class="h2">Guardalo in movimento.</h2>
+      </div>
+      <div class="project__body">
+        <p>Guarda MotioForge Studio pilotare un vero personaggio animatronico nel video dimostrativo.</p>
+        <p><a class="btn btn--solid" href="https://www.youtube.com/watch?v=Rz0HOyaC8jU">Apri su YouTube <span class="arrow" aria-hidden="true">→</span></a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="pad">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Applicazioni</p>
+      <h2 class="h2">Dove trova posto MotioForge Studio.</h2>
+    </div>
+    <div class="svc pcells pcells--4">
+      <div class="svc__cell"><h3>Teatro e spettacolo</h3><p>Maschere animatroniche, bocche meccaniche sincronizzate col doppiaggio, code e orecchie mobili, occhi motorizzati.</p></div>
+      <div class="svc__cell"><h3>Parchi e attrazioni</h3><p>Figure di grande formato con movimenti multipli, attivate al passaggio del visitatore, con effetti ambientali in sync.</p></div>
+      <div class="svc__cell"><h3>Escape room</h3><p>Oggetti che reagiscono ai giocatori, porte che si aprono, quadri che parlano: logica e temporizzazione gestite qui.</p></div>
+      <div class="svc__cell"><h3>Musei e mostre</h3><p>Ricostruzioni di animali preistorici e figure storiche con movimenti realistici, exhibit hands-on con feedback fisico.</p></div>
+      <div class="svc__cell"><h3>Negozi e vetrine</h3><p>Manichini animati, display rotanti, elementi stagionali con cicli programmati, senza personale tecnico in loco.</p></div>
+      <div class="svc__cell"><h3>Cosplay e indossabili</h3><p>Ali motorizzate, visiere automatiche, code robotiche e accessori con servo e LED sincroni per ogni performance.</p></div>
+      <div class="svc__cell"><h3>Giocattoli animati</h3><p>Peluche che aprono gli occhi, girano la testa o muovono le zampe; bambole che parlano muovendo la bocca; animali di peluche che respirano. Qualunque giocattolo a cui vuoi dare un’anima.</p></div>
+      <div class="svc__cell"><h3>Prototipazione e ricerca</h3><p>Piattaforme robotiche sperimentali, bracci meccanici di laboratorio e sistemi di test automatizzati.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="pad psec--alt">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Vantaggi</p>
+      <h2 class="h2">Perché MotioForge Studio.</h2>
+    </div>
+    <div class="svc pcells pcells--3">
+      <div class="svc__cell"><h3>Nessun codice richiesto</h3><p>L’animazione si crea graficamente: non serve saper programmare.</p></div>
+      <div class="svc__cell"><h3>Anteprima in tempo reale</h3><p>I comandi arrivano all’hardware durante la riproduzione, senza compilazione.</p></div>
+      <div class="svc__cell"><h3>Multicanale</h3><p>Decine di servomotori coordinati in un’unica timeline.</p></div>
+      <div class="svc__cell"><h3>Multipiattaforma hardware</h3><p>Servo bus seriali (ST3215 e compatibili) e servo PWM su pin o expander I²C.</p></div>
+      <div class="svc__cell"><h3>Audio integrato</h3><p>Riproduzione file e movimenti labiali generati automaticamente dalla voce.</p></div>
+      <div class="svc__cell"><h3>Assistente AI a bordo</h3><p>Aiuto contestuale su configurazione, animazioni e problemi, online o offline.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="pad">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Assistente AI</p>
+      <h2 class="h2">Un aiuto contestuale sempre a portata di F2.</h2>
+      <p class="lede">L’assistente conversazionale conosce l’intera documentazione del software e può leggere il log di esecuzione per aiutarti a risolvere problemi in tempo reale. Scegli il backend che preferisci in Preferenze → Assistente AI.</p>
+    </div>
+    <div class="svc pcells pcells--2">
+      <div class="svc__cell"><p class="pcell__tag">Cloud</p><h3>Claude API</h3><p>Potente e preciso per domande complesse e diagnosi di errori. Accesso tramite account Anthropic, pochi centesimi a sessione. Richiede connessione.</p></div>
+      <div class="svc__cell"><p class="pcell__tag">Locale</p><h3>Ollama</h3><p>Modelli eseguiti sul tuo PC: nessun costo ricorrente, completamente privato, nessun dato che esce dal computer. Ideale offline-first.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="pad psec--alt" id="download">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Download</p>
+      <h2 class="h2">Provalo adesso.</h2>
+      <p class="lede">Scarica la versione Beta per Windows e la documentazione completa. Tutto incluso nell’archivio: nessuna dipendenza da installare.</p>
+    </div>
+    <div class="dls">
+      <div class="dl">
+        <p class="pcell__tag">Beta 4.0.0 · Windows · x64</p>
+        <h3>MotioForge Studio 4.0.0 Beta</h3>
+        <p>L’applicazione completa in un unico archivio ZIP (circa 200 MB), con il software Deimos incluso. Estrai ed esegui.</p>
+        <p><a class="btn btn--solid" {% static_href %}href="https://montedelgallo.com/wp-content/uploads/motioforge/MotioForge_Studio.zip"{% endstatic_href %}>Scarica la Beta</a></p>
+      </div>
+      <div class="dl">
+        <p class="pcell__tag">PDF · Italiano</p>
+        <h3>Panoramica (IT)</h3>
+        <p>Il documento completo in italiano: funzionalità, hardware e installazione.</p>
+        <p><a class="btn btn--ghost" {% static_href %}href="https://montedelgallo.com/wp-content/uploads/2026/09/MotioForge_Studio_overview_it.pdf"{% endstatic_href %}>Documento IT</a></p>
+      </div>
+      <div class="dl">
+        <p class="pcell__tag">PDF · English</p>
+        <h3>Overview (EN)</h3>
+        <p>Il documento completo in inglese: funzionalità, hardware e installazione.</p>
+        <p><a class="btn btn--ghost" {% static_href %}href="https://montedelgallo.com/wp-content/uploads/2026/09/MotioForge_Studio_overview_en.pdf"{% endstatic_href %}>Documento EN</a></p>
+      </div>
+    </div>
+    <p class="pnote">Requisiti: Windows 10/11 64-bit · scheda Arduino Mega (o compatibile) via USB</p>
+  </div>
+</section>
+
+<section class="cta">
+  <svg class="cta__range" aria-hidden="true" focusable="false"><use href="#mdg-range"/></svg>
+  <div class="wrap">
+    <p class="eyebrow">Hai domande?</p>
+    <h2>Scrivici.</h2>
+    <p>Contattaci per ulteriori informazioni su MotioForge Studio, licenze o supporto tecnico. Sviluppato da MonteDelGallo · Automazione Robotica e Ambientale per la Spettacolarità.</p>
+    <div class="cta__btns">
+      <a class="btn btn--solid" href="mailto:info@montedelgallo.com">info@montedelgallo.com</a>
+      <a class="btn btn--ghost" href="{{ site.data.site_meta.booking_url }}">Prenota una call</a>
+    </div>
+  </div>
+</section>

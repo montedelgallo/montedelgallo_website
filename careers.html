@@ -1,0 +1,103 @@
+---
+layout: default
+title: Careers
+lang: en
+page_id: careers
+permalink: /careers/
+description: "Work with Monte del Gallo: a small, tight-knit senior team in Rome. Our culture, what we offer and the positions we are hiring for."
+---
+{%- comment -%}
+  The Careers page, English side: the live /careers/ as it stands, section by section
+  (culture, perks and benefits, open positions). Its Italian side is it/lavora-con-noi.html
+  (permalink /lavora-con-noi/, the same page_id).
+
+  The three open positions are the ones the live page lists. They are data of this page,
+  not something this site decides: when a position closes, delete its <li class="job">
+  (and the whole "Open positions" section when none is left, keeping the spontaneous
+  application). The live page sends "Apply" to its contact page, which this site does not
+  have yet: here it is an email to info@montedelgallo.com (the company address of
+  _data/site_meta.yml) and the Soshiki booking page. The live page's stock photo is not
+  used. Styles: _sass/foundry/_pages.scss.
+{%- endcomment -%}
+<section class="hero hero--page">
+  <svg class="hero__range" aria-hidden="true" focusable="false"><use href="#mdg-range"/></svg>
+  <div class="wrap">
+    <div>
+      <p class="eyebrow">Join our team</p>
+      <h1>Careers at MonteDelGallo</h1>
+      <p class="hero__sub">We’re always looking for talented people who share our passion for building brilliant software.</p>
+      <div class="hero__cta">
+        <a class="btn btn--solid" href="#openings">See open positions</a>
+        <a class="btn btn--ghost" href="mailto:info@montedelgallo.com">Send a spontaneous application</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="pad">
+  <div class="wrap">
+    <div class="pcols">
+      <div class="sec-head">
+        <p class="eyebrow">Our culture</p>
+        <h2 class="h2">Work with purpose, grow with us</h2>
+      </div>
+      <div class="project__body">
+        <p>At MonteDelGallo, we believe great work happens when talented people have the freedom to do their best. We’re a small, tight-knit team where everyone’s voice matters.</p>
+        <p>We value craftsmanship over speed, collaboration over hierarchy, and results over hours logged.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="pad psec--alt">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Perks &amp; benefits</p>
+      <h2 class="h2">Why you’ll love working here</h2>
+    </div>
+    <div class="svc pcells pcells--3">
+      <div class="svc__cell"><h3>Remote-First</h3><p>Work from anywhere. We’re a distributed team and believe in flexibility and trust.</p></div>
+      <div class="svc__cell"><h3>Learning Budget</h3><p>Annual budget for courses, conferences, and books. We invest in your growth.</p></div>
+      <div class="svc__cell"><h3>Latest Tools</h3><p>MacBook Pro, JetBrains, Figma — whatever you need to do your best work.</p></div>
+      <div class="svc__cell"><h3>Small Team, Big Impact</h3><p>No bureaucracy. Your contributions are visible and meaningful from day one.</p></div>
+      <div class="svc__cell"><h3>Flexible Hours</h3><p>We care about output, not hours. Organize your day the way that works best for you.</p></div>
+      <div class="svc__cell"><h3>Team Retreats</h3><p>Regular in-person meetups, dinners, and off-sites in beautiful Italian locations.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="pad" id="openings">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Open positions</p>
+      <h2 class="h2">Current openings</h2>
+    </div>
+    <ul class="jobs">
+      <li class="job">
+        <div><h3>Senior Full-Stack Developer</h3><p class="job__meta">Remote / Roma · Full-time</p></div>
+        <a class="btn btn--ghost" href="mailto:info@montedelgallo.com?subject=Application%3A%20Senior%20Full-Stack%20Developer">Apply <span class="arrow" aria-hidden="true">→</span></a>
+      </li>
+      <li class="job">
+        <div><h3>UI/UX Designer</h3><p class="job__meta">Remote / Roma · Full-time</p></div>
+        <a class="btn btn--ghost" href="mailto:info@montedelgallo.com?subject=Application%3A%20UI%2FUX%20Designer">Apply <span class="arrow" aria-hidden="true">→</span></a>
+      </li>
+      <li class="job">
+        <div><h3>Junior Backend Developer</h3><p class="job__meta">Remote / Roma · Internship / Full-time</p></div>
+        <a class="btn btn--ghost" href="mailto:info@montedelgallo.com?subject=Application%3A%20Junior%20Backend%20Developer">Apply <span class="arrow" aria-hidden="true">→</span></a>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<section class="cta">
+  <svg class="cta__range" aria-hidden="true" focusable="false"><use href="#mdg-range"/></svg>
+  <div class="wrap">
+    <p class="eyebrow">Don’t see a match?</p>
+    <h2>We’re always interested in exceptional people.</h2>
+    <p>Write to <a class="plink" href="mailto:info@montedelgallo.com">info@montedelgallo.com</a>, or book a short call to meet the team.</p>
+    <div class="cta__btns">
+      <a class="btn btn--solid" href="mailto:info@montedelgallo.com">Send a spontaneous application</a>
+      <a class="btn btn--ghost" href="{{ site.data.site_meta.booking_url }}">Book a call</a>
+    </div>
+  </div>
+</section>

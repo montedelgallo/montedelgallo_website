@@ -1,0 +1,73 @@
+# The people shown in the team grid of the About hub (_includes/team-grid.html), in the
+# order of the grid. Every name, role and badge is what the live montedelgallo.com
+# About page prints (first names only where the live page gives no surname). Mouaz El
+# Molkey is not on the live About page but joined the team as a software engineer (his
+# welcome article on the blog, 2022-10-01), so his role is the one that article states.
+#
+#   name      what the grid prints (also the start of the portrait's alt text)
+#   badge     optional small label above the name, per language (the founders)
+#   role      per language; both are required (script/check-build.sh)
+#   photo     public path of the portrait under /assets/team/, a square image, with its
+#             pixel size in photo_w and photo_h (so the page does not jump when it
+#             loads). A member WITHOUT `photo` gets a Foundry tile with their initials.
+#
+# `portrait` is the start of the portrait's alt text ("Portrait of Giovanni Panasiti").
+
+portrait:
+  en: "Portrait of"
+  it: "Ritratto di"
+
+members:
+  - name: "Francesco"
+    badge: { en: "Founder", it: "Founder" }
+    role: { en: "Administration & Finance", it: "Amministrazione e Finanza" }
+    photo: /assets/team/francesco.webp
+    photo_w: 306
+    photo_h: 306
+  - name: "Giovanni Panasiti"
+    badge: { en: "Co-Founder", it: "Co-Founder" }
+    role: { en: "Software Engineer", it: "Software Engineer" }
+    photo: /assets/team/giovanni.webp
+    photo_w: 140
+    photo_h: 140
+  - name: "Niccolò"
+    badge: { en: "Co-Founder", it: "Co-Founder" }
+    role: { en: "Business Development", it: "Business Development" }
+    photo: /assets/team/niccolo.webp
+    photo_w: 200
+    photo_h: 200
+  - name: "Davide"
+    role: { en: "Cloud Architect", it: "Cloud Architect" }
+    photo: /assets/team/davide.webp
+    photo_w: 140
+    photo_h: 140
+  - name: "Emanuela"
+    role: { en: "Data Analyst", it: "Data Analyst" }
+    photo: /assets/team/emanuela.webp
+    photo_w: 306
+    photo_h: 306
+  - name: "Giuseppe"
+    role: { en: "WordPress Developer & DJ", it: "WordPress Developer & DJ" }
+    photo: /assets/team/giuseppe.webp
+    photo_w: 480
+    photo_h: 480
+  - name: "Carlo"
+    role: { en: "Senior Web Designer", it: "Senior Web Designer" }
+    photo: /assets/team/carlo.webp
+    photo_w: 306
+    photo_h: 306
+  - name: "Claudio Aiello"
+    role: { en: "Junior Software Engineer", it: "Junior Software Engineer" }
+    photo: /assets/team/claudio.webp
+    photo_w: 480
+    photo_h: 480
+  - name: "Marco Cherubini"
+    role: { en: "Junior JS Developer", it: "Junior JS Developer" }
+    photo: /assets/team/marco.webp
+    photo_w: 480
+    photo_h: 480
+  - name: "Mouaz El Molkey"
+    role: { en: "Software Engineer", it: "Software Engineer" }
+    photo: /assets/team/mouaz.webp
+    photo_w: 480
+    photo_h: 480

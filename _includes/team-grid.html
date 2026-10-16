@@ -1,0 +1,45 @@
+{%- comment -%}
+  The team grid: one tile per member, a square portrait, an optional badge
+  (Founder, Co-Founder), the name and the role. Used by the About hub (about.html,
+  it/chi-siamo.html).
+
+    {% raw %}{% include team-grid.html %}{% endraw %}
+
+  The members are _data/team.yml (members:), in the order of the file, each with a
+  role (and badge) in both languages: the include prints the language of the page
+  (its `lang`, or the language being built for a single-source page). A member with a
+  `photo` shows it as an <img> with alt text ("Portrait of <name>", see portrait: in
+  the data) and its size, so the page does not jump when it loads; a member without
+  one gets a tile with their initials, drawn in the blueprint style of the site (no
+  stock picture, no generated face). Optional parameter `members`: a list of the
+  same shape, instead of the data file (the build check uses it to prove the tile).
+
+  The initials are the first letter of the first and of the last word of the name
+  ("Ada Lovelace" is AL, "Grace" is G).
+
+  This include prefixes every variable it assigns (tg_): an include shares the
+  variables of the page that includes it, and Liquid's `assign` is global, so an
+  `assign t`, `lang` or `p` here would replace the page's own with no error (see the
+  rule in index.html, and the canary in script/check-build.sh).
+{%- endcomment -%}
+{%- assign tg_lang = page.lang | default: site.active_lang -%}
+{%- assign tg_members = include.members | default: site.data.team.members -%}
+<ul class="team">
+  {%- for tg_member in tg_members %}
+  <li class="team__member">
+    {%- if tg_member.photo %}
+    <img class="team__photo" src="{{ tg_member.photo | relative_url }}" alt="{{ site.data.team.portrait[tg_lang] | escape }} {{ tg_member.name | escape }}" width="{{ tg_member.photo_w }}" height="{{ tg_member.photo_h }}" loading="lazy" decoding="async">
+    {%- else %}
+    {%- assign tg_words = tg_member.name | split: " " %}
+    <span class="team__ph" aria-hidden="true">{{ tg_words.first | slice: 0 }}{% if tg_words.size > 1 %}{{ tg_words.last | slice: 0 }}{% endif %}</span>
+    {%- endif %}
+    <div class="team__text">
+      {%- if tg_member.badge[tg_lang] %}
+      <p class="team__badge">{{ tg_member.badge[tg_lang] | escape }}</p>
+      {%- endif %}
+      <h3 class="team__name">{{ tg_member.name | escape }}</h3>
+      <p class="team__role">{{ tg_member.role[tg_lang] | escape }}</p>
+    </div>
+  </li>
+  {%- endfor %}
+</ul>

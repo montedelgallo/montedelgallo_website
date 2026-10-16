@@ -1,0 +1,253 @@
+---
+layout: default
+title: Chi siamo
+lang: it
+page_id: about
+permalink: /chi-siamo/
+description: "Monte del Gallo è una boutique del software a Roma: la nostra storia, il manifesto, il modo in cui lavoriamo e il team dietro il codice."
+---
+{%- comment -%}
+  L'hub Chi siamo, lato italiano: una pagina con quattro sezioni dagli id stabili, le
+  ancore a cui rimandano le vecchie pagine di WordPress (_data/redirects.yml):
+
+    #story       il vecchio /it/chi-siamo/ (identità) e /it/storia/
+    #manifesto   il vecchio /it/manifesto-monte-del-gallo/
+    #process     il vecchio /it/metodo/
+    #team        la griglia del team (_includes/team-grid.html, _data/team.yml)
+
+  Il lato inglese è about.html (permalink /about/, stesso page_id). Fonte dei testi: le
+  pagine italiane del sito attuale (chi-siamo, storia, metodo e il manifesto). Il
+  manifesto italiano attuale è un solo paragrafo: i sette principi sotto sono la
+  traduzione di quelli del manifesto inglese. Stili: _sass/foundry/_pages.scss.
+{%- endcomment -%}
+<section class="hero hero--page">
+  <svg class="hero__range" aria-hidden="true" focusable="false"><use href="#mdg-range"/></svg>
+  <div class="wrap">
+    <div>
+      <p class="eyebrow">Chi siamo · Roma · Software Boutique</p>
+      <h1>Una boutique del software, non la solita software house.</h1>
+      <p class="hero__sub">Siamo uno startup studio e una boutique di sviluppo software con sede a Roma. Progettiamo siti web ad alte prestazioni, software su misura, app mobile e integrazioni AI per aziende che vogliono crescere senza complessità inutile.</p>
+      <div class="hero__cta">
+        <a class="btn btn--solid" href="{{ site.data.site_meta.booking_url }}">Prenota una call di 30 minuti</a>
+        <a class="btn btn--ghost" href="/progetti/">Guarda i progetti <span class="arrow" aria-hidden="true">→</span></a>
+      </div>
+      <div class="stats">
+        <div><b>+140%</b><span>prenotazioni dirette</span></div>
+        <div><b>+150%</b><span>vendite online</span></div>
+        <div><b>-25%</b><span>costi operativi</span></div>
+        <div><b>600+</b><span>strutture servite</span></div>
+      </div>
+      <nav class="pnav" aria-label="In questa pagina">
+        <a href="#story">La nostra storia</a>
+        <a href="#manifesto">Manifesto</a>
+        <a href="#process">Come lavoriamo</a>
+        <a href="#team">Il team</a>
+      </nav>
+    </div>
+  </div>
+</section>
+
+<section class="pad" id="story">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">La nostra storia · Nati a Roma nel 2019</p>
+      <h2 class="h2">Prima la prospettiva. Poi software utile.</h2>
+      <p class="lede">MonteDelGallo nasce a Roma per aiutare le aziende a trasformare complessità operative in sistemi digitali chiari, proprietari e misurabili.</p>
+    </div>
+
+    <div class="pcols">
+      <div><p class="eyebrow">I. Origine</p><h3 class="psub">Uno studio nato contro il rumore digitale.</h3></div>
+      <div class="project__body">
+        <p>MonteDelGallo parte da una frustrazione semplice: molti progetti digitali diventano più pesanti dei problemi che dovrebbero risolvere. Più riunioni, più funzioni e più livelli raramente creano software migliore.</p>
+        <p>Abbiamo scelto una forma diversa: un team senior e compatto, vicino al business, capace di rilasciare versioni utili rapidamente e di legare ogni decisione a un impatto misurabile.</p>
+        <p>L’obiettivo non è scrivere più codice. L’obiettivo è costruire il sistema giusto, con la giusta quantità di codice.</p>
+      </div>
+    </div>
+
+    <div class="pcols">
+      <div><p class="eyebrow">II. Il nome</p><h3 class="psub">Monte del Gallo è un luogo di prospettiva.</h3></div>
+      <div class="project__body">
+        <p>Monte del Gallo è una collina di Roma, vicino al Gianicolo. Da lì la città si apre: strati, strade, cupole, percorsi e connessioni nascoste diventano più facili da leggere.</p>
+        <p>È così che affrontiamo il software. Prima di scegliere un framework, disegnare un’interfaccia o automatizzare un flusso, saliamo abbastanza in alto da capire l’intero paesaggio.</p>
+      </div>
+    </div>
+    <h3 class="psub psub--sm">Radici romane. Disciplina di prodotto.</h3>
+    <p class="lede">Una base locale con un modo internazionale di costruire: diretto, snello e responsabile.</p>
+    <div class="svc pcells pcells--4">
+      <div class="svc__cell"><h3>Roma</h3><p>base e cultura</p></div>
+      <div class="svc__cell"><h3>2019</h3><p>studio fondato</p></div>
+      <div class="svc__cell"><h3>Boutique</h3><p>senior e focalizzati</p></div>
+      <div class="svc__cell"><h3>Misura</h3><p>impatto, non rumore</p></div>
+    </div>
+
+    <div class="pcols">
+      <div><p class="eyebrow">III. Identità</p><h3 class="psub">Ingegneria senior con un processo creativo e snello.</h3></div>
+      <div class="project__body">
+        <p>MonteDelGallo unisce creatività e competenza tecnica per realizzare soluzioni che rispondono a bisogni reali di business. Ci concentriamo sull’essenziale: architettura chiara, risultati misurabili, iterazioni rapide e software che i team usano davvero ogni giorno.</p>
+        <p>Il nostro lavoro sta tra visibilità e operatività: siti pensati per convertire, SEO e GEO per motori di ricerca e motori AI, gestionali su misura, agenti AI, e-commerce, cloud e analisi dati.</p>
+      </div>
+    </div>
+    <h3 class="psub psub--sm">Tre scelte che tengono il lavoro nitido.</h3>
+    <div class="svc pcells pcells--3">
+      <div class="svc__cell"><h3>Less is more</h3><p>Ogni funzione deve meritare il suo posto. Meno parti mobili rendono il software più chiaro e manutenibile.</p></div>
+      <div class="svc__cell"><h3>Restiamo snelli</h3><p>I team piccoli si muovono più in fretta. La comunicazione resta diretta e il progresso resta visibile.</p></div>
+      <div class="svc__cell"><h3>Usiamo i vincoli</h3><p>Budget, tempi e sistemi legacy non sono ostacoli. Rendono visibili le priorità e trasformano il design in una decisione più precisa.</p></div>
+    </div>
+
+    <div class="pcols">
+      <div><p class="eyebrow">IV. Oggi</p><h3 class="psub">Piccoli per scelta, ampi per capacità.</h3></div>
+      <div class="project__body">
+        <p>Oggi MonteDelGallo lavora su siti web ad alte prestazioni, piattaforme su misura, app mobile, flussi AI e dati, digital signage e strumenti operativi.</p>
+        <p>Restiamo vicini a founder, operatori e team interni perché il miglior software nasce raramente solo da un brief. Nasce capendo come le persone lavorano davvero, dove si perde tempo e dove un prodotto può creare leva.</p>
+        <ul class="project__stack"><li>Web</li><li>AI</li><li>Dati</li><li>Mobile</li><li>Ops</li><li>Signage</li></ul>
+      </div>
+    </div>
+
+    <h3 class="psub psub--sm">Tecnologia che parla la lingua del tuo business.</h3>
+    <p class="lede">Dal ricettivo all’e-commerce, dai gestionali interni alle piattaforme operative, costruiamo intorno ai processi reali e a risultati misurabili.</p>
+    <div class="svc pcells pcells--4">
+      <div class="svc__cell"><h3>Persone vere, supporto in italiano</h3><p>Onboarding, formazione e supporto senza nasconderci dietro ticket anonimi.</p></div>
+      <div class="svc__cell"><h3>Esperienza sul campo</h3><p>Piattaforme usate ogni giorno da centinaia di realtà in Italia.</p></div>
+      <div class="svc__cell"><h3>Integriamo quello che hai</h3><p>Paghe, fatturazione, PMS, CRM e gestionali verticali senza migrazioni forzate.</p></div>
+      <div class="svc__cell"><h3>Conosciamo la normativa italiana</h3><p>Dal settore ricettivo agli appalti pubblici, conosciamo i vincoli locali.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="pad psec--alt" id="manifesto">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Manifesto · Design, codice e crescita</p>
+      <h2 class="h2">Meno rumore. Più leva.</h2>
+      <p class="lede">Un modo chiaro di costruire software: interfacce semplici, basi solide e risultati misurabili.</p>
+    </div>
+    <div class="stats stats--words">
+      <div><b>01</b><span>Chiarezza prima delle feature</span></div>
+      <div><b>02</b><span>Proprietà del sistema</span></div>
+      <div><b>03</b><span>Misura ogni decisione</span></div>
+    </div>
+    <div class="project__body pnote">
+      <p>Crediamo in prodotti semplici da usare e solidi da mantenere. Ogni riga di codice deve avvicinare il business a un risultato, non aggiungere complessità inutile.</p>
+      <p>Preferiamo team piccoli, decisioni rapide, architetture leggibili e interfacce che aiutano le persone a lavorare meglio.</p>
+    </div>
+
+    <div class="mflist">
+      <article class="mf">
+        <p class="mf__n">I.</p>
+        <div class="project__body">
+          <h3>Il software migliore è così semplice — ed è per questo che è così complicato.</h3>
+          <p>I migliori prodotti del mondo sembrano naturali da usare. Dietro quella naturalezza ci sono migliaia di decisioni, tutte deliberate, tutte al servizio della chiarezza. Non aggiungiamo funzioni: togliamo attrito. Non costruiamo complessità: la distilliamo finché non resta solo l’essenziale.</p>
+          <p class="mf__tag">Meno, ma meglio.</p>
+        </div>
+      </article>
+      <article class="mf">
+        <p class="mf__n">II.</p>
+        <div class="project__body">
+          <h3>Siamo artigiani, non una fabbrica.</h3>
+          <p>MonteDelGallo è nata nel 2019 a Roma con una scelta precisa: restare piccoli. Non cresciamo assumendo centinaia di persone. Cresciamo essendo eccellenti. Ogni persona del nostro team è insieme pensatore e costruttore. Qui non ci sono spettatori.</p>
+          <p>Abbiamo preso il nome da Monte del Gallo — il punto più alto del Gianicolo, da cui Roma si apre sotto di te in ogni direzione. Il grande software richiede quella prospettiva: devi vedere l’intero paesaggio prima di scrivere la prima riga.</p>
+          <p class="mf__tag">Scritto con cura a Roma.</p>
+        </div>
+      </article>
+      <article class="mf">
+        <p class="mf__n">III.</p>
+        <div class="project__body">
+          <h3>I vincoli sono doni.</h3>
+          <p>Budget illimitati producono software gonfio. Tempi illimitati producono software che non esce mai. Abbracciamo i vincoli — di tempo, di budget, di perimetro — perché costringono alla creatività. Più stretta è l’inquadratura, più nitida è l’immagine.</p>
+          <p>Quando un cliente ci dice “abbiamo solo questo tempo e questo budget”, non vediamo un problema. Vediamo il brief creativo.</p>
+        </div>
+      </article>
+      <article class="mf">
+        <p class="mf__n">IV.</p>
+        <div class="project__body">
+          <h3>La tecnologia serve le persone, non il contrario.</h3>
+          <p>Non scegliamo le tecnologie perché sono di moda, ma perché sono quelle giuste. Un monolite Rails può battere un’architettura a microservizi quando è costruito con cura. Una pagina statica può battere una SPA quando ciò che serve all’utente è la semplicità.</p>
+          <p>La scelta tecnologica più elegante è quella a cui i tuoi utenti non pensano mai.</p>
+        </div>
+      </article>
+      <article class="mf">
+        <p class="mf__n">V.</p>
+        <div class="project__body">
+          <h3>Costruiamo con te, non per te.</h3>
+          <p>Non siamo fornitori. Siamo partner. Non spariamo in una scatola nera per riemergere dopo mesi con un deliverable. Vedrai ogni decisione, metterai in discussione ogni compromesso e sentirai il prodotto prendere forma settimana dopo settimana. La tua conoscenza del problema e la nostra conoscenza del mestiere: è questa la combinazione che produce un grande lavoro.</p>
+        </div>
+      </article>
+      <article class="mf">
+        <p class="mf__n">VI.</p>
+        <div class="project__body">
+          <h3>Rilascia, impara, itera. Per sempre.</h3>
+          <p>Il software non è mai finito. I migliori prodotti sono sistemi vivi che evolvono con i loro utenti. Non crediamo nei lanci big-bang seguiti dall’abbandono. Crediamo nella consegna continua, nell’apprendimento continuo e nel miglioramento continuo. Rilascia presto. Ascolta con attenzione. Rendilo migliore.</p>
+        </div>
+      </article>
+      <article class="mf">
+        <p class="mf__n">VII.</p>
+        <div class="project__body">
+          <h3>Il codice è uno sport di squadra.</h3>
+          <p>I geni solitari sono un mito. Il miglior software nasce da menti diverse che si mettono alla prova a vicenda — designer che programmano, ingegneri che disegnano, strateghi che prototipano. Scegliamo persone curiose di tutto, non solo della propria specialità.</p>
+          <p>Condividiamo ciò che impariamo. Rendiamo open source ciò che possiamo. Scriviamo dei nostri errori con la stessa franchezza dei nostri successi. La conoscenza si moltiplica quando viene condivisa.</p>
+        </div>
+      </article>
+    </div>
+
+    <div class="pclose">
+      <p class="eyebrow">Questo è ciò in cui crediamo</p>
+      <p class="pclose__big">Costruisci meno. Costruisci meglio.</p>
+      <p class="lede">Se ti riconosci in queste parole — come cliente, collaboratore o futuro collega — parliamone.</p>
+      <p class="pclose__btn"><a class="btn btn--solid" href="{{ site.data.site_meta.booking_url }}">Contattaci</a></p>
+    </div>
+  </div>
+</section>
+
+<section class="pad" id="process">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Come lavoriamo · Metodo · Sprint · Misura</p>
+      <h2 class="h2">Trasformiamo idee in sistemi che funzionano.</h2>
+      <p class="lede">Un processo leggero, visuale e misurabile: capiamo il contesto, validiamo presto, costruiamo in sprint e miglioriamo dopo il lancio.</p>
+    </div>
+    <div class="project__body pnote">
+      <p><strong>Ogni fase produce una decisione, non solo un documento.</strong> Il metodo è pensato per ridurre rischio e rumore. Ogni passaggio deve chiarire cosa costruire, cosa rimandare e quali metriche useremo per capire se il lavoro sta creando valore.</p>
+      <p>Sprint brevi, per un avanzamento visibile. Demo reali, per un feedback prima del rilascio.</p>
+    </div>
+    <h3 class="psub psub--sm">Dal problema alla release, senza perdere il controllo.</h3>
+    <p class="lede">Ogni fase lascia un artefatto concreto: mappa, prototipo, codice, metriche. È questo che rende il percorso trasparente.</p>
+    <div class="steps steps--phases">
+      <div><div class="num">01</div><h3>Scoperta</h3><p>Analizziamo obiettivi, utenti, dati, vincoli e priorità operative. Qui capiamo dove il software può creare leva.</p></div>
+      <div><div class="num">02</div><h3>Prototipo</h3><p>Disegniamo flussi, interfacce e architettura minima. Validiamo presto ciò che conta, prima di investire troppo.</p></div>
+      <div><div class="num">03</div><h3>Sviluppo</h3><p>Costruiamo in iterazioni brevi con demo, ambiente staging, code review, performance e attenzione alla manutenibilità.</p></div>
+      <div><div class="num">04</div><h3>Lancio</h3><p>Portiamo online, monitoriamo, raccogliamo feedback e trasformiamo i dati in miglioramenti successivi.</p></div>
+    </div>
+
+    <h3 class="psub psub--sm">Vedi cosa sta succedendo, sprint dopo sprint.</h3>
+    <p class="lede">Non lavoriamo in una scatola chiusa. Durante il progetto rendiamo visibili priorità, decisioni, avanzamento, rischi e metriche di qualità.</p>
+    <div class="svc pcells pcells--4">
+      <div class="svc__cell"><h3>Backlog</h3><p>Ordinato per impatto e complessità.</p></div>
+      <div class="svc__cell"><h3>Demo</h3><p>Frequenti, su ambiente reale o staging.</p></div>
+      <div class="svc__cell"><h3>Controlli</h3><p>Su performance, sicurezza e regressioni.</p></div>
+      <div class="svc__cell"><h3>Metriche</h3><p>Leggibili per decidere il passo successivo.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="pad psec--alt" id="team">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Il team</p>
+      <h2 class="h2">Le persone dietro il codice.</h2>
+      <p class="lede">Un team multidisciplinare compatto: sviluppo software, design, dati, cloud, WordPress e business development, sempre vicino al cliente.</p>
+    </div>
+    {% include team-grid.html %}
+  </div>
+</section>
+
+<section class="cta">
+  <svg class="cta__range" aria-hidden="true" focusable="false"><use href="#mdg-range"/></svg>
+  <div class="wrap">
+    <p class="eyebrow">Partiamo da una call</p>
+    <h2>Costruiamo qualcosa di utile insieme.</h2>
+    <p>Raccontaci cosa vuoi migliorare. In 30 minuti capiamo dove software, visibilità e AI possono creare leva misurabile.</p>
+    <div class="cta__btns">
+      <a class="btn btn--solid" href="{{ site.data.site_meta.booking_url }}">Prenota una call di 30 minuti</a>
+    </div>
+  </div>
+</section>
