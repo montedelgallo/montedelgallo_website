@@ -1,5 +1,6 @@
-// The project page (_layouts/project.html): the way back, the cover, the facts
-// (headline metric, year, stack, links out), the text of the project and, for a
+// The project page (_layouts/project.html): the way back, the cover, the other
+// figures as tiles, the facts (headline metric, year, client, duration, services,
+// platforms, stack, links out), the text of the project and, for a
 // project that has one, the gallery. The card and the project index are in
 // _projects.scss.
 //
@@ -31,6 +32,16 @@
   margin-top:clamp(24px,3vw,36px);
   border:1px solid var(--line);
   border-radius:10px;
+}
+
+// ---------- the other figures ----------
+// The tiles under the cover are the case study's (.case__results, .case__metrics and
+// .case__metric, in _case-study.scss). A project's figures are often a word
+// ("Cross-platform", "Photo+Video"), not a number, so the figure is a little smaller
+// than a case study's and may break inside a long word rather than spill out of its tile.
+.project__tiles .case__metric b{
+  font-size:clamp(1.5rem,3vw,2rem);
+  overflow-wrap:anywhere;
 }
 
 // ---------- facts and text ----------

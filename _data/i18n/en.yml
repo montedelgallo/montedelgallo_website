@@ -173,6 +173,11 @@ projects: # the project card and the project page
   all: "All projects" # the way back to the project index, on a project page
   index_path: "/projects/" # where the project index is, written without the /it/ prefix (like nav.yml)
   gallery: "Gallery" # the heading of the pictures under a project's text
+  figures: "Key figures" # the name of the metric tiles under the cover (read by a screen reader)
+  client: "Client" # the labels of the facts beside the text (only the ones a project declares)
+  duration: "Duration"
+  services: "Services"
+  platforms: "Platforms"
 
 case_studies: # the case study card, page and index
   view: "Read the case study"

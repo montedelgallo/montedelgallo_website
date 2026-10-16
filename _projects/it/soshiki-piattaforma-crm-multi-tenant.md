@@ -13,6 +13,16 @@ summary: "Un CRM multi-tenant per clienti, pipeline, progetti, pagamenti e spese
 metric:
   value: "AI"
   label: "per elaborare le email"
+metrics:
+  - value: "Multi-tenant"
+    label: "Architettura"
+  - value: "Real-time"
+    label: "Pipeline Kanban"
+facts:
+  client: "MonteDelGallo (interno)"
+  duration: "In corso"
+  services: "Sviluppo software, integrazione AI, UX design"
+  platforms: "Web"
 cover: /assets/img/projects/soshiki-cover.webp
 cover_alt: "Logo di Soshiki su sfondo verde scuro"
 featured: true

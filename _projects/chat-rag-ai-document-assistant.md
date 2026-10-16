@@ -10,6 +10,16 @@ summary: "A RAG-powered chatbot that lets users upload documents and have intell
 metric:
   value: "RAG"
   label: "architecture"
+metrics:
+  - value: "Vector"
+    label: "Search"
+  - value: "Streaming"
+    label: "Responses"
+facts:
+  client: "MonteDelGallo (Product)"
+  duration: "1 month"
+  services: "AI Development, Product Development"
+  platforms: "Web"
 cover: /assets/img/projects/chat-rag-cover.webp
 cover_alt: "Chat RAG title card, retrieval, context, citations, surrounded by document tiles linked by thin lines on a dark blue background"
 featured: false

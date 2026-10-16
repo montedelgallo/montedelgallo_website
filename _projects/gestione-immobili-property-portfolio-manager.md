@@ -10,6 +10,16 @@ summary: "A comprehensive real estate management platform with financial dashboa
 metric:
   value: "Interactive"
   label: "property maps"
+metrics:
+  - value: "Real-time"
+    label: "Financial dashboard"
+  - value: "PDF"
+    label: "Report generation"
+facts:
+  client: "Private Real Estate Holdings"
+  duration: "3 months"
+  services: "Software Development, Data Visualization"
+  platforms: "Web"
 cover: /assets/img/projects/gestione-immobili-cover.webp
 cover_alt: "Gestione Immobili illustration: a phone showing a portfolio of buildings with occupancy, yield and tasks bars, headlined Property control room, on a dark red background"
 featured: false

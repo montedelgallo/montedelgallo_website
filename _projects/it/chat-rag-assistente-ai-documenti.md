@@ -13,6 +13,16 @@ summary: "Un chatbot RAG che consente di caricare documenti, fare domande e otte
 metric:
   value: "RAG"
   label: "architettura"
+metrics:
+  - value: "Vector"
+    label: "Ricerca"
+  - value: "Streaming"
+    label: "Risposte"
+facts:
+  client: "MonteDelGallo (prodotto)"
+  duration: "1 mese"
+  services: "Sviluppo AI, sviluppo prodotto"
+  platforms: "Web"
 cover: /assets/img/projects/chat-rag-cover.webp
 cover_alt: "Scheda del titolo di Chat RAG, retrieval, context, citations, circondata da riquadri di documenti collegati da linee sottili su sfondo blu scuro"
 featured: false

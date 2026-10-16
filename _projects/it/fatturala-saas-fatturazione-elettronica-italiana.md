@@ -13,6 +13,16 @@ summary: "Una piattaforma FatturaPA per PMI e freelance italiani con collaborazi
 metric:
   value: "FatturaPA"
   label: "conforme"
+metrics:
+  - value: "Multi-org"
+    label: "Architettura"
+  - value: "TD01-TD27"
+    label: "Tipi di documento"
+facts:
+  client: "MonteDelGallo (prodotto)"
+  duration: "In corso"
+  services: "Sviluppo prodotto, conformità normativa"
+  platforms: "Web"
 cover: /assets/img/projects/fatturala-cover.webp
 cover_alt: "Illustrazione di FatturaLa: una pila di fatture elettroniche, una con l'etichetta XML"
 featured: true

@@ -10,6 +10,18 @@ summary: "A desktop studio for authoring and playing back servo-driven robotic m
 metric:
   value: "1 ms"
   label: "timeline precision"
+metrics:
+  - value: "4"
+    label: "Hardware element types"
+  - value: "30 FPS"
+    label: "Runtime loop"
+  - value: "AI"
+    label: "Authoring assistant"
+facts:
+  client: "MdG Robotic Lab"
+  duration: "3 months"
+  services: "Robotics software, motion authoring, hardware integration, sound and lip-sync, AI assistant"
+  platforms: "Desktop app, serial/DEIMOS hardware, animatronics, robotics and electromechanical installations"
 cover: /assets/img/projects/mdg-robotic-lab-cover.webp
 cover_alt: "MdG Robotic Lab title card beside a tablet showing animatronic faces being programmed, on a dark teal background"
 links:

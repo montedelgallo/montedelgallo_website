@@ -10,6 +10,16 @@ summary: "A multi-tenant whistleblowing system enabling anonymous and secure sub
 metric:
   value: "Anonymous"
   label: "reporting"
+metrics:
+  - value: "Multi-tenant"
+    label: "Architecture"
+  - value: "Encrypted"
+    label: "Messaging"
+facts:
+  client: "MonteDelGallo (Product)"
+  duration: "2 months"
+  services: "Product Development, Security, Compliance"
+  platforms: "Web"
 cover: /assets/img/projects/denunciala-cover.webp
 cover_alt: "DenunciaLa logo with the tagline Secure whistleblowing, beside an illustration of a sealed envelope on a tablet, on a dark purple background"
 featured: false

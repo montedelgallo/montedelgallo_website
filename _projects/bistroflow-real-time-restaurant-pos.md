@@ -10,6 +10,16 @@ summary: "A real-time restaurant operating system with table-side ordering, kitc
 metric:
   value: "0"
   label: "page reloads"
+metrics:
+  - value: "Real-time"
+    label: "Order updates"
+  - value: "Mobile-first"
+    label: "Waiter interface"
+facts:
+  client: "Restaurant Chain (Italy)"
+  duration: "4 months"
+  services: "Software Development, Mobile UX, Real-time Systems"
+  platforms: "Web (Mobile-First), Tablet"
 cover: /assets/img/projects/bistroflow-cover.webp
 cover_alt: "BistroFlow illustration: tablets with colored order tiles on an orange background"
 featured: true

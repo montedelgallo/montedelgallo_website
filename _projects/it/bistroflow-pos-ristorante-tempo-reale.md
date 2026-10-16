@@ -13,6 +13,16 @@ summary: "Un sistema operativo per ristoranti con ordini al tavolo, display cuci
 metric:
   value: "0"
   label: "refresh di pagina"
+metrics:
+  - value: "Real-time"
+    label: "Aggiornamenti degli ordini"
+  - value: "Mobile-first"
+    label: "Interfaccia per i camerieri"
+facts:
+  client: "Catena di ristoranti (Italia)"
+  duration: "4 mesi"
+  services: "Sviluppo software, UX mobile, sistemi real-time"
+  platforms: "Web (mobile-first), tablet"
 cover: /assets/img/projects/bistroflow-cover.webp
 cover_alt: "Illustrazione di BistroFlow: tablet con tessere colorate degli ordini su sfondo arancione"
 featured: true

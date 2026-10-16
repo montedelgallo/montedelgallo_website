@@ -13,6 +13,16 @@ summary: "Un assistente personale per analisi pasti, tracking dei macro e piani 
 metric:
   value: "Vision AI"
   label: "analisi dei pasti"
+metrics:
+  - value: "Auto"
+    label: "Tracciamento dei macro"
+  - value: "AI"
+    label: "Piani di allenamento"
+facts:
+  client: "Progetto personale"
+  duration: "2 settimane"
+  services: "Sviluppo AI, UX mobile"
+  platforms: "Web (mobile-first)"
 cover: /assets/img/projects/diet-assistant-cover.webp
 cover_alt: "Illustrazione di Diet Assistant: uno smartphone con un anello delle calorie e un suggerimento dell'AI, con il titolo Health intelligence, su uno sfumato dal bianco al rosso"
 featured: false

@@ -10,8 +10,11 @@ layout: default
   (_includes/project-card.html) reads the same front matter.
 
   Front matter used here: title, sector, summary, cover, cover_alt, metric, year,
-  stack; and, optional, `links` (a list of {label, url}: the project's website, its
-  repository, a demo video) and `gallery` (a list of {src, alt, caption, width,
+  stack; and, optional, `metrics` (the project's other figures, a list of
+  {value, label}, shown as tiles under the cover with the case study's tile styles),
+  `facts` (a map of client, duration, services, platforms: only the ones the project
+  has, shown beside the year), `links` (a list of {label, url}: the project's website,
+  its repository, a demo video) and `gallery` (a list of {src, alt, caption, width,
   height}, pictures that sit under the text). script/check-build.sh checks all of it.
 
   The labels (Year, Built with, All projects, Gallery) come from
@@ -23,6 +26,7 @@ layout: default
 {%- endcomment -%}
 {%- assign lang = page.lang | default: site.active_lang -%}
 {%- assign t = site.data.i18n[lang].projects -%}
+{%- assign pr_fact_keys = "client,duration,services,platforms" | split: "," -%}
 <article class="project pad">
   <div class="wrap">
     <p class="project__crumb"><a class="project__back" href="{{ t.index_path | relative_url }}"><span class="arrow" aria-hidden="true">←</span> {{ t.all | escape }}</a></p>
@@ -33,6 +37,16 @@ layout: default
     </header>
     {%- comment %} The cover is the largest image above the fold, so it is not lazy-loaded. 1200x675 is the size of every cover. {% endcomment %}
     <img class="project__cover" src="{{ page.cover | relative_url }}" alt="{{ page.cover_alt | default: page.title | escape }}" width="1200" height="675" decoding="async" fetchpriority="high">
+    {%- if page.metrics %}
+    {%- comment %} The tiles are the case study's (.case__metric, see _case-study.scss); .project__tiles only makes a word fit in one. {% endcomment %}
+    <div class="case__results">
+      <ul class="case__metrics project__tiles" aria-label="{{ t.figures | escape }}">
+        {%- for pr_metric in page.metrics %}
+        <li class="case__metric"><b>{{ pr_metric.value | escape }}</b> <span>{{ pr_metric.label | escape }}</span></li>
+        {%- endfor %}
+      </ul>
+    </div>
+    {%- endif %}
     <div class="project__layout">
       {%- comment %} The facts come first in the page and sit beside the text from 900px up (see _project-detail.scss). {% endcomment %}
       <div class="project__meta">
@@ -42,6 +56,15 @@ layout: default
             <dt>{{ t.year | escape }}</dt>
             <dd>{{ page.year }}</dd>
           </div>
+          {%- for pr_key in pr_fact_keys %}
+          {%- assign pr_value = page.facts[pr_key] %}
+          {%- if pr_value %}
+          <div>
+            <dt>{{ t[pr_key] | escape }}</dt>
+            <dd>{{ pr_value | escape }}</dd>
+          </div>
+          {%- endif %}
+          {%- endfor %}
           <div>
             <dt>{{ t.stack | escape }}</dt>
             <dd>

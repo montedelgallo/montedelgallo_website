@@ -13,6 +13,16 @@ summary: "Un photo album in stile anni 90 con piani subscription, video processi
 metric:
   value: "4"
   label: "piani di abbonamento"
+metrics:
+  - value: "Photo+Video"
+    label: "Supporto media"
+  - value: "Stripe"
+    label: "Pagamenti"
+facts:
+  client: "Progetto personale"
+  duration: "3 settimane"
+  services: "Sviluppo prodotto, integrazione dei pagamenti"
+  platforms: "Web"
 cover: /assets/img/projects/photoalbum-cover.webp
 cover_alt: "Illustrazione di PhotoAlbum: una griglia di nove stampe fotografiche retro arancioni, rosa, turchesi e crema, con il titolo Albums with a warmer memory layer, su sfondo verde petrolio scuro"
 featured: false

@@ -12,6 +12,18 @@ summary: "Uno studio desktop per creare e riprodurre movimenti robotici comandat
 metric:
   value: "1 ms"
   label: "di precisione sulla timeline"
+metrics:
+  - value: "4"
+    label: "Tipi di elementi hardware"
+  - value: "30 FPS"
+    label: "Ciclo di esecuzione"
+  - value: "AI"
+    label: "Assistente di authoring"
+facts:
+  client: "MdG Robotic Lab"
+  duration: "3 mesi"
+  services: "Software per la robotica, authoring del movimento, integrazione hardware, audio e lip-sync, assistente AI"
+  platforms: "App desktop, hardware seriale/DEIMOS, animatronica, installazioni robotiche ed elettromeccaniche"
 cover: /assets/img/projects/mdg-robotic-lab-cover.webp
 cover_alt: "Scheda del titolo di MdG Robotic Lab accanto a un tablet che mostra volti animatronici in fase di programmazione, su sfondo verde petrolio scuro"
 links:

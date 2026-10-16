@@ -10,6 +10,18 @@ summary: "Una piattaforma SaaS per strutture ricettive e operatori immobiliari c
 metric:
   value: "600+"
   label: "proprietà operative"
+metrics:
+  - value: "16k+"
+    label: "Documenti processati"
+  - value: "2.4k+"
+    label: "Ore risparmiate"
+  - value: "3.8k+"
+    label: "Check-in automatizzati"
+facts:
+  client: "Grande operatore immobiliare privato"
+  duration: "Sviluppo prodotto e iterazione continua"
+  services: "Strategia prodotto, UX/UI, sviluppo SaaS, workflow AI/OCR, automazione compliance, integrazioni"
+  platforms: "Web app, self check-in ospiti, Alloggiati Web, ISTAT, Guesty, iCal"
 cover: /assets/img/projects/alloggiati-pro-cover.webp
 cover_alt: "Illustrazione di Alloggiati.pro: una finestra del browser con il titolo Guest data without manual handoffs e i passaggi documento scansionato, schedina pronta e ricevuta salvata, accanto a uno smartphone con il self check-in degli ospiti"
 links:

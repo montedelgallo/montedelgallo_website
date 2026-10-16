@@ -10,6 +10,16 @@ summary: "A mountable Rails engine that turns any Rails app into a full CMS with
 metric:
   value: "Mountable"
   label: "Rails engine"
+metrics:
+  - value: "AI"
+    label: "Content generation"
+  - value: "Visual"
+    label: "Page builder"
+facts:
+  client: "Open Source"
+  duration: "Ongoing"
+  services: "Open Source, Product Development"
+  platforms: "Ruby Gem"
 cover: /assets/img/projects/activecanvas-cover.webp
 cover_alt: "ActiveCanvas landing page shown on a desktop screen and on a phone, over a dark teal starfield"
 links:

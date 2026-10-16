@@ -13,6 +13,16 @@ summary: "Una piattaforma per real estate con dashboard finanziarie, mappe inter
 metric:
   value: "Mappe"
   label: "interattive"
+metrics:
+  - value: "Real-time"
+    label: "Dashboard finanziaria"
+  - value: "PDF"
+    label: "Generazione di report"
+facts:
+  client: "Patrimonio immobiliare privato"
+  duration: "3 mesi"
+  services: "Sviluppo software, visualizzazione dei dati"
+  platforms: "Web"
 cover: /assets/img/projects/gestione-immobili-cover.webp
 cover_alt: "Illustrazione di Gestione Immobili: uno smartphone con un portfolio di edifici e le barre di occupazione, rendimento e attività, con il titolo Property control room, su sfondo rosso scuro"
 featured: false

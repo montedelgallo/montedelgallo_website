@@ -10,6 +10,16 @@ summary: "A nostalgic 90s-style photo album app with subscription tiers, video p
 metric:
   value: "4"
   label: "subscription tiers"
+metrics:
+  - value: "Photo+Video"
+    label: "Media support"
+  - value: "Stripe"
+    label: "Payments"
+facts:
+  client: "Personal Project"
+  duration: "3 weeks"
+  services: "Product Development, Payment Integration"
+  platforms: "Web"
 cover: /assets/img/projects/photoalbum-cover.webp
 cover_alt: "PhotoAlbum illustration: a grid of nine retro photo prints in orange, pink, teal and cream, headlined Albums with a warmer memory layer, on a dark teal background"
 featured: false

@@ -10,6 +10,18 @@ summary: "A compliance SaaS for Italian hospitality operators that automates gue
 metric:
   value: "600+"
   label: "properties managed"
+metrics:
+  - value: "16k+"
+    label: "Documents processed"
+  - value: "2.4k+"
+    label: "Hours saved"
+  - value: "3.8k+"
+    label: "Check-ins automated"
+facts:
+  client: "Private large real estate operator"
+  duration: "Product build and ongoing iteration"
+  services: "Product strategy, UX/UI, SaaS development, AI/OCR workflows, compliance automation, integrations"
+  platforms: "Web app, guest self check-in, Alloggiati Web, ISTAT, Guesty, iCal"
 cover: /assets/img/projects/alloggiati-pro-cover.webp
 cover_alt: "Alloggiati.pro illustration: a browser window reading Guest data without manual handoffs, with ID scanned, Questura ready and receipt saved steps, beside a phone showing guest self check-in"
 links:

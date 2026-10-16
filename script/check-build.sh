@@ -630,6 +630,7 @@ errors << "_projects/ holds no project document" if docs.empty?
 
 text = ->(value) { value.is_a?(String) && !value.strip.empty? }
 section = { "en" => "projects", "it" => "progetti" }
+fact_keys = %w[client duration services platforms] # the order the aside shows them in
 
 docs.each do |doc|
   at = doc["path"]
@@ -641,6 +642,22 @@ docs.each do |doc|
   errors << "#{at}: stack must be a non-empty list of names" unless doc["stack"].is_a?(Array) && !doc["stack"].empty? && doc["stack"].all?(&text)
   errors << "#{at}: metric needs a value and a label" unless doc["metric"].is_a?(Hash) && text.(doc["metric"]["value"]) && text.(doc["metric"]["label"])
   errors << "#{at}: featured must be true or false" unless [true, false].include?(doc["featured"])
+
+  # Optional: the project's other figures (`metrics`, tiles under the cover; the headline
+  # `metric` is the one on the card and stays out of this list) and its facts (`facts`,
+  # in the aside: only the keys the live page has).
+  if doc.key?("metrics")
+    metrics = doc["metrics"]
+    unless metrics.is_a?(Array) && !metrics.empty? && metrics.all? { |entry| entry.is_a?(Hash) && entry.keys.sort == %w[label value] && text.(entry["value"]) && text.(entry["label"]) }
+      errors << "#{at}: metrics must be a non-empty list of {value, label} maps with non-empty strings"
+    end
+  end
+  if doc.key?("facts")
+    facts = doc["facts"]
+    unless facts.is_a?(Hash) && !facts.empty? && (facts.keys - fact_keys).empty? && facts.values.all?(&text)
+      errors << "#{at}: facts must be a non-empty map of #{fact_keys.join(", ")} (only the ones the project has), each a non-empty string"
+    end
+  end
   if text.(doc["cover"]) && doc["cover"].start_with?("/assets/img/projects/")
     errors << "#{at}: the cover #{doc["cover"]} is not a file in the repository" unless File.file?(doc["cover"].delete_prefix("/"))
   else
@@ -692,6 +709,13 @@ by_id.each do |id, group|
   langs = group.map { |doc| doc["lang"].to_s }.sort
   errors << "page_id #{id.inspect}: expected one en and one it document (polyglot pairs translations by page_id), found #{langs.inspect}" unless langs == %w[en it]
   errors << "page_id #{id.inspect}: the en and it documents must agree on featured" if group.map { |doc| doc["featured"] }.uniq.size > 1
+  # The figures are the same in both languages (only the labels are translated), and so are the facts present.
+  en_doc, it_doc = group.find { |doc| doc["lang"] == "en" }, group.find { |doc| doc["lang"] == "it" }
+  if en_doc && it_doc
+    en_values, it_values = (en_doc["metrics"] || []).map { |m| m.is_a?(Hash) ? m["value"] : nil }, (it_doc["metrics"] || []).map { |m| m.is_a?(Hash) ? m["value"] : nil }
+    errors << "page_id #{id.inspect}: the metrics values of the en document (#{en_values.inspect}) and the it document (#{it_values.inspect}) must match" unless en_values == it_values
+    errors << "page_id #{id.inspect}: the en and it documents must declare the same facts (#{(en_doc["facts"] || {}).keys.inspect} vs #{(it_doc["facts"] || {}).keys.inspect})" unless (en_doc["facts"].is_a?(Hash) ? en_doc["facts"].keys : []) == (it_doc["facts"].is_a?(Hash) ? it_doc["facts"].keys : [])
+  end
 end
 docs.group_by { |doc| [doc["lang"], doc["permalink"]] }.each do |(lang, link), group|
   errors << "two #{lang} projects share the permalink #{link}" if group.size > 1
@@ -850,10 +874,12 @@ check_project_pages() {
   bundle exec ruby - "$SITE_DIR" "$MIN_BODY_CHARS" <<'RUBY'
 require "json"
 require "nokogiri"
+require "yaml"
 
 site_dir = ARGV.fetch(0)
 min_body = ARGV.fetch(1).to_i
 text_of = ->(node) { node ? node.text.gsub(/\s+/, " ").strip : "" }
+labels = %w[en it].to_h { |l| [l, YAML.load_file("_data/i18n/#{l}.yml")["projects"]] }
 # The text of a button without its arrow, which is only decoration.
 label_of = lambda do |node|
   copy = node.dup
@@ -887,6 +913,20 @@ JSON.parse(ENV.fetch("PROJECTS_JSON")).each do |pair|
     errors << "#{file}: the headline metric should read #{metric.inspect}" unless text_of.(page.at_css("main .project__metric")) == metric
     errors << "#{file}: the stack should list #{doc["stack"].inspect}" unless page.css("main .project__stack li").map { |node| text_of.(node) } == doc["stack"]
     errors << "#{file}: the year should read #{doc["year"]}" unless text_of.(page.at_css("main .project__facts dd")) == doc["year"].to_s # the first fact
+
+    # The other figures: a tile per entry of `metrics`, value and label as written; no tiles
+    # when the document has none.
+    tiles = page.css("main .project__tiles li").map { |node| [text_of.(node.at_css("b")), text_of.(node.at_css("span"))] }
+    wanted_tiles = (doc["metrics"] || []).map { |m| [m["value"], m["label"]] }
+    errors << "#{file}: the metric tiles should be #{wanted_tiles.inspect}, the page shows #{tiles.inspect}" unless tiles == wanted_tiles
+    # The facts: Year, then the declared ones (client, duration, services, platforms) with the
+    # labels of the page's language, then the stack; nothing else, nothing undeclared.
+    rows = page.css("main .project__facts > div").map { |row| [text_of.(row.at_css("dt")), text_of.(row.at_css("dd"))] }
+    l = labels[lang]
+    wanted_rows = [[l["year"], doc["year"].to_s]] +
+                  %w[client duration services platforms].filter_map { |key| [l[key], doc["facts"][key]] if doc["facts"] && doc["facts"][key] } +
+                  [[l["stack"], doc["stack"].join(" ")]]
+    errors << "#{file}: the facts should be #{wanted_rows.inspect}, the page shows #{rows.inspect}" unless rows == wanted_rows
 
     # The migrated text: sections (h2) and enough of it to be the real page, not
     # the one-paragraph stub the page was before the migration.
@@ -946,7 +986,7 @@ RUBY
 }
 MIN_BODY_CHARS=500
 check_project_pages || fail "a project detail page does not show what its document says (see the list above)"
-pass "every project detail page shows its title, cover with alt text, summary (also its meta description), metric, year and stack, the migrated text (at least $MIN_BODY_CHARS characters in 2 or more sections, translated in Italian), a link back to the index, and its links and gallery when it has them"
+pass "every project detail page shows its title, cover with alt text, summary (also its meta description), metric, the metric tiles and facts it declares (exactly, EN and IT figures matching), year and stack, the migrated text (at least $MIN_BODY_CHARS characters in 2 or more sections, translated in Italian), a link back to the index, and its links and gallery when it has them"
 
 echo "==> Asserting the project index pages (every project of the language, both languages)"
 # /projects/ and /it/progetti/ are two documents tied by page_id (projects.html and

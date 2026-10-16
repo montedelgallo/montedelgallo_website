@@ -10,6 +10,16 @@ summary: "A personal health assistant using vision AI for meal analysis, macro t
 metric:
   value: "Vision AI"
   label: "meal analysis"
+metrics:
+  - value: "Auto"
+    label: "Macro tracking"
+  - value: "AI"
+    label: "Workout plans"
+facts:
+  client: "Personal Project"
+  duration: "2 weeks"
+  services: "AI Development, Mobile UX"
+  platforms: "Web (Mobile-First)"
 cover: /assets/img/projects/diet-assistant-cover.webp
 cover_alt: "Diet Assistant illustration: a phone showing a calorie ring and an AI suggestion, headlined Health intelligence, on a white-to-red gradient"
 featured: false

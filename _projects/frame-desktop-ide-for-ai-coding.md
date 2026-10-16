@@ -10,6 +10,16 @@ summary: "A lightweight Electron-based IDE designed for Claude Code workflows wi
 metric:
   value: "9"
   label: "terminals in one grid"
+metrics:
+  - value: "Real PTY"
+    label: "Shell emulation"
+  - value: "Cross-platform"
+    label: "Desktop app"
+facts:
+  client: "Open Source / Personal"
+  duration: "1 month"
+  services: "Desktop Development, Developer Tools"
+  platforms: "macOS, Windows, Linux"
 cover: /assets/img/projects/frame-cover.webp
 cover_alt: "Frame logo and tagline Desktop IDE for AI coding, beside an illustrated code editor window showing a Ruby class, on a dark blue background"
 featured: false

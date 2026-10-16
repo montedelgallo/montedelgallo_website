@@ -10,6 +10,16 @@ summary: "A comprehensive FatturaPA-compliant invoicing platform for Italian SME
 metric:
   value: "FatturaPA"
   label: "compliant"
+metrics:
+  - value: "Multi-org"
+    label: "Architecture"
+  - value: "TD01-TD27"
+    label: "Doc types"
+facts:
+  client: "MonteDelGallo (Product)"
+  duration: "Ongoing"
+  services: "Product Development, Regulatory Compliance"
+  platforms: "Web"
 cover: /assets/img/projects/fatturala-cover.webp
 cover_alt: "FatturaLa illustration: a stack of electronic invoices, one tagged XML"
 featured: true

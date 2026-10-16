@@ -13,6 +13,16 @@ summary: "Un engine Rails montabile che trasforma applicazioni esistenti in CMS 
 metric:
   value: "Engine Rails"
   label: "montabile"
+metrics:
+  - value: "AI"
+    label: "Generazione di contenuti"
+  - value: "Visual"
+    label: "Page builder"
+facts:
+  client: "Open Source"
+  duration: "In corso"
+  services: "Open Source, sviluppo prodotto"
+  platforms: "Ruby Gem"
 cover: /assets/img/projects/activecanvas-cover.webp
 cover_alt: "La landing page di ActiveCanvas su uno schermo desktop e su uno smartphone, su uno sfondo verde petrolio scuro"
 links:

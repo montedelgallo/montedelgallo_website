@@ -13,6 +13,16 @@ summary: "Un IDE desktop leggero per workflow con Claude Code, terminali multipl
 metric:
   value: "9"
   label: "terminali in un'unica griglia"
+metrics:
+  - value: "Real PTY"
+    label: "Emulazione della shell"
+  - value: "Cross-platform"
+    label: "App desktop"
+facts:
+  client: "Open Source / Personale"
+  duration: "1 mese"
+  services: "Sviluppo desktop, strumenti per sviluppatori"
+  platforms: "macOS, Windows, Linux"
 cover: /assets/img/projects/frame-cover.webp
 cover_alt: "Il logo di Frame e lo slogan Desktop IDE for AI coding, accanto all'illustrazione di una finestra di editor con una classe Ruby, su sfondo blu scuro"
 featured: false

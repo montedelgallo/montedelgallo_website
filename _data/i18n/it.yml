@@ -165,6 +165,11 @@ projects:
   all: "Tutti i progetti"
   index_path: "/progetti/"
   gallery: "Galleria"
+  figures: "Numeri chiave"
+  client: "Cliente"
+  duration: "Durata"
+  services: "Servizi"
+  platforms: "Piattaforme"
 
 case_studies:
   view: "Leggi il caso di studio"

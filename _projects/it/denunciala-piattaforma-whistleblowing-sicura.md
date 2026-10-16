@@ -13,6 +13,16 @@ summary: "Una piattaforma multi-tenant per segnalazioni anonime e comunicazioni 
 metric:
   value: "Segnalazioni"
   label: "anonime"
+metrics:
+  - value: "Multi-tenant"
+    label: "Architettura"
+  - value: "Encrypted"
+    label: "Messaggistica"
+facts:
+  client: "MonteDelGallo (prodotto)"
+  duration: "2 mesi"
+  services: "Sviluppo prodotto, sicurezza, compliance"
+  platforms: "Web"
 cover: /assets/img/projects/denunciala-cover.webp
 cover_alt: "Il logo di DenunciaLa con lo slogan Secure whistleblowing, accanto all'illustrazione di una busta sigillata su un tablet, su sfondo viola scuro"
 featured: false
