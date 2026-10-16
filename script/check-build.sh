@@ -1839,7 +1839,8 @@ site_dir = ARGV[0]
 errors = []
 entries = YAML.safe_load(File.read("_data/redirects.yml", encoding: "utf-8")) rescue (abort("  - _data/redirects.yml is missing or not valid YAML"))
 abort("  - _data/redirects.yml must be a non-empty list of {from, to} entries") unless entries.is_a?(Array) && !entries.empty?
-built = ->(url) { File.size?(File.join(site_dir, url.to_s, "index.html")) }
+# A page is /dir/ (served from dir/index.html); a file such as /feed.xml is built as itself.
+built = ->(url) { url.to_s.end_with?("/") ? File.size?(File.join(site_dir, url.to_s, "index.html")) : File.size?(File.join(site_dir, url.to_s)) }
 entries.each_with_index do |entry, index|
   at = "_data/redirects.yml entry #{index + 1}"
   (errors << "#{at} must be a map with from and to"; next) unless entry.is_a?(Hash) && entry["from"].is_a?(String) && entry["to"].is_a?(String)
@@ -1847,7 +1848,7 @@ entries.each_with_index do |entry, index|
   errors << "#{at}: from #{from.inspect} must be a path starting and ending with /" unless from.match?(%r{\A/.*/\z})
   # A `to` may end in an #anchor (an old page that became a section of another page).
   to_path, to_anchor = to.split("#", 2)
-  errors << "#{at}: to #{to.inspect} must be a path starting and ending with /, optionally followed by #anchor" unless to_path.to_s.match?(%r{\A/.*/\z}) && (to_anchor.nil? || to_anchor.match?(/\A[A-Za-z][\w-]*\z/))
+  errors << "#{at}: to #{to.inspect} must be a path starting with / (ending with / for a page, or a built file such as /feed.xml), optionally followed by #anchor" unless to_path.to_s.match?(%r{\A/.*[^/]\z|\A/.*/\z}) && (to_anchor.nil? || (to_path.end_with?("/") && to_anchor.match?(/\A[A-Za-z][\w-]*\z/)))
   errors << "#{at}: from and to are the same" if from == to
   if !built.(to_path.to_s)
     errors << "#{at}: to #{to} is not a page of the built site"
@@ -1871,6 +1872,33 @@ RUBY
 }
 check_redirects || fail "_data/redirects.yml is wrong (see the list above)"
 pass "_data/redirects.yml parses, every target is a built page, no source shadows a page, and the root-level live case study URLs are mapped"
+
+# Every URL of the old WordPress site (tasks/wp-inventory.json) must still lead somewhere: it is
+# either a page of the build or the `from` of a redirect. Each uncovered URL is printed.
+check_wp_inventory_covered() {
+  bundle exec ruby - "$SITE_DIR" <<'RUBY'
+require "json"
+require "yaml"
+require "uri"
+
+site_dir = ARGV[0]
+inventory = JSON.parse(File.read("tasks/wp-inventory.json", encoding: "utf-8"))
+# The WordPress feed is not a page, so the inventory does not list it; it is mapped as well.
+inventory << { "url" => "/feed/" }
+froms = YAML.safe_load(File.read("_data/redirects.yml", encoding: "utf-8")).map { |e| e["from"] }
+uncovered = []
+inventory.each do |page|
+  path = URI.parse(page["url"]).path
+  path = "/" if path.empty?
+  built = path.end_with?("/") ? File.size?(File.join(site_dir, path, "index.html")) : File.size?(File.join(site_dir, path))
+  uncovered << path unless built || froms.include?(path)
+end
+abort(uncovered.map { |u| "  - #{u} is neither a built page nor a `from` in _data/redirects.yml" }.join("\n")) unless uncovered.empty?
+puts "  #{inventory.size} old WordPress URLs (the inventory and the feed), all covered"
+RUBY
+}
+check_wp_inventory_covered || fail "old WordPress URLs are lost (see the list above): add a redirect in _data/redirects.yml"
+pass "every URL of tasks/wp-inventory.json is a built page or has a redirect in _data/redirects.yml"
 
 echo "==> Asserting the services (8 documents per language, detail pages, overview pages)"
 # A service is a Markdown document per language in _services/ (the Italian ones in

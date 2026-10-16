@@ -39,8 +39,8 @@
 
 # Blog. Every article lived at the root of the old site (/<slug>/). The eight English ones
 # now sit under /blog/; the Italian one (an article written in Italian that the old site
-# served at an English root URL) sits under /it/articoli/. The old category and author
-# archives are not kept: this version has no category pages.
+# served at an English root URL) sits under /it/articoli/. The old category archives
+# (/category/<name>/) are not kept, the blog index lists every article: they go there.
 - from: /welcome-claudio-aiello/
   to: /blog/welcome-claudio-aiello/
 - from: /how-i-started-creating-a-product-a-month-just-for-fun/
@@ -83,3 +83,24 @@
 # /it/motioforge-2/ (a WordPress "-2" duplicate slug) and now sits at /it/motioforge/.
 - from: /it/motioforge-2/
   to: /it/motioforge/
+
+# Portfolio. The old /portfolio/ page was the project list; it is /projects/ now.
+- from: /portfolio/
+  to: /projects/
+
+# Category archives. This version has no category pages; the blog index lists every
+# article (with its categories), so the five old archives lead there.
+- from: /category/frontend/
+  to: /blog/
+- from: /category/products/
+  to: /blog/
+- from: /category/story/
+  to: /blog/
+- from: /category/team/
+  to: /blog/
+- from: /category/web-design/
+  to: /blog/
+
+# Feed. WordPress served the feed at /feed/; it is /feed.xml here.
+- from: /feed/
+  to: /feed.xml
