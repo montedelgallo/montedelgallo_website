@@ -1,0 +1,45 @@
+# Monte del Gallo - bilingual Jekyll site: English at the root, Italian under /it/.
+# Built in CI (GitHub Actions); the output is plain static files, so it can be
+# deployed to any host.
+
+# --- Site identity -----------------------------------------------------------
+title: "Monte del Gallo"
+# jekyll-polyglot needs `url` to relativize links per language.
+url: "https://montedelgallo.com"
+baseurl: ""
+
+# --- Internationalization (jekyll-polyglot) ----------------------------------
+languages: ["en", "it"]
+default_lang: "en"
+# Emitted once at the site root; not duplicated under /it/, and links to them
+# are not language-prefixed.
+exclude_from_localization: ["assets"]
+
+# --- Content -----------------------------------------------------------------
+permalink: pretty
+markdown: kramdown
+kramdown:
+  input: GFM
+
+collections:
+  projects:
+    output: true
+
+# --- Styles ------------------------------------------------------------------
+sass:
+  style: compressed
+
+# --- Plugins -----------------------------------------------------------------
+plugins:
+  - jekyll-polyglot
+  - jekyll-sitemap
+  - jekyll-feed
+
+# --- Repo files that must not be published -----------------------------------
+# (Gemfile, Gemfile.lock, node_modules, vendor/bundle and dot-directories such
+# as .github are already excluded by Jekyll's defaults.)
+exclude:
+  - README.md
+  - script/
+  - tasks/
+  - design/
