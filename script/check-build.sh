@@ -3025,7 +3025,11 @@ else
   errors << "the note about the #{other} blog (.blog__other) is missing" unless note
   errors << "the note should say #{blog["other"]["note"].inspect} and link #{blog["other"]["cta"].inspect}, it reads #{text_of.(note).inspect}" unless note && text_of.(note).start_with?(blog["other"]["note"]) && link && text_of.(link).start_with?(blog["other"]["cta"])
   errors << "the note's link should go to #{blog["other"]["path"]} (the #{other} blog index, written as it is: no /it/ added to the English one), it goes to #{link && link["href"].inspect}" unless link && link["href"] == blog["other"]["path"]
-  errors << "the note's link should say hreflang=\"#{other}\" and lang=\"#{other}\"" unless link && link["hreflang"] == other && link["lang"] == other
+  # hreflang names the language of the TARGET page; the link TEXT is written in the page's own
+  # language, so a lang attribute must not say otherwise (WCAG 3.1.2: a screen reader would
+  # read the text with the wrong voice).
+  errors << "the note's link should say hreflang=\"#{other}\"" unless link && link["hreflang"] == other
+  errors << "the note's link text is in the page's language (#{lang}): it must not carry lang=#{link["lang"].inspect}" if link && link["lang"] && link["lang"] != lang
   errors << "the note's link leads to a page that was not built" unless link && File.size?(File.join(root, link["href"].to_s, "index.html"))
   errors << "the feed link should be #{prefix}/feed.xml" unless page.at_css('link[rel="alternate"][type="application/atom+xml"]')&.[]("href") == "#{prefix}/feed.xml"
 end
