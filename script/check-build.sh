@@ -422,9 +422,11 @@ projects_pairs() {
 pairs="$(projects_pairs)"
 pass "$(wc -l <<<"$pairs" | tr -d ' ') projects, each an English and an Italian document tied by page_id, permalinks without the /it/ prefix, at least 3 featured"
 
-# The covers are real image files. A file with the right name and the wrong
-# content (an HTML error page saved by a failed download, an empty file) is a
-# broken picture on the page, so look at the first bytes of what the build ships.
+# The covers are real, complete image files. A file with the right name and the
+# wrong content (an HTML error page saved by a failed download, an empty file) is
+# a broken picture on the page, so look at the first bytes of what the build
+# ships. A file that was cut short (an interrupted download or copy) keeps those
+# first bytes, so look at how it ends as well: each format says where it stops.
 covers="$(cut -d'|' -f4,5 <<<"$pairs" | tr '|' '\n' | sort -u)"
 while IFS= read -r cover; do
   file="$SITE_DIR$cover"
@@ -434,13 +436,27 @@ while IFS= read -r cover; do
     ffd8ff*) kind="JPEG" ;;
     89504e470d0a1a0a*) kind="PNG" ;;
     52494646????????57454250) kind="WEBP" ;; # "RIFF", a 4-byte size, "WEBP"
-    *) fail "$file is not a JPEG, PNG or WEBP image (it starts with the bytes $signature): a project cover is a real screenshot, not an HTML error page or a stub" ;;
+    *) fail "$file is not a JPEG, PNG or WEBP image (it starts with the bytes $signature): a project cover is a real image, not an HTML error page or a stub" ;;
   esac
   size="$(wc -c <"$file" | tr -d ' ')"
   [[ "$size" -ge 4096 ]] || fail "$file is only $size bytes: too small to be a real cover"
+  case "$kind" in
+    WEBP) # Bytes 4-7 hold the size of everything after them, little-endian (read
+      # byte by byte, so the result does not depend on the machine's byte order).
+      read -r b0 b1 b2 b3 <<<"$(od -An -tu1 -j4 -N4 "$file")"
+      declared=$((b0 + b1 * 256 + b2 * 65536 + b3 * 16777216 + 8))
+      [[ "$declared" -eq "$size" ]] ||
+        fail "$file is a damaged WEBP: its header says $declared bytes, the file has $size (cut short, or bytes added at the end)" ;;
+    JPEG) # The last two bytes are the end-of-image marker.
+      [[ "$(tail -c 2 "$file" | od -An -tx1 | tr -d ' \n')" == "ffd9" ]] ||
+        fail "$file is a damaged JPEG: it does not end with the end-of-image marker (ffd9), so it was cut short" ;;
+    PNG) # The last 12 bytes are the IEND chunk: length 0, "IEND", its CRC.
+      [[ "$(tail -c 12 "$file" | od -An -tx1 | tr -d ' \n')" == "0000000049454e44ae426082" ]] ||
+        fail "$file is a damaged PNG: it does not end with the IEND chunk, so it was cut short" ;;
+  esac
   [[ ! -e "$SITE_DIR/it$cover" ]] ||
     fail "the cover $cover was also written under /it/: images are shared at /assets/ (exclude_from_localization)"
-  pass "$file is a real $kind image ($size bytes), published once"
+  pass "$file is a complete $kind image ($size bytes), published once"
 done <<<"$covers"
 
 # The detail pages, in both languages, at the permalinks the documents ask for.
