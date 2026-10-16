@@ -3,7 +3,7 @@
 //
 // The page shares the project page's rules for what it has in common: the way back,
 // the cover and the text (_project-detail.scss, through the same class names), and an
-// article's quotes and nested lists use the case study's rules (_case-study.scss). The
+// article's quotes and nested lists use the rules it shares with the case study (_prose.scss). The
 // card is the project card (.pgrid, .pcard, _projects.scss) and the index heading is the
 // project index's (.pindex). This file adds only what is new: the reading column, the
 // date line, the pictures, the code and the headings inside an article, the card's

@@ -90,5 +90,5 @@
 <link rel="preload" href="{{ '/assets/fonts/archivo-latin-wght-normal.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="{{ '/assets/fonts/hanken-grotesk-latin-wght-normal.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
-<script src="{{ '/assets/js/nav.js' | relative_url }}" defer onerror="document.documentElement.className='no-js'"></script>
+<script src="{{ '/assets/js/nav.js' | relative_url }}" defer onerror="document.documentElement.classList.remove('js');document.documentElement.classList.add('no-js')"></script>
 <link rel="alternate" type="application/atom+xml" href="{{ '/feed.xml' | relative_url }}" title="{{ site.data.i18n[lang].blog.feed | escape }}">

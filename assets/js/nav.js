@@ -4,8 +4,8 @@
 // stay open and reachable.
 //
 // If this file cannot do its job (it fails to load, which the <script onerror> in
-// head.html handles, or anything below throws), <html> goes back to class="no-js"
-// and the open menu layout returns: a menu that cannot open must never stay shut.
+// head.html handles, or anything below throws), <html> swaps its js class for no-js
+// (a classList swap: any other class on <html> stays) and the open menu layout returns: a menu that cannot open must never stay shut.
 //
 // The button (.nav__toggle) controls the menu through aria-controls and mirrors the
 // state in aria-expanded (its accessible name stays "Menu"). Escape closes the menu
@@ -15,7 +15,8 @@
   var root = document.documentElement;
 
   function giveUp() {
-    root.className = 'no-js';
+    root.classList.remove('js');
+    root.classList.add('no-js');
   }
 
   try {

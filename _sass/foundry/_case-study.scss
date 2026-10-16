@@ -5,7 +5,7 @@
 // the two-column layout with the facts beside the text, the stack chips and the
 // styling of the migrated text (all in _project-detail.scss, through the same class
 // names). This file adds only what is new: the result tiles, the challenge and
-// solution blocks, the quotes of the text, and the card's summary line. The card
+// solution blocks and the card's summary line (the quotes of the text are in _prose.scss). The card
 // itself is the project card (_projects.scss).
 
 // ---------- section heading ----------
@@ -97,31 +97,6 @@
   margin:0;
   color:var(--ink-2);
   max-width:56ch;
-}
-
-// ---------- the text ----------
-// The text itself is styled by .project__body (an article's quotes and nested lists, see
-// _blog.scss, use these rules too). A case study adds quotes (a client's
-// words) and, in its lists, items that carry a nested list (the phases of the
-// approach).
-.case__body blockquote,
-.post__body blockquote{
-  margin:0 0 1.2em;
-  padding:2px 0 2px 20px;
-  border-left:3px solid var(--emerald);
-  color:var(--ink);
-  font-weight:500;
-}
-
-.case__body blockquote p,
-.post__body blockquote p{
-  margin:0;
-}
-
-.case__body li > ul,
-.post__body li > ul,
-.post__body li > ol{
-  margin:.65em 0 0;
 }
 
 // ---------- card ----------

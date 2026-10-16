@@ -362,8 +362,8 @@ section{
   }
 }
 
-// Phones: the brand row is brand + menu button; the language code and the booking
-// button are in the menu (see above).
+// Phones: the brand row is the brand, the Book button and the menu button; the links
+// and the language code are in the menu (see above), whose own booking copy is hidden.
 @media (max-width:480px){
   .nav .wrap{
     gap:10px 12px;

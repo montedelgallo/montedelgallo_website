@@ -1,0 +1,26 @@
+// Prose rules shared by the two long-form pages: the case study (.case__body, see
+// _layouts/case_study.html) and the blog article (.post__body, see _layouts/post.html).
+//
+// The base styling of the text (headings, paragraphs, lists, links, code) is .project__body in
+// _project-detail.scss, which the case study uses through its class names. What is added here
+// is what an article and a case study have and a project does not: quotes (a client's words, a
+// quoted passage) and lists whose items carry a nested list (the phases of an approach).
+.case__body blockquote,
+.post__body blockquote{
+  margin:0 0 1.2em;
+  padding:2px 0 2px 20px;
+  border-left:3px solid var(--emerald);
+  color:var(--ink);
+  font-weight:500;
+}
+
+.case__body blockquote p,
+.post__body blockquote p{
+  margin:0;
+}
+
+.case__body li > ul,
+.post__body li > ul,
+.post__body li > ol{
+  margin:.65em 0 0;
+}

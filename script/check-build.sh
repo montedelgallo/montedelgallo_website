@@ -423,7 +423,10 @@ end
 js = page.css("script[src]").find { |s| s["src"].to_s.end_with?("/assets/js/nav.js") }
 errors << "nav.js must be loaded with a <script src=\"/assets/js/nav.js\" defer>" unless js && js.has_attribute?("defer")
 # A failed load must give the open (no-JS) layout back: the script tag reverts js -> no-js.
-errors << "the nav.js <script> needs an onerror handler that sets <html> back to class=\"no-js\", it has #{js && js["onerror"].inspect}" unless js && js["onerror"].to_s =~ /className\s*=\s*["']no-js["']/
+# It swaps the class (classList: remove js, add no-js) and never overwrites className, which would drop any other class of <html>.
+onerror = js && js["onerror"].to_s
+errors << "the nav.js <script> needs an onerror handler that swaps <html>'s js class for no-js with classList.remove('js') and classList.add('no-js'), it has #{onerror.inspect}" unless onerror && onerror.match?(/classList\.remove\(\s*["']js["']\s*\)/) && onerror.match?(/classList\.add\(\s*["']no-js["']\s*\)/)
+errors << "the onerror handler must not overwrite className (it would drop the other classes of <html>): #{onerror.inspect}" if onerror&.match?(/className\s*=(?!=)/)
 errors << "<html> must start as class=\"no-js\" (the fallback until the head script flips it)" unless page.at_css("html")["class"].to_s.split.include?("no-js")
 abort(errors.map { |e| "  - #{e}" }.join("\n")) unless errors.empty?
 RUBY
@@ -447,13 +450,16 @@ abort("the collapse rule is at depth #{depth}") unless depth == 1 && query && be
 RUBY
 grep -qF 'document.documentElement.className' "$EN_HOME" || fail "$EN_HOME has no head script that flips no-js to js"
 # nav.js reverts to the no-JS layout when anything throws (a menu that cannot open must not stay collapsed).
-grep -q 'catch' "$SITE_DIR/assets/js/nav.js" && grep -qE "className *= *['\"]no-js['\"]" "$SITE_DIR/assets/js/nav.js" ||
-  fail "$SITE_DIR/assets/js/nav.js must wrap its setup in try/catch and set <html> back to class=\"no-js\" on any error"
+grep -q 'catch' "$SITE_DIR/assets/js/nav.js" && grep -qE "classList\.remove\( *['\"]js['\"] *\)" "$SITE_DIR/assets/js/nav.js" && grep -qE "classList\.add\( *['\"]no-js['\"] *\)" "$SITE_DIR/assets/js/nav.js" ||
+  fail "$SITE_DIR/assets/js/nav.js must wrap its setup in try/catch and swap <html>'s js class for no-js (classList.remove('js'), classList.add('no-js')) on any error"
+if grep -qE "className *=[^=]" "$SITE_DIR/assets/js/nav.js"; then
+  fail "$SITE_DIR/assets/js/nav.js overwrites <html>'s className: use a classList swap so the other classes survive"
+fi
 # The phone Book button: hidden on a desktop, shown in the bar below 860px; the menu's own copy goes then.
 grep -qE '\.nav__book(,[^{]*)?\{[^}]*display:none' "$CSS" || fail "$CSS: .nav__book must be hidden by default (the desktop bar has the button in .nav__cta)"
 grep -qE '@media ?\(max-width: ?860px\)\{[^@]*\.nav__book\{[^}]*display:inline-flex' "$CSS" || fail "$CSS: .nav__book must be shown (display:inline-flex) in the (max-width:860px) media query"
 grep -qE '\.no-js \.nav\{position:static' "$CSS" || fail "$CSS: the no-JS open menu must not stay stuck (.no-js .nav{position:static})"
-pass "mobile menu: button (constant Menu label) with aria-expanded=false + aria-controls (EN, IT, inner page), Book in the phone bar, deferred nav.js with onerror + try/catch revert to no-js, <=860px CSS, reduced-motion guard, no-JS fallback"
+pass "mobile menu: button (constant Menu label) with aria-expanded=false + aria-controls (EN, IT, inner page), Book in the phone bar, deferred nav.js with onerror + try/catch classList swap back to no-js, <=860px CSS, reduced-motion guard, no-JS fallback"
 
 # No orphan page: every built page (the 404 excepted) is linked from the header, the footer or an
 # index page of its own language. The index pages are the ones the headers and footers lead to
@@ -1271,8 +1277,9 @@ fx_members:
 <p id="canary">{{ t }} {{ lang }} {{ p }}</p>
 PAGE
 # A project with `featured: false`, as an English and an Italian document tied by
-# page_id, like the real ones. Every real project is featured, so without this
-# pair nothing ever gives the featured filter of the home something to drop. The
+# page_id, like the real ones. Only 3 of the 12 real projects are featured, so the real
+# homes already drop the other nine; this pair pins the filter on data of its own, so the
+# proof does not depend on which real projects happen to be featured. The
 # fixture's home must not list it (checked at the end of "Asserting the home
 # page"); the project still has pages of its own.
 mkdir -p "$FIXTURE/_projects/it"
@@ -2670,9 +2677,9 @@ check_project_cards it "$IT_HOME" "$SITE_DIR" "#work" no ||
   fail "the project cards on the Italian home are wrong (see the list above)"
 pass "both homes: one h1, the nine sections in order (ids services, work, robotic-lab, about, team; no built-with strip), every string of the home: tree on the page, the icons and counts the data asks for, booking and WhatsApp links, and the featured projects with their real covers in the work section"
 
-# The featured filter, on both sides. Every real project is `featured: true`, so
-# the real homes only prove that the work section KEEPS the featured projects: a
-# filter taken out of _includes/home/work.html would still pass. The fixture holds
+# The featured filter, on both sides. Only 3 of the 12 real projects are `featured: true`,
+# so the real homes already show the filter dropping the other nine; that proof rests on
+# the real data, which the client edits. The fixture holds
 # one project with `featured: false` in each language (see where it is built), and
 # its home is rendered from the same index.html and _includes/home/. Its work
 # section must show exactly the cards of the real home and not that project, which
