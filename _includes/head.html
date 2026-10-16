@@ -3,7 +3,8 @@
   hreflang alternates, Open Graph / Twitter, font preloads, stylesheet.
 
   Front matter a page can set: title, meta_title, description, image (see
-  _data/site_meta.yml). A page that sets none gets the site defaults of its
+  _data/site_meta.yml), and noindex: true (a draft page: robots noindex; pair it with
+  sitemap: false). A page that sets none gets the site defaults of its
   language. A collection item that has a `summary` (a project) uses it as its
   description when it sets no `description`, so its page does not repeat the
   home page's.
@@ -47,6 +48,9 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>{{ seo_title | escape }}</title>
 <meta name="description" content="{{ seo_description | escape }}">
+{%- if page.noindex %}
+<meta name="robots" content="noindex">
+{%- endif %}
 <link rel="canonical" {% static_href %}href="{{ origin }}{{ canonical_path }}"{% endstatic_href %}>
 {%- for l in site.languages -%}
   {%- capture alt_path %}{% include lang-url.html lang=l %}{% endcapture -%}

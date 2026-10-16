@@ -1,0 +1,45 @@
+---
+layout: default
+title: Informativa sulla privacy
+lang: it
+page_id: privacy
+permalink: /privacy/
+description: "Informativa sulla privacy di Monte del Gallo: segnaposto in bozza, il testo legale sarà fornito dall’azienda prima del lancio del sito."
+noindex: true
+sitemap: false
+---
+{%- comment -%}
+  Segnaposto in BOZZA, lato italiano. Il lato inglese è privacy.html (permalink /privacy/, stesso page_id). Qui ci sono solo fatti noti (titolare, P.IVA, indirizzo, email, i fornitori che conosciamo); il resto è segnato da completare. NON scrivere testo legale in questo file: lo fornisce Monte del Gallo prima del lancio. noindex + sitemap: false tengono la bozza fuori dai motori di ricerca fino ad allora. Stili: _sass/foundry/_contact.scss.
+{%- endcomment -%}
+{%- assign company = site.data.site_meta.company -%}
+<section class="hero hero--page">
+  <svg class="hero__range" aria-hidden="true" focusable="false"><use href="#mdg-range"/></svg>
+  <div class="wrap">
+    <div>
+      <p class="eyebrow">Note legali</p>
+      <h1>Informativa sulla privacy</h1>
+      <p class="hero__sub">Questa pagina spiegherà come Monte del Gallo tratta i dati personali su questo sito.</p>
+    </div>
+  </div>
+</section>
+
+<section class="pad">
+  <div class="wrap">
+    <p class="draft" role="note"><strong>Bozza</strong> — il testo legale sarà fornito da Monte del Gallo prima del lancio.</p>
+    <div class="project__body">
+      <h2>Titolare del trattamento</h2>
+      <p>Il titolare del trattamento di questo sito è {{ company.name }}, P.IVA {{ company.vat }}, {{ company.locality }} {{ company.postal_code }}. Email: <a href="mailto:{{ company.email }}">{{ company.email }}</a>.</p>
+      <h2>Dati raccolti attraverso questo sito</h2>
+      <p>Il modulo di contatto richiede il tuo nome, il tuo indirizzo email, il tuo numero di telefono (facoltativo) e il tuo messaggio.</p>
+      <h2>Servizi e responsabili del trattamento</h2>
+      <p>Questi fornitori trattano dati per conto del sito. L’elenco completo e i dettagli di ciascuno sono ancora da completare.</p>
+      <ul>
+        <li><strong>Soshiki</strong>: pagina di prenotazione e modulo di contatto. <span class="tbd">Dettagli da completare.</span></li>
+        <li><strong>Fornitore di hosting</strong>: <span class="tbd">da completare.</span></li>
+        <li><strong>Analytics</strong>: <span class="tbd">da completare.</span></li>
+      </ul>
+      <h2>Finalità, base giuridica, conservazione e diritti</h2>
+      <p><span class="tbd">Da fornire a cura di Monte del Gallo prima del lancio.</span></p>
+    </div>
+  </div>
+</section>

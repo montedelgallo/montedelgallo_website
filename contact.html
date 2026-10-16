@@ -1,0 +1,68 @@
+---
+layout: default
+title: Contact
+lang: en
+page_id: contact
+permalink: /contact/
+description: "Get in touch with Monte del Gallo: book a 30-minute call, write on WhatsApp or by email, or send us a message about your software, automation or AI project."
+---
+{%- comment -%}
+  The Contact page, English side. Its Italian side is it/contatti.html (permalink
+  /contatti/, the same page_id). Grounded in the live pages: /it/contatti/ opens with
+  "Hai un progetto da costruire?" and "Raccontaci cosa vuoi costruire" (translated here:
+  the live /contact/ is only a headline, "Don't wait for your future / Get in touch", and
+  a form). The live form asked for first and last name, company, phone and budget; this
+  one is the client's own Soshiki form (_includes/contact-form.html), with its four
+  fields. Booking is a link to the Soshiki page (site_meta.booking_url), not the embed.
+  The direct contacts are text AND links; the company facts are in _data/site_meta.yml.
+  Styles: _sass/foundry/_contact.scss.
+{%- endcomment -%}
+{%- assign company = site.data.site_meta.company -%}
+{%- assign t = site.data.i18n.en -%}
+<section class="hero hero--page">
+  <svg class="hero__range" aria-hidden="true" focusable="false"><use href="#mdg-range"/></svg>
+  <div class="wrap">
+    <div>
+      <p class="eyebrow">Contact</p>
+      <h1>Got a project to build?</h1>
+      <p class="hero__sub">Tell us the context, the problem and the result you want. We will help you work out the first technical and strategic step.</p>
+      <div class="hero__cta">
+        <a class="btn btn--solid" href="{{ site.data.site_meta.booking_url }}">{{ t.contact.book | escape }}</a>
+        <a class="btn btn--ghost" href="https://wa.me/{{ company.phone | remove: ' ' | remove: '+' }}">{{ t.contact.whatsapp | escape }}</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="pad" id="write">
+  <div class="wrap">
+    <div class="contact">
+      <div class="contact__intro">
+        <div class="sec-head">
+          <p class="eyebrow">Get in touch</p>
+          <h2 class="h2">Tell us what you want to build.</h2>
+          <p class="lede">Write to us about websites, custom software, automation, apps and AI integrations. We will reply with a concrete first steer.</p>
+        </div>
+        <dl class="contact__list">
+          <div>
+            <dt>WhatsApp</dt>
+            <dd><a href="https://wa.me/{{ company.phone | remove: ' ' | remove: '+' }}">{{ t.contact.whatsapp | escape }}</a></dd>
+          </div>
+          <div>
+            <dt>Phone</dt>
+            <dd><a href="tel:{{ company.phone | remove: ' ' }}">{{ company.phone }}</a></dd>
+          </div>
+          <div>
+            <dt>Email</dt>
+            <dd><a href="mailto:{{ company.email }}">{{ company.email }}</a></dd>
+          </div>
+          <div>
+            <dt>Address</dt>
+            <dd>{{ company.locality }}, {{ company.postal_code }}</dd>
+          </div>
+        </dl>
+      </div>
+      {% include contact-form.html %}
+    </div>
+  </div>
+</section>

@@ -1,0 +1,194 @@
+// The Contact page (contact.html, it/contatti.html), the Soshiki contact form
+// (_includes/contact-form.html) and the draft banner of the legal placeholder pages
+// (privacy.html, cookie.html and their Italian sides).
+//
+// The head of the page is the pages' hero (.hero--page, _pages.scss) with the two buttons;
+// the buttons are .btn (_components.scss). Nothing in here sets a colour that is not a
+// token (_tokens.scss).
+//
+// Accessibility: every field has a visible label above it, the field border is the muted
+// ink (about 5:1 on white, the 3:1 an interface boundary needs), the global
+// :focus-visible ring (_base.scss) is kept and the field also darkens its border, and
+// every control is at least 48px tall. Text is 1rem so a phone does not zoom into it.
+
+// ---------- the page: intro and direct contacts beside the form ----------
+.contact{
+  display:grid;
+  grid-template-columns:minmax(0,1fr);
+  gap:clamp(32px,5vw,64px);
+  align-items:start;
+}
+
+.contact > *{
+  min-width:0;
+}
+
+@media (min-width:900px){
+  .contact{
+    grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);
+  }
+}
+
+// WhatsApp, phone, email, address: a small label and the value, which is text and a link.
+.contact__list{
+  margin:clamp(24px,3vw,36px) 0 0;
+  padding:0;
+  border-top:1px solid var(--line);
+}
+
+.contact__list > div{
+  display:grid;
+  grid-template-columns:minmax(0,7.5rem) minmax(0,1fr);
+  gap:4px 16px;
+  align-items:baseline;
+  padding-block:6px;
+  border-bottom:1px solid var(--line);
+}
+
+.contact__list dt{
+  font-family:var(--mono);
+  font-size:.72rem;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:var(--muted);
+}
+
+.contact__list dd{
+  margin:0;
+  font-size:1.05rem;
+  color:var(--ink);
+  overflow-wrap:anywhere;
+}
+
+// A link with room around it: a comfortable tap target on a phone.
+.contact__list a{
+  display:inline-block;
+  padding-block:8px;
+  color:var(--emerald);
+  text-decoration:underline;
+  text-underline-offset:3px;
+}
+
+.contact__list a:hover{
+  color:var(--emerald-d);
+}
+
+// ---------- the form ----------
+.cform{
+  background:var(--surface-2);
+  border:1px solid var(--line-2);
+  border-radius:10px;
+  padding:clamp(20px,3vw,32px);
+}
+
+.cform__field{
+  margin:0 0 20px;
+}
+
+.cform__label{
+  display:block;
+  margin:0 0 6px;
+  font-weight:700;
+  font-size:.95rem;
+  color:var(--ink);
+}
+
+.cform__req{
+  color:var(--emerald);
+}
+
+.cform__opt{
+  font-weight:400;
+  color:var(--muted);
+}
+
+.cform__control{
+  display:block;
+  width:100%;
+  min-height:48px;
+  padding:11px 14px;
+  font-family:inherit;
+  font-size:1rem;
+  line-height:1.4;
+  color:var(--ink);
+  background:var(--surface-2);
+  border:1.5px solid var(--muted);
+  border-radius:5px;
+  box-sizing:border-box;
+}
+
+textarea.cform__control{
+  min-height:150px;
+  resize:vertical;
+}
+
+.cform__control:hover{
+  border-color:var(--ink-2);
+}
+
+.cform__control:focus{
+  border-color:var(--ink);
+}
+
+.cform__hint{
+  margin:0 0 20px;
+  font-size:.85rem;
+  color:var(--muted);
+}
+
+.cform__send{
+  min-height:48px;
+  font-size:1rem;
+}
+
+// The privacy notice under the form.
+.cform__note{
+  margin:18px 0 0;
+  font-size:.85rem;
+  color:var(--muted);
+}
+
+.cform__note a{
+  color:var(--emerald);
+  text-decoration:underline;
+  text-underline-offset:2px;
+}
+
+@media (max-width:480px){
+  // A full-width button on a phone.
+  .cform__send{
+    width:100%;
+    justify-content:center;
+  }
+}
+
+// ---------- the legal placeholders ----------
+// The banner of a draft: a dashed frame, impossible to take for the real text.
+.draft{
+  max-width:68ch;
+  margin:0 0 clamp(24px,3vw,36px);
+  padding:14px 18px;
+  border:2px dashed var(--ink-2);
+  border-radius:6px;
+  background:var(--surface-2);
+  color:var(--ink);
+  font-size:.95rem;
+}
+
+.draft strong{
+  font-family:var(--mono);
+  font-size:.78rem;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+}
+
+// A fact still to be filled in.
+.tbd{
+  font-family:var(--mono);
+  font-size:.82rem;
+  color:var(--ink);
+  background:var(--surface-2);
+  border:1px dashed var(--ink-2);
+  border-radius:3px;
+  padding:1px 6px;
+}

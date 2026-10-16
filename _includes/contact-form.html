@@ -1,0 +1,37 @@
+{%- comment -%}
+  The contact form: the client's own Soshiki form (https://soshiki.io/f/l3opjfhj10ocxgca).
+  Soshiki defines the fields, so the action, the method, every field's name, id, type,
+  required flag, the textarea's rows and the honeypot (_gotcha) are kept exactly as given
+  and must not change. What is ours: the visible words (t.contact.form in
+  _data/i18n/<lang>.yml), the Foundry classes and the autocomplete hints.
+
+  The page's own variables are not touched: the words are read into cf_ locals (never
+  assign t, lang or p in an include, see index.html and script/check-build.sh). The
+  privacy page is the same slug in both languages; polyglot puts /it/ in front of the
+  link in the Italian build.
+{%- endcomment -%}
+{%- assign cf_t = site.data.i18n[site.active_lang].contact.form -%}
+<div class="cform">
+  <form class="cform__form" action="https://soshiki.io/f/l3opjfhj10ocxgca" method="POST">
+    <div class="cform__field">
+      <label class="cform__label" for="sk-nome">{{ cf_t.nome | escape }} <span class="cform__req" aria-hidden="true">*</span></label>
+      <input class="cform__control" type="text" id="sk-nome" name="nome" autocomplete="name" required>
+    </div>
+    <div class="cform__field">
+      <label class="cform__label" for="sk-email">{{ cf_t.email | escape }} <span class="cform__req" aria-hidden="true">*</span></label>
+      <input class="cform__control" type="email" id="sk-email" name="email" autocomplete="email" required>
+    </div>
+    <div class="cform__field">
+      <label class="cform__label" for="sk-telefono">{{ cf_t.telefono | escape }} <span class="cform__opt">({{ cf_t.optional | escape }})</span></label>
+      <input class="cform__control" type="tel" id="sk-telefono" name="telefono" autocomplete="tel">
+    </div>
+    <div class="cform__field">
+      <label class="cform__label" for="sk-messaggio">{{ cf_t.messaggio | escape }} <span class="cform__req" aria-hidden="true">*</span></label>
+      <textarea class="cform__control" id="sk-messaggio" name="messaggio" rows="5" required></textarea>
+    </div>
+    <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" hidden>
+    <p class="cform__hint">{{ cf_t.required_note | escape }}</p>
+    <button class="btn btn--solid cform__send" type="submit">{{ cf_t.send | escape }}</button>
+  </form>
+  <p class="cform__note">{{ cf_t.privacy_pre | escape }} <a href="{{ '/privacy/' | relative_url }}">{{ cf_t.privacy_link | escape }}</a>.</p>
+</div>

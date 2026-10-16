@@ -40,6 +40,10 @@
   <div class="footbar">
     <div class="wrap">
       <span>© {{ site.time | date: "%Y" }} {{ company.name }}. {{ t.footer.rights | escape }}</span>
+      <nav class="footbar__legal" aria-label="{{ t.footer.legal | escape }}">
+        <a href="{{ '/privacy/' | relative_url }}">{{ t.footer.privacy | escape }}</a>
+        <a href="{{ '/cookie/' | relative_url }}">{{ t.footer.cookie | escape }}</a>
+      </nav>
       <span class="sp">{{ t.footer.vat | escape }} {{ company.vat }}</span>
     </div>
   </div>

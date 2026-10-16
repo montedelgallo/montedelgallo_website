@@ -219,6 +219,20 @@ blog: # the article card, the article page and the blog index
     path: "/it/articoli/" # the other language's index, with its prefix: the link must not be rewritten
   feed: "Articles feed" # the title of the Atom feed link in the <head>
 
+contact: # the Contact page and the Soshiki contact form (_includes/contact-form.html)
+  book: "Book a 30-min call" # leads to the booking page
+  whatsapp: "Chat on WhatsApp"
+  form:
+    nome: "Name"
+    email: "Email"
+    telefono: "Phone"
+    messaggio: "Message"
+    send: "Send"
+    optional: "Optional"
+    required_note: "Fields marked * are required."
+    privacy_pre: "By sending this message you accept our"
+    privacy_link: "privacy policy"
+
 footer:
   tagline: "Software development boutique. Custom systems, automation and AI — built in Roma."
   company: "Company"
@@ -226,6 +240,9 @@ footer:
   contact: "Contact"
   rights: "All rights reserved."
   vat: "VAT"
+  legal: "Legal" # the accessible name of the Privacy and Cookie links
+  privacy: "Privacy policy"
+  cookie: "Cookie policy"
   links: # the Company column, in the order of nav.yml footer_company
     services: "Services"
     case_studies: "Case studies"

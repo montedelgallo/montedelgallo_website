@@ -211,6 +211,20 @@ blog: # la card di un articolo, la pagina dell'articolo e l'indice del blog
     path: "/blog/" # l'indice dell'altra lingua, senza prefisso /it/: il link non deve essere riscritto
   feed: "Feed degli articoli" # il titolo del link al feed Atom nell'<head>
 
+contact: # la pagina Contatti e il modulo di contatto Soshiki (_includes/contact-form.html)
+  book: "Prenota una call di 30 minuti" # porta alla pagina di prenotazione
+  whatsapp: "Scrivici su WhatsApp"
+  form:
+    nome: "Nome"
+    email: "Email"
+    telefono: "Telefono"
+    messaggio: "Messaggio"
+    send: "Invia"
+    optional: "Facoltativo"
+    required_note: "I campi contrassegnati con * sono obbligatori."
+    privacy_pre: "Inviando il messaggio accetti la nostra"
+    privacy_link: "informativa sulla privacy"
+
 footer:
   tagline: "Boutique di sviluppo software. Sistemi su misura, automazione e AI — realizzati a Roma."
   company: "Azienda"
@@ -218,6 +232,9 @@ footer:
   contact: "Contatti"
   rights: "Tutti i diritti riservati."
   vat: "P.IVA"
+  legal: "Note legali" # the accessible name of the Privacy and Cookie links
+  privacy: "Informativa privacy"
+  cookie: "Cookie policy"
   links:
     services: "Servizi"
     case_studies: "Casi di studio"

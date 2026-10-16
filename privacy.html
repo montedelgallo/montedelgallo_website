@@ -1,0 +1,45 @@
+---
+layout: default
+title: Privacy policy
+lang: en
+page_id: privacy
+permalink: /privacy/
+description: "Privacy policy of Monte del Gallo: draft placeholder, the legal text is to be provided by the company before the site launches."
+noindex: true
+sitemap: false
+---
+{%- comment -%}
+  DRAFT placeholder, English side. Its Italian side is it/privacy.html (permalink /privacy/, the same page_id). Only known facts are stated here (controller, VAT, address, email, the processors we know of); everything else is marked to be completed. Do NOT write legal text in this file: it comes from Monte del Gallo before launch. noindex + sitemap: false keep the draft out of search until then. Styles: _sass/foundry/_contact.scss.
+{%- endcomment -%}
+{%- assign company = site.data.site_meta.company -%}
+<section class="hero hero--page">
+  <svg class="hero__range" aria-hidden="true" focusable="false"><use href="#mdg-range"/></svg>
+  <div class="wrap">
+    <div>
+      <p class="eyebrow">Legal</p>
+      <h1>Privacy policy</h1>
+      <p class="hero__sub">This page will explain how Monte del Gallo handles personal data on this website.</p>
+    </div>
+  </div>
+</section>
+
+<section class="pad">
+  <div class="wrap">
+    <p class="draft" role="note"><strong>Draft</strong> — legal text to be provided by Monte del Gallo before launch.</p>
+    <div class="project__body">
+      <h2>Data controller</h2>
+      <p>The data controller of this website is {{ company.name }}, VAT {{ company.vat }}, {{ company.locality }} {{ company.postal_code }}. Email: <a href="mailto:{{ company.email }}">{{ company.email }}</a>.</p>
+      <h2>Data collected through this website</h2>
+      <p>The contact form asks for your name, your email address, your phone number (optional) and your message.</p>
+      <h2>Services and processors</h2>
+      <p>These providers handle data on behalf of the website. The full list and the details of each one are still to be completed.</p>
+      <ul>
+        <li><strong>Soshiki</strong>: booking page and contact form. <span class="tbd">Details to be completed.</span></li>
+        <li><strong>Hosting provider</strong>: <span class="tbd">to be completed.</span></li>
+        <li><strong>Analytics</strong>: <span class="tbd">to be completed.</span></li>
+      </ul>
+      <h2>Purposes, legal basis, retention and your rights</h2>
+      <p><span class="tbd">To be provided by Monte del Gallo before launch.</span></p>
+    </div>
+  </div>
+</section>

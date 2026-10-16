@@ -2968,6 +2968,9 @@ startup-studio|startup-studio.html|/startup-studio/|it/studio-startup.html|/stud
 product-lab|product-lab.html|/product-lab/|it/laboratorio-prodotto.html|/laboratorio-prodotto/
 careers|careers.html|/careers/|it/lavora-con-noi.html|/lavora-con-noi/
 motioforge|motioforge.html|/motioforge/|it/motioforge.html|/motioforge/
+contact|contact.html|/contact/|it/contatti.html|/contatti/
+privacy|privacy.html|/privacy/|it/privacy.html|/privacy/
+cookie|cookie.html|/cookie/|it/cookie.html|/cookie/
 PAGES
 }
 
@@ -2985,7 +2988,7 @@ require "yaml"
 
 site_dir, site_url = ARGV
 errors = []
-min_words = { "about" => 900, "startup-studio" => 250, "product-lab" => 250, "careers" => 140, "motioforge" => 600 }
+min_words = { "about" => 900, "startup-studio" => 250, "product-lab" => 250, "careers" => 140, "motioforge" => 600, "contact" => 90, "privacy" => 130, "cookie" => 110 }
 rows = ENV.fetch("COMPANY_PAGES").lines.map { |line| line.strip.split("|") }
 rows.each do |page_id, en_src, en_url, it_src, it_url|
   pair = { "en" => [en_src, en_url, en_url], "it" => [it_src, it_url, "/it#{it_url}"] }
@@ -3047,7 +3050,7 @@ RUBY
 }
 COMPANY_PAGES="$(company_pages)" check_company_pages "$SITE_DIR" "$SITE_URL" ||
   fail "a company page is wrong (see the list above)"
-pass "5 pages in 2 languages (10 pages) at bare permalinks: documents agree with the manifest, one <h1>, no skipped heading, a real body, reciprocal canonical/hreflang and a language switch that lands on the other page"
+pass "$(company_pages | wc -l | tr -d ' ') pages in 2 languages (company pages, Contact and the legal drafts) at bare permalinks: documents agree with the manifest, one <h1>, no skipped heading, a real body, reciprocal canonical/hreflang and a language switch that lands on the other page"
 
 # The links on those pages stay in the page's language, and no /it/it/ is built.
 co_en_pages=() co_it_pages=()
@@ -3279,6 +3282,189 @@ RUBY
 }
 check_company_redirects || fail "_data/redirects.yml does not map the old About, manifesto, process and MotioForge URLs (see the list above)"
 pass "_data/redirects.yml maps the 6 folded About pages to their sections and /it/motioforge-2/ to /it/motioforge/"
+
+echo "==> Asserting the contact page, the Soshiki form and the legal placeholders"
+# The contact form is the client's own Soshiki form (_includes/contact-form.html): its
+# action, method, field names, ids, types, required flags, rows and honeypot are the ones
+# Soshiki gave, character for character; only the visible words (i18n), the classes and
+# the autocomplete hints are ours. Booking is a plain link to booking_url (the Soshiki
+# embed widget is deferred, see the plan): neither embed.js nor data-sk-booking may ship.
+# The direct contacts are selectable text AND links. The Privacy and Cookie pages are
+# DRAFTS: bannered, noindex, out of the sitemap, and they state only known facts.
+SK_ACTION="https://soshiki.io/f/l3opjfhj10ocxgca"
+BOOKING_URL="$(bundle exec ruby -ryaml -e 'puts YAML.load_file("_data/site_meta.yml")["booking_url"]')"
+[[ -n "$BOOKING_URL" ]] || fail "_data/site_meta.yml has no booking_url"
+assert_file "_includes/contact-form.html" "the Soshiki contact form include"
+require_contains "_includes/contact-form.html" "action=\"$SK_ACTION\"" "the Soshiki form action must be kept verbatim"
+if grep -nE '\{%-?[[:space:]]*(assign|capture)[[:space:]]+(t|lang|p)[[:space:]]*(=|-?%\})|\{%-?[[:space:]]*for[[:space:]]+(t|lang|p)[[:space:]]+in[[:space:]]' _includes/contact-form.html; then
+  fail "_includes/contact-form.html assigns (or loops with) t, lang or p: give the variable a prefix of its own"
+fi
+
+check_contact_page() {
+  bundle exec ruby - "$@" <<'RUBY'
+# encoding: utf-8
+require "nokogiri"
+require "yaml"
+
+lang, file, booking, action = ARGV
+errors = []
+page = Nokogiri::HTML5(File.read(file, encoding: "utf-8"))
+main = page.at_css("main")
+strings = YAML.load_file("_data/i18n/#{lang}.yml").fetch("contact")
+company = YAML.load_file("_data/site_meta.yml").fetch("company")
+hrefs = main.css("a[href]").map { |a| a["href"] }
+text = main.text.gsub(/\s+/, " ")
+
+# --- the form, character for character
+forms = main.css("form")
+errors << "#{lang}: main must hold exactly one <form>, it holds #{forms.size}" unless forms.size == 1
+form = forms.first
+if form
+  errors << "#{lang}: form action must be #{action}, it is #{form["action"].inspect}" unless form["action"] == action
+  errors << "#{lang}: form method must be POST, it is #{form["method"].inspect}" unless form["method"] == "POST"
+  fields = { "nome" => ["input", "text", true, "sk-nome", "name"], "email" => ["input", "email", true, "sk-email", "email"],
+             "telefono" => ["input", "tel", false, "sk-telefono", "tel"], "messaggio" => ["textarea", nil, true, "sk-messaggio", nil] }
+  fields.each do |name, (tag, type, required, id, autocomplete)|
+    node = form.at_css("#{tag}[name='#{name}']")
+    (errors << "#{lang}: no <#{tag} name=\"#{name}\"> in the form"; next) unless node
+    errors << "#{lang}: #{name} must have id=#{id.inspect}, it has #{node["id"].inspect}" unless node["id"] == id
+    errors << "#{lang}: #{name} must have type=#{type.inspect}, it has #{node["type"].inspect}" if type && node["type"] != type
+    errors << "#{lang}: #{name} must #{required ? "" : "not "}be required" unless node.has_attribute?("required") == required
+    errors << "#{lang}: #{name} should hint autocomplete=#{autocomplete.inspect}, it has #{node["autocomplete"].inspect}" if autocomplete && node["autocomplete"] != autocomplete
+    label = form.at_css("label[for='#{id}']")
+    errors << "#{lang}: #{name} has no <label for=\"#{id}\">" unless label
+    errors << "#{lang}: the label of #{name} should read #{strings.dig("form", name).inspect}, it reads #{label.text.strip.inspect}" if label && !label.text.include?(strings.dig("form", name))
+  end
+  area = form.at_css("textarea[name='messaggio']")
+  errors << "#{lang}: the textarea must have rows=\"5\", it has #{area && area["rows"].inspect}" unless area && area["rows"] == "5"
+  trap = form.at_css("input[name='_gotcha']")
+  if trap
+    errors << "#{lang}: the honeypot must be type=\"text\"" unless trap["type"] == "text"
+    errors << "#{lang}: the honeypot must have tabindex=\"-1\"" unless trap["tabindex"] == "-1"
+    errors << "#{lang}: the honeypot must have autocomplete=\"off\"" unless trap["autocomplete"] == "off"
+    errors << "#{lang}: the honeypot must be hidden" unless trap.has_attribute?("hidden")
+    errors << "#{lang}: the honeypot must have no label and no id (nothing for a person to find)" if trap["id"]
+  else
+    errors << "#{lang}: no honeypot <input name=\"_gotcha\">"
+  end
+  names = form.css("input,textarea,select").map { |n| n["name"] }
+  extra = names - %w[nome email telefono messaggio _gotcha]
+  errors << "#{lang}: the form has fields Soshiki did not define: #{extra.inspect}" unless extra.empty?
+  submit = form.css("button").to_a
+  errors << "#{lang}: the form needs one <button type=\"submit\"> reading #{strings.dig("form", "send").inspect}" unless submit.size == 1 && submit[0]["type"] == "submit" && submit[0].text.strip == strings.dig("form", "send")
+  errors << "#{lang}: the form must not load a script or frame" if form.css("script,iframe").any?
+  # the privacy notice sits with the form and links the privacy page in this language
+  privacy = lang == "it" ? "/it/privacy/" : "/privacy/"
+  box = form.ancestors.find { |n| n["class"].to_s.split.include?("cform") }
+  link = box && box.css("a[href]").find { |a| a["href"] == privacy }
+  errors << "#{lang}: the form needs a privacy notice linking #{privacy} (inside .cform, under the form)" unless link
+  errors << "#{lang}: the privacy notice must come after the form" if link && form.xpath("following::a").none? { |a| a == link }
+end
+
+# --- booking: a link-out to booking_url, primary button
+button = main.css("a.btn--solid").find { |a| a["href"] == booking }
+errors << "#{lang}: the booking button (a.btn--solid -> #{booking}) is missing from the page body" unless button
+errors << "#{lang}: the booking button should read #{strings["book"].inspect}" if button && button.text.strip != strings["book"]
+
+# --- direct contacts: links AND selectable text
+phone = company["phone"]
+digits = phone.delete(" ")
+wa = "https://wa.me/#{digits.delete("+")}"
+errors << "#{lang}: no WhatsApp link #{wa}" unless hrefs.include?(wa)
+errors << "#{lang}: no tel: link tel:#{digits}" unless hrefs.include?("tel:#{digits}")
+errors << "#{lang}: no mailto: link mailto:#{company["email"]}" unless hrefs.include?("mailto:#{company["email"]}")
+errors << "#{lang}: the phone number #{phone} must be visible text" unless text.include?(phone)
+errors << "#{lang}: the email #{company["email"]} must be visible text" unless text.include?(company["email"])
+errors << "#{lang}: the address must read #{company["locality"]}, #{company["postal_code"]}" unless text.include?("#{company["locality"]}, #{company["postal_code"]}")
+errors << "#{lang}: the contact page must stay indexable (no robots noindex)" if page.at_css("meta[name='robots']")
+abort(errors.map { |e| "  - #{e}" }.join("\n")) unless errors.empty?
+RUBY
+}
+check_contact_page en "$SITE_DIR/contact/index.html" "$BOOKING_URL" "$SK_ACTION" || fail "the English contact page is wrong (see the list above)"
+check_contact_page it "$SITE_DIR/it/contatti/index.html" "$BOOKING_URL" "$SK_ACTION" || fail "the Italian contact page is wrong (see the list above)"
+pass "contact page (EN + IT): Soshiki form verbatim (action, POST, 4 fields with name/id/type/required, rows=5, hidden honeypot, a label for each, no other field), privacy notice linking the privacy page of the language, booking button -> booking_url, WhatsApp/tel/mailto links with the number, email and address as text"
+
+# No Soshiki embed anywhere: the widget's session cookie and hard-coded Italian labels
+# make it a decision for the next plan.
+if embed_hit="$(grep -rlE 'embed\.js|data-sk-booking' "$SITE_DIR" 2>/dev/null)" && [[ -n "$embed_hit" ]]; then
+  fail "the built site ships the Soshiki embed (embed.js / data-sk-booking) in ${embed_hit%%$'\n'*}: booking is a link-out only"
+fi
+pass "no Soshiki embed.js or data-sk-booking anywhere in the built site"
+
+# The two legal drafts: bannered, noindex, outside the sitemap, only known facts.
+check_legal_page() {
+  bundle exec ruby - "$@" <<'RUBY'
+# encoding: utf-8
+require "nokogiri"
+require "yaml"
+
+lang, id, file = ARGV
+errors = []
+page = Nokogiri::HTML5(File.read(file, encoding: "utf-8"))
+main = page.at_css("main")
+text = main.text.gsub(/\s+/, " ")
+company = YAML.load_file("_data/site_meta.yml").fetch("company")
+robots = page.css("meta[name='robots']").map { |m| m["content"] }
+errors << "#{lang}/#{id}: <meta name=\"robots\" content=\"noindex\"> is missing (a draft must not be indexed), found #{robots.inspect}" unless robots == ["noindex"]
+banner = lang == "it" ? "Bozza — il testo legale sarà fornito da Monte del Gallo prima del lancio" : "Draft — legal text to be provided by Monte del Gallo before launch"
+errors << "#{lang}/#{id}: the draft banner #{banner.inspect} is missing" unless text.include?(banner)
+errors << "#{lang}/#{id}: the banner must be an element with role=\"note\" (class draft)" unless main.at_css(".draft[role='note']")
+[company["name"], company["vat"], company["email"], "#{company["locality"]} #{company["postal_code"]}"].each do |fact|
+  errors << "#{lang}/#{id}: the known fact #{fact.inspect} (data controller) is missing" unless text.include?(fact)
+end
+%w[Soshiki].each { |w| errors << "#{lang}/#{id}: the processor #{w} is not listed" unless text.include?(w) }
+errors << "#{lang}/#{id}: the 'to be completed' marker is missing for the processors still unknown" unless main.css(".tbd").size >= 2
+# Nothing invented: no retention period, no legal basis article, no number of days or years.
+invented = text.scan(/\b(\d+\s*(giorni|days|mesi|months|anni|years)|art\.?\s*\d+|GDPR|Reg(olamento)?\.?\s*\(?UE\)?)/i)
+errors << "#{lang}/#{id}: invented legal detail #{invented.flatten.compact.first.inspect}: the placeholder may only state known facts" unless invented.empty?
+errors << "#{lang}/#{id}: a processor 'to be completed' must not state a retention period or a legal basis" if text =~ /retention period of|legal basis is|base giuridica è/i
+abort(errors.map { |e| "  - #{e}" }.join("\n")) unless errors.empty?
+RUBY
+}
+for legal in privacy cookie; do
+  check_legal_page en "$legal" "$SITE_DIR/$legal/index.html" || fail "the English $legal draft is wrong (see the list above)"
+  check_legal_page it "$legal" "$SITE_DIR/it/$legal/index.html" || fail "the Italian $legal draft is wrong (see the list above)"
+done
+# (polyglot writes the Italian pages into _site/it/sitemap.xml, so far with their URLs
+# lacking the /it/ prefix: a known quirk of the sitemap, outside this check.)
+grep -qF -- "/contact/</loc>" "$SITE_DIR/sitemap.xml" || fail "$SITE_DIR/sitemap.xml does not list /contact/: the contact page must be in the sitemap"
+grep -qF -- "/contatti/</loc>" "$SITE_DIR/it/sitemap.xml" || fail "$SITE_DIR/it/sitemap.xml does not list /contatti/: the Italian contact page must be in the sitemap"
+for sitemap in "$SITE_DIR/sitemap.xml" "$SITE_DIR/it/sitemap.xml"; do
+  for hit in "/privacy/" "/cookie/"; do
+    if grep -qF -- "$hit</loc>" "$sitemap"; then
+      fail "$sitemap lists $hit: a draft legal page must not be in the sitemap (sitemap: false)"
+    fi
+  done
+done
+pass "privacy + cookie drafts (EN + IT): noindex, bannered, out of the sitemap, controller facts and processors listed with 'to be completed' markers, no invented duration or legal basis; the contact pages are in the sitemap"
+
+# The footer's bottom bar links both legal pages, in the language of the page.
+for spec in "en|$EN_HOME|/privacy/|/cookie/" "it|$IT_HOME|/it/privacy/|/it/cookie/" \
+  "en|$SITE_DIR/contact/index.html|/privacy/|/cookie/" "it|$SITE_DIR/it/contatti/index.html|/it/privacy/|/it/cookie/"; do
+  IFS='|' read -r lang page privacy cookie <<<"$spec"
+  footer="$(footer_of "$page")"
+  grep -qF -- "href=\"$privacy\"" <<<"$footer" || fail "the <footer> of $page does not link $privacy"
+  grep -qF -- "href=\"$cookie\"" <<<"$footer" || fail "the <footer> of $page does not link $cookie"
+done
+pass "the footer links the Privacy and Cookie pages in both languages"
+
+# The Italian article that invites the reader to write to us leads to the Italian contact page.
+design_post="$SITE_DIR/it/articoli/design-minimalista-la-semplicita-come-chiave-per-il-successo-digitale-nel-2025/index.html"
+assert_file "$design_post" "the Italian article that ends with a contact link"
+grep -qF -- '>Scrivici oggi stesso!</strong></a>' "$design_post" || fail "$design_post lost its 'Scrivici oggi stesso!' link"
+grep -qE '<a href="/it/contatti/">(<strong>)?Scrivici oggi stesso!' "$design_post" || fail "the 'Scrivici oggi stesso!' link of $design_post must lead to /it/contatti/"
+pass "the Italian article's contact link leads to /it/contatti/"
+
+# The form's CSS, read from the compiled file: full-width fields, a comfortable tap target,
+# 1rem text (a smaller size makes iOS zoom into the field).
+grep -qE '\.cform__control\{[^}]*width:100%' "$CSS" || fail "the .cform__control rule in $CSS must make the fields width:100%"
+grep -qE '\.cform__control\{[^}]*min-height:48px' "$CSS" || fail "the .cform__control rule in $CSS must give a 48px minimum height (tap target)"
+grep -qE '\.cform__control\{[^}]*font-size:1rem' "$CSS" || fail "the .cform__control rule in $CSS must be font-size:1rem (no iOS zoom)"
+pass "the form fields are full width, 48px tall at least, 1rem text"
+
+double_contact="$(find "$SITE_DIR" \( -path '*/it/it' -o -path '*/it/it/*' \) -print || true)"
+[[ -z "$double_contact" ]] || fail "the build wrote ${double_contact%%$'\n'*}: a permalink with the /it/ prefix was prefixed a second time"
+pass "no /it/it/ anywhere in the built site"
 
 echo "==> Validating links, images and scripts in the built site (html-proofer, internal only)"
 # Only internal checks: external URLs (the booking page, hreflang and canonical

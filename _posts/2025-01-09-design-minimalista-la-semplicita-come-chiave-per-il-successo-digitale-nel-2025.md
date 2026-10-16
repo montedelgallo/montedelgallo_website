@@ -39,4 +39,4 @@ Le call to action, come “Provalo Gratis!” o “Richiedi una demo”, sono po
 
 **Se sei interessato a rendere il tuo sito web più moderno, veloce e in linea con le aspettative degli utenti, possiamo aiutarti.** **Contattaci per un consulto gratuito e scopri come possiamo sviluppare una pagina web su misura per le tue esigenze.**
 
-[**Scrivici oggi stesso!**](/#contact)
+[**Scrivici oggi stesso!**](/contatti/)

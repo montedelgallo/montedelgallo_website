@@ -1,0 +1,66 @@
+---
+layout: default
+title: Contatti
+lang: it
+page_id: contact
+permalink: /contatti/
+description: "Contatta Monte del Gallo: prenota una call di 30 minuti, scrivici su WhatsApp o via email, oppure mandaci un messaggio sul tuo progetto di software, automazione o AI."
+---
+{%- comment -%}
+  Contatti, lato italiano: il testo è quello della pagina attuale (/it/contatti/): "Hai un
+  progetto da costruire?", "Raccontaci il contesto..." e "Raccontaci cosa vuoi costruire".
+  Il numero della pagina attuale (+39 899 722 602) è un refuso: qui c'è quello dell'azienda
+  (_data/site_meta.yml, +39 389 972 2602). Il modulo è quello di Soshiki del cliente
+  (_includes/contact-form.html); la prenotazione è un link alla pagina Soshiki
+  (site_meta.booking_url), senza l'embed. Il lato inglese è contact.html (permalink
+  /contact/, stesso page_id). Stili: _sass/foundry/_contact.scss.
+{%- endcomment -%}
+{%- assign company = site.data.site_meta.company -%}
+{%- assign t = site.data.i18n.it -%}
+<section class="hero hero--page">
+  <svg class="hero__range" aria-hidden="true" focusable="false"><use href="#mdg-range"/></svg>
+  <div class="wrap">
+    <div>
+      <p class="eyebrow">Contatti</p>
+      <h1>Hai un progetto da costruire?</h1>
+      <p class="hero__sub">Raccontaci il contesto, il problema e il risultato che vuoi ottenere. Ti aiuteremo a capire il primo passo tecnico e strategico.</p>
+      <div class="hero__cta">
+        <a class="btn btn--solid" href="{{ site.data.site_meta.booking_url }}">{{ t.contact.book | escape }}</a>
+        <a class="btn btn--ghost" href="https://wa.me/{{ company.phone | remove: ' ' | remove: '+' }}">{{ t.contact.whatsapp | escape }}</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="pad" id="write">
+  <div class="wrap">
+    <div class="contact">
+      <div class="contact__intro">
+        <div class="sec-head">
+          <p class="eyebrow">Scrivici</p>
+          <h2 class="h2">Raccontaci cosa vuoi costruire.</h2>
+          <p class="lede">Scrivici per siti web, software su misura, automazioni, app e integrazioni AI. Ti risponderemo con un primo orientamento concreto.</p>
+        </div>
+        <dl class="contact__list">
+          <div>
+            <dt>WhatsApp</dt>
+            <dd><a href="https://wa.me/{{ company.phone | remove: ' ' | remove: '+' }}">{{ t.contact.whatsapp | escape }}</a></dd>
+          </div>
+          <div>
+            <dt>Telefono</dt>
+            <dd><a href="tel:{{ company.phone | remove: ' ' }}">{{ company.phone }}</a></dd>
+          </div>
+          <div>
+            <dt>Email</dt>
+            <dd><a href="mailto:{{ company.email }}">{{ company.email }}</a></dd>
+          </div>
+          <div>
+            <dt>Indirizzo</dt>
+            <dd>{{ company.locality }}, {{ company.postal_code }}</dd>
+          </div>
+        </dl>
+      </div>
+      {% include contact-form.html %}
+    </div>
+  </div>
+</section>
