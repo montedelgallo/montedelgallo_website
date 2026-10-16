@@ -963,6 +963,26 @@ permalink: /cards-test/
 </div>
 <p id="canary">{{ t }} {{ lang }} {{ p }}</p>
 PAGE
+# The same canary for the case study card: the page sets t, lang and p to a known
+# value, lists every case study of its language through case-card.html, and prints
+# the three after the cards.
+cat >"$FIXTURE/case-cards-test.html" <<'PAGE'
+---
+layout: default
+title: Case study cards
+permalink: /case-cards-test/
+---
+{%- assign t = "keep" -%}
+{%- assign lang = "keep" -%}
+{%- assign p = "keep" -%}
+{%- assign cc_all = site.case_studies | where: "lang", site.active_lang -%}
+<div class="pgrid">
+{%- for cc_item in cc_all %}
+{% include case-card.html study=cc_item %}
+{%- endfor %}
+</div>
+<p id="canary">{{ t }} {{ lang }} {{ p }}</p>
+PAGE
 # A project with `featured: false`, as an English and an Italian document tied by
 # page_id, like the real ones. Every real project is featured, so without this
 # pair nothing ever gives the featured filter of the home something to drop. The
@@ -1169,6 +1189,429 @@ check_project_cards en "$EN_INDEX" "$SITE_DIR" "main" no all "$MIN_PROJECTS" ||
 check_project_cards it "$IT_INDEX" "$SITE_DIR" "main" no all "$MIN_PROJECTS" ||
   fail "the project cards on the Italian index are wrong (see the list above)"
 pass "project index: a card for every project of the language (at least $MIN_PROJECTS), the featured ones first, each with a real lazy-loaded image, non-empty alt, sector, title, metric and a link to a built page"
+
+echo "==> Asserting the case studies (documents, detail pages, index pages, redirect data)"
+# A case study is a Markdown document per language in _case_studies/ (the Italian
+# ones in _case_studies/it/), tied together by a shared page_id exactly like a
+# project. Permalinks are bare (no /it/ prefix, polyglot adds it):
+# /case-studies/<slug>/ in English, /casi-di-studio/<slug>/ in Italian.
+#
+# The live site has no pictures for its case studies (the WordPress pages carry no
+# featured image), so `cover` is optional: a case study without one leads with its
+# result figures. A cover that IS declared must be a real image in the repository.
+#
+# case_studies_manifest validates the documents and prints them as JSON, one entry
+# per page_id. The later steps read it from $CASES_JSON.
+MIN_CASE_STUDIES=3
+MIN_CASE_BODY_CHARS=400
+case_studies_manifest() {
+  bundle exec ruby - <<'RUBY'
+require "date"
+require "json"
+require "yaml"
+
+errors = []
+docs = Dir.glob("_case_studies/**/*.md").sort.filter_map do |path|
+  match = File.read(path, encoding: "utf-8").match(/\A---[ \t]*\n(.*?)\n---[ \t]*(?:\n|\z)/m)
+  (errors << "#{path}: no YAML front matter"; next) unless match
+  begin
+    front = YAML.safe_load(match[1], permitted_classes: [Date, Time]) || {}
+  rescue Psych::Exception => e
+    errors << "#{path}: the front matter is not valid YAML (#{e.message})"
+    next
+  end
+  (errors << "#{path}: the front matter must be a list of key: value lines"; next) unless front.is_a?(Hash)
+  front.merge("path" => path)
+end
+errors << "_case_studies/ holds no case study document" if docs.empty?
+
+text = ->(value) { value.is_a?(String) && !value.strip.empty? }
+section = { "en" => "case-studies", "it" => "casi-di-studio" }
+
+docs.each do |doc|
+  at = doc["path"]
+  %w[title client sector summary challenge solution page_id].each do |key|
+    errors << "#{at}: #{key} must be a non-empty string" unless text.(doc[key])
+  end
+  errors << "#{at}: lang must be en or it, not #{doc["lang"].inspect}" unless section.key?(doc["lang"])
+  errors << "#{at}: stack must be a non-empty list of names" unless doc["stack"].is_a?(Array) && !doc["stack"].empty? && doc["stack"].all?(&text)
+  results = doc["results"]
+  if results.is_a?(Array) && results.size >= 3
+    results.each_with_index do |entry, index|
+      errors << "#{at}: results item #{index + 1} needs a value and a label" unless entry.is_a?(Hash) && text.(entry["value"]) && text.(entry["label"])
+    end
+  else
+    errors << "#{at}: results must be a list of at least 3 {value, label} figures"
+  end
+  if doc.key?("facts")
+    facts = doc["facts"]
+    errors << "#{at}: facts must be a non-empty map of label: text" unless facts.is_a?(Hash) && !facts.empty? && facts.all? { |k, v| text.(k.to_s) && text.(v) }
+  end
+  if doc.key?("cover")
+    if text.(doc["cover"]) && doc["cover"].start_with?("/assets/img/case-studies/")
+      errors << "#{at}: the cover #{doc["cover"]} is not a file in the repository" unless File.file?(doc["cover"].delete_prefix("/"))
+      errors << "#{at}: a cover needs a cover_alt that describes it" unless text.(doc["cover_alt"])
+    else
+      errors << "#{at}: cover must be a path under /assets/img/case-studies/"
+    end
+  end
+
+  link = doc["permalink"].to_s
+  if link.start_with?("/it/")
+    errors << "#{at}: permalink #{link} starts with /it/, but jekyll-polyglot adds that prefix itself (the page would be built at /it#{link})"
+  elsif section.key?(doc["lang"]) && link !~ %r{\A/#{section[doc["lang"]]}/[a-z0-9]+(?:-[a-z0-9]+)*/\z}
+    errors << "#{at}: permalink #{link.inspect} must look like /#{section[doc["lang"]]}/<slug>/"
+  end
+end
+
+by_id = docs.group_by { |doc| doc["page_id"] }
+by_id.each do |id, group|
+  langs = group.map { |doc| doc["lang"].to_s }.sort
+  english_only = langs == %w[en] && group.first["lang-exclusive"] == %w[en]
+  errors << "page_id #{id.inspect}: expected one en and one it document, or a single en document with lang-exclusive: [en], found #{langs.inspect}" unless langs == %w[en it] || english_only
+end
+docs.group_by { |doc| [doc["lang"], doc["permalink"]] }.each do |(lang, link), group|
+  errors << "two #{lang} case studies share the permalink #{link}" if group.size > 1
+end
+
+abort(errors.map { |e| "  - #{e}" }.join("\n")) unless errors.empty?
+
+puts JSON.generate(by_id.map { |id, group|
+  { "page_id" => id, "en" => group.find { |doc| doc["lang"] == "en" }, "it" => group.find { |doc| doc["lang"] == "it" } }
+})
+RUBY
+}
+CASES_JSON="$(case_studies_manifest)" ||
+  fail "the case study documents in _case_studies/ are invalid (see the list above)"
+export CASES_JSON
+cases_pairs="$(bundle exec ruby -rjson -e '
+  JSON.parse(ENV.fetch("CASES_JSON")).each do |pair|
+    puts [pair["page_id"], pair["en"]["permalink"], pair["it"] ? pair["it"]["permalink"] : "-"].join("|")
+  end
+')"
+pass "$(wc -l <<<"$cases_pairs" | tr -d ' ') case studies, each valid, English and Italian documents tied by page_id (or English-only with lang-exclusive: [en]), bare permalinks"
+
+# Counts per language, and what is English-only stays out of /it/.
+check_case_counts() {
+  bundle exec ruby - "$MIN_CASE_STUDIES" "$SITE_DIR" <<'RUBY'
+require "json"
+
+minimum, site_dir = ARGV[0].to_i, ARGV[1]
+pairs = JSON.parse(ENV.fetch("CASES_JSON"))
+errors = []
+%w[en it].each do |lang|
+  count = pairs.count { |pair| pair[lang] }
+  errors << "only #{count} #{lang} case study(ies): at least #{minimum} are expected (the live site has 3 in English)" if count < minimum
+end
+pairs.each do |pair|
+  next if pair["it"]
+  # No Italian document: the English one must not be built under /it/ (a duplicate
+  # URL in the wrong language), which is what lang-exclusive: [en] is for.
+  path = File.join(site_dir, "it", pair["en"]["permalink"])
+  errors << "#{pair["page_id"]} has no Italian document, yet #{path} was built: add lang-exclusive: [en]" if File.exist?(path)
+end
+abort(errors.map { |e| "  - #{e}" }.join("\n")) unless errors.empty?
+RUBY
+}
+check_case_counts || fail "the case studies collection is incomplete (see the list above)"
+pass "at least $MIN_CASE_STUDIES case studies in each language; an English-only one is kept out of /it/"
+
+# Any picture a case study declares is a real, complete image (the folder is
+# absent while the live pages have none to migrate).
+if [[ -d assets/img/case-studies ]]; then
+  while IFS= read -r picture; do
+    assert_real_image "/${picture}" "the case study picture $picture"
+  done < <(find assets/img/case-studies -type f \( -name '*.webp' -o -name '*.jpg' -o -name '*.jpeg' -o -name '*.png' \) | sort)
+fi
+
+# The detail pages, in both languages, at the permalinks the documents ask for.
+while IFS='|' read -r page_id en_path it_path; do
+  en_page="$SITE_DIR${en_path}index.html"
+  en_url="$SITE_URL$en_path"
+  [[ -s "$en_page" ]] || fail "$en_page is missing or empty: the English page of $page_id must be built at $en_path"
+  require_contains "$en_page" '<html lang="en"' "the page must declare its language"
+  require_contains "$en_page" "rel=\"canonical\" href=\"$en_url\"" "a case study page is its own canonical"
+  if [[ "$it_path" == "-" ]]; then
+    if grep -qF 'rel="alternate" hreflang="it"' "$en_page"; then
+      fail "$en_path is English-only but advertises an Italian alternate that does not exist"
+    fi
+    pass "$page_id: $en_path is built, English-only, no Italian alternate"
+    continue
+  fi
+  it_page="$SITE_DIR/it${it_path}index.html"
+  it_url="$SITE_URL/it$it_path"
+  [[ -s "$it_page" ]] || fail "$it_page is missing or empty: the Italian page of $page_id must be built at /it$it_path (polyglot adds the /it/ prefix itself)"
+  require_contains "$it_page" '<html lang="it"' "the page must declare its language"
+  require_contains "$it_page" "rel=\"canonical\" href=\"$it_url\"" "a case study page is its own canonical"
+  for page in "$en_page" "$it_page"; do
+    require_contains "$page" "rel=\"alternate\" hreflang=\"en\" href=\"$en_url\"" "the pair must advertise its English page (tied by page_id?)"
+    require_contains "$page" "rel=\"alternate\" hreflang=\"it\" href=\"$it_url\"" "the pair must advertise its Italian page (tied by page_id?)"
+    require_contains "$page" "rel=\"alternate\" hreflang=\"x-default\" href=\"$en_url\"" "x-default is the English page"
+  done
+  [[ "$(switch_href "$en_page" it)" == "/it$it_path" ]] ||
+    fail "the language switch on $en_path must lead to /it$it_path, not '$(switch_href "$en_page" it)'"
+  [[ "$(switch_href "$it_page" en)" == "$en_path" ]] ||
+    fail "the language switch on /it$it_path must lead to $en_path, not '$(switch_href "$it_page" en)'"
+  pass "$page_id: $en_path and /it$it_path are built, each its own canonical, with reciprocal hreflang and language switch"
+done <<<"$cases_pairs"
+
+# What a detail page shows must be what its document says (see the list of checks
+# in the loop), and it is a whole page: results as figure tiles, challenge and
+# solution, facts, stack chips, the migrated text, a way back to the index of its
+# own language. The Italian text must be a translation, not pasted English.
+check_case_pages() {
+  bundle exec ruby - "$SITE_DIR" "$MIN_CASE_BODY_CHARS" <<'RUBY'
+require "json"
+require "nokogiri"
+
+site_dir, min_body = ARGV[0], ARGV[1].to_i
+text_of = ->(node) { node ? node.text.gsub(/\s+/, " ").strip : "" }
+label_of = lambda do |node|
+  copy = node.dup
+  copy.css(".arrow").each(&:remove)
+  text_of.(copy)
+end
+errors = []
+
+JSON.parse(ENV.fetch("CASES_JSON")).each do |pair|
+  bodies = {}
+  %w[en it].each do |lang|
+    doc = pair[lang] or next
+    file = File.join(site_dir, lang == "it" ? "it" : "", doc["permalink"], "index.html")
+    page = Nokogiri::HTML5(File.read(file, encoding: "utf-8"))
+    main = page.at_css("main")
+
+    headings = main.css("h1").map { |node| text_of.(node) }
+    errors << "#{file}: the <h1> should be #{doc["title"].inspect}, found #{headings.inspect}" unless headings == [doc["title"]]
+    errors << "#{file}: the <title> should start with the case study title" unless text_of.(page.at_css("title")).start_with?(doc["title"])
+    errors << "#{file}: the eyebrow should read the sector #{doc["sector"].inspect}" unless text_of.(main.at_css("header .eyebrow")) == doc["sector"]
+    errors << "#{file}: the summary is not shown as the lede" unless text_of.(main.at_css(".lede")) == doc["summary"]
+    errors << "#{file}: the meta description should be the summary" unless page.at_css('meta[name="description"]')&.[]("content") == doc["summary"]
+
+    # The cover, when the document has one; nothing broken when it has none.
+    cover = main.at_css("img.case__cover")
+    if doc["cover"]
+      if cover.nil?
+        errors << "#{file}: the cover image is missing"
+      else
+        errors << "#{file}: the cover src is #{cover["src"].inspect}, the document says #{doc["cover"]}" unless cover["src"] == doc["cover"]
+        errors << "#{file}: the cover image needs a non-empty alt" if cover["alt"].to_s.strip.empty?
+        errors << "#{file}: the cover is not in the built site" unless File.size?(File.join(site_dir, cover["src"].to_s))
+      end
+    else
+      errors << "#{file}: the page shows a cover the document does not declare" if cover
+    end
+    main.css("img").each do |image|
+      errors << "#{file}: an <img> (#{image["src"].inspect}) needs a non-empty alt" if image["alt"].to_s.strip.empty?
+      errors << "#{file}: the image #{image["src"].inspect} is not in the built site" unless File.size?(File.join(site_dir, image["src"].to_s))
+    end
+
+    # Results: one tile per figure of the document, value and label, in order.
+    wanted = doc["results"].map { |entry| "#{entry["value"]} #{entry["label"]}" }
+    shown = main.css(".case__results .case__metric").map { |node| text_of.(node) }
+    errors << "#{file}: the results should be the tiles #{wanted.inspect}, the page shows #{shown.inspect}" unless shown == wanted
+    errors << "#{file}: a result tile has an empty value or label" if main.css(".case__metric b, .case__metric span").any? { |node| text_of.(node).empty? }
+
+    # Challenge and solution, each under a heading of its own, with the document's text.
+    %w[challenge solution].each do |part|
+      block = main.at_css(".case__#{part}")
+      if block.nil?
+        errors << "#{file}: the #{part} block (.case__#{part}) is missing"
+      else
+        errors << "#{file}: the #{part} block should hold the document's #{part}" unless text_of.(block.at_css("p")) == doc[part]
+        errors << "#{file}: the #{part} block has no <h2>" if block.at_css("h2").nil? || text_of.(block.at_css("h2")).empty?
+      end
+    end
+
+    errors << "#{file}: the stack chips should list #{doc["stack"].inspect}" unless main.css(".project__stack li").map { |node| text_of.(node) } == doc["stack"]
+    facts = main.css(".project__facts > div").to_h { |row| [text_of.(row.at_css("dt")), row] }
+    errors << "#{file}: the client #{doc["client"].inspect} is not among the facts" unless facts.values.any? { |row| text_of.(row.at_css("dd")) == doc["client"] }
+    (doc["facts"] || {}).each do |label, value|
+      row = facts[label]
+      errors << "#{file}: the fact #{label.inspect} should read #{value.inspect}" unless row && text_of.(row.at_css("dd")) == value
+    end
+
+    # The migrated text.
+    body = main.at_css(".case__body")
+    if body.nil?
+      errors << "#{file}: the case study text (.case__body) is missing"
+    else
+      body_text = text_of.(body)
+      sections = body.css("h2").map { |node| text_of.(node) }
+      errors << "#{file}: the text is only #{body_text.size} characters, a migrated case study has at least #{min_body}" if body_text.size < min_body
+      errors << "#{file}: the text has #{sections.size} section heading(s) (h2), at least 2 are expected" if sections.size < 2
+      bodies[lang] = [body_text, sections]
+    end
+
+    # The way back: to the case study index of the page's own language, which exists.
+    index_href = lang == "it" ? "/it/casi-di-studio/" : "/case-studies/"
+    backs = main.css("a.project__back")
+    errors << "#{file}: no link back to the case study index (a.project__back)" if backs.empty?
+    backs.each { |link| errors << "#{file}: a back link goes to #{link["href"].inspect}, the case study index is #{index_href}" unless link["href"] == index_href }
+    errors << "#{file}: the case study index #{index_href} was not built" unless File.size?(File.join(site_dir, index_href, "index.html"))
+    headings_all = main.css("h1, h2, h3, h4, h5, h6").map { |node| node.name[1].to_i }
+    headings_all.each_cons(2) { |above, below| errors << "#{file}: the headings jump from h#{above} to h#{below}" if below - above > 1 }
+  end
+
+  if bodies.size == 2
+    english, italian = bodies["en"], bodies["it"]
+    errors << "#{pair["page_id"]}: the Italian text is the English text, word for word: it must be translated" if english[0] == italian[0]
+    errors << "#{pair["page_id"]}: the Italian page has the English section headings #{english[1].inspect}: they must be translated" if english[1] == italian[1]
+    %w[title summary challenge solution].each do |key|
+      errors << "#{pair["page_id"]}: the Italian #{key} is the English one: it must be translated" if pair["en"][key] == pair["it"][key]
+    end
+    errors << "#{pair["page_id"]}: the English and Italian documents must list the same number of results" unless pair["en"]["results"].size == pair["it"]["results"].size
+    errors << "#{pair["page_id"]}: the English and Italian documents must give the same result figures" unless pair["en"]["results"].map { |r| r["value"] } == pair["it"]["results"].map { |r| r["value"] }
+  end
+end
+
+abort(errors.map { |e| "  - #{e}" }.join("\n")) unless errors.empty?
+RUBY
+}
+check_case_pages || fail "a case study detail page does not show what its document says (see the list above)"
+pass "every case study detail page shows its title, sector, summary (also its meta description), result tiles, challenge, solution, client and facts, stack chips, the migrated text (at least $MIN_CASE_BODY_CHARS characters in 2 or more sections, translated in Italian), a link back to its own index; a declared cover is a real image, an undeclared one is not faked"
+
+# The index pages: /case-studies/ and /it/casi-di-studio/ (case-studies.html and
+# it/casi-di-studio.html), tied by page_id, each listing every case study of its
+# language as a card (_includes/case-card.html).
+EN_CASES_INDEX="$SITE_DIR/case-studies/index.html"
+IT_CASES_INDEX="$SITE_DIR/it/casi-di-studio/index.html"
+assert_file "$EN_CASES_INDEX" "the English case study index must be built at /case-studies/ (case-studies.html)"
+assert_file "$IT_CASES_INDEX" "the Italian case study index must be built at /it/casi-di-studio/ (it/casi-di-studio.html, permalink /casi-di-studio/)"
+assert_contains "$EN_CASES_INDEX" '<html lang="en"' "the page must declare its language"
+assert_contains "$IT_CASES_INDEX" '<html lang="it"' "the page must declare its language"
+for index in "$EN_CASES_INDEX" "$IT_CASES_INDEX"; do
+  require_contains "$index" "rel=\"alternate\" hreflang=\"en\" href=\"$SITE_URL/case-studies/\"" "the case study index must advertise its English page (tied by page_id?)"
+  require_contains "$index" "rel=\"alternate\" hreflang=\"it\" href=\"$SITE_URL/it/casi-di-studio/\"" "the case study index must advertise its Italian page (tied by page_id?)"
+  require_contains "$index" "rel=\"alternate\" hreflang=\"x-default\" href=\"$SITE_URL/case-studies/\"" "x-default is the English page"
+done
+require_contains "$EN_CASES_INDEX" "rel=\"canonical\" href=\"$SITE_URL/case-studies/\"" "the English case study index is its own canonical"
+require_contains "$IT_CASES_INDEX" "rel=\"canonical\" href=\"$SITE_URL/it/casi-di-studio/\"" "the Italian case study index is its own canonical"
+[[ "$(switch_href "$EN_CASES_INDEX" it)" == "/it/casi-di-studio/" ]] ||
+  fail "the language switch on /case-studies/ must lead to /it/casi-di-studio/, not '$(switch_href "$EN_CASES_INDEX" it)'"
+[[ "$(switch_href "$IT_CASES_INDEX" en)" == "/case-studies/" ]] ||
+  fail "the language switch on /it/casi-di-studio/ must lead to /case-studies/, not '$(switch_href "$IT_CASES_INDEX" en)'"
+
+# check_case_index <lang> <built index> <site dir> <scope> <canary page?>
+# One <h1>, an introduction, a count equal to the number of cards, no skipped
+# heading level, a title and description of its own; the cards are exactly the
+# case studies of the language, each with a title, sector, lead figure, summary
+# and a link to a page that was built. <canary page?> "yes" for the fixture page
+# that prints t, lang and p after the cards (an include shares the page's variables).
+check_case_index() {
+  bundle exec ruby - "$@" <<'RUBY'
+require "json"
+require "nokogiri"
+require "yaml"
+
+lang, file, root, canary_page = ARGV
+prefix = lang == "it" ? "/it" : ""
+text_of = ->(node) { node ? node.text.gsub(/\s+/, " ").strip : "" }
+page = Nokogiri::HTML5(File.read(file, encoding: "utf-8"))
+main = page.at_css("main")
+abort("  - #{file} has no <main>") unless main
+errors = []
+docs = JSON.parse(ENV.fetch("CASES_JSON")).filter_map { |pair| pair[lang] }
+
+cards = main.css("a.ccard")
+expected = docs.map { |doc| prefix + doc["permalink"] }.sort
+links = cards.map { |card| card["href"] }.sort
+errors << "#{lang}: the page lists #{links.inspect}, but the #{lang} case studies are #{expected.inspect}" unless links == expected
+errors << "#{lang}: at least 3 case study cards are expected, found #{cards.size}" if cards.size < 3
+
+if canary_page == "yes"
+  canary = text_of.(page.at_css("#canary"))
+  errors << "#{lang}: the page lost its own variables to the card include (an include shares them): t, lang and p should read \"keep keep keep\", found #{canary.inspect}" unless canary == "keep keep keep"
+else
+  headline = main.css("h1").map { |node| text_of.(node) }
+  errors << "main must hold exactly one non-empty <h1>, it holds #{headline.inspect}" unless headline.size == 1 && !headline.first.empty?
+  errors << "the introduction under the heading (.lede) is empty" if text_of.(main.at_css(".lede")).empty?
+  count = main.at_css(".pindex__count b")
+  errors << "the count (.pindex__count b) reads #{text_of.(count).inspect}, the page lists #{cards.size} cards" unless count && text_of.(count) == cards.size.to_s
+  levels = main.css("h1, h2, h3, h4, h5, h6").map { |node| node.name[1].to_i }
+  levels.each_cons(2) { |above, below| errors << "the headings jump from h#{above} to h#{below}: a level is skipped" if below - above > 1 }
+  defaults = YAML.load_file("_data/site_meta.yml")[lang]
+  title = text_of.(page.at_css("title"))
+  description = page.at_css('meta[name="description"]')&.[]("content").to_s.strip
+  errors << "the <title> is #{title.inspect}: the index needs a title of its own" if title.empty? || title == defaults["title"]
+  errors << "the meta description is #{description.inspect}: the index needs one of its own" if description.empty? || description == defaults["description"]
+end
+
+cards.each do |card|
+  at = "#{lang} card #{card["href"]}"
+  doc = docs.find { |d| prefix + d["permalink"] == card["href"] }
+  errors << "#{at}: the link leads to a page that was not built" unless File.size?(File.join(root, card["href"].to_s, "index.html"))
+  errors << "#{at}: the card has an <img> but case studies have no thumbnail (a stand-in would not be a real image)" if card.at_css("img")
+  {
+    ".pcard__sector" => doc && doc["sector"],
+    ".pcard__title" => doc && doc["title"],
+    ".ccard__summary" => doc && doc["summary"],
+    ".pcard__metric" => doc && "#{doc["results"][0]["value"]} #{doc["results"][0]["label"]}"
+  }.each do |selector, want|
+    got = text_of.(card.at_css(selector))
+    errors << "#{at}: #{selector} should read #{want.inspect}, found #{got.inspect}" unless got == want
+  end
+end
+
+abort(errors.map { |e| "  - #{e}" }.join("\n")) unless errors.empty?
+RUBY
+}
+check_case_index en "$EN_CASES_INDEX" "$SITE_DIR" no || fail "the English case study index is wrong (see the list above)"
+check_case_index it "$IT_CASES_INDEX" "$SITE_DIR" no || fail "the Italian case study index is wrong (see the list above)"
+check_case_index en "$FX/case-cards-test/index.html" "$FX" yes || fail "the English case cards are wrong (see the list above)"
+check_case_index it "$FX/it/case-cards-test/index.html" "$FX" yes || fail "the Italian case cards are wrong (see the list above)"
+pass "case study index (/case-studies/, /it/casi-di-studio/): reciprocal hreflang and switch, one <h1>, an introduction, a count that matches, a card for every case study of the language with its sector, title, summary, lead figure and a link to a built page; the card include leaves the page's t, lang and p alone"
+
+# Links stay in the page's language on the case study pages and indexes.
+cs_en_pages=("$EN_CASES_INDEX")
+cs_it_pages=("$IT_CASES_INDEX")
+while IFS='|' read -r _ en_path it_path; do
+  cs_en_pages+=("$SITE_DIR${en_path}index.html")
+  if [[ "$it_path" != "-" ]]; then cs_it_pages+=("$SITE_DIR/it${it_path}index.html"); fi
+done <<<"$cases_pairs"
+check_link_prefixes en "${cs_en_pages[@]}" ||
+  fail "an English case study page has a link into the Italian site (see the list above)"
+check_link_prefixes it "${cs_it_pages[@]}" ||
+  fail "an Italian case study page has an internal link that is not under /it/ (see the list above)"
+[[ ! -e "$SITE_DIR/it/case-studies" && ! -e "$SITE_DIR/casi-di-studio" ]] ||
+  fail "a case study section was built in the wrong language (/it/case-studies/ or /casi-di-studio/ without /it/)"
+double_cases="$(find "$SITE_DIR" \( -path '*/it/it' -o -path '*/it/it/*' \) -print || true)"
+[[ -z "$double_cases" ]] || fail "the build wrote ${double_cases%%$'\n'*}: a permalink with the /it/ prefix was prefixed a second time"
+pass "every root-relative link on the ${#cs_en_pages[@]} English and ${#cs_it_pages[@]} Italian case study pages stays in the page's language; no /it/it/, no case study section in the wrong language"
+
+# The old -> new URL map, as data (Plan 3 emits the real redirects): every entry
+# has a `from` and a `to`, every `to` is a page that was built, no `from` is
+# itself a built page (it would shadow it), and the two case studies the live site
+# keeps at the root (/case-study-...) are in it.
+check_redirects() {
+  bundle exec ruby - "$SITE_DIR" <<'RUBY'
+require "yaml"
+
+site_dir = ARGV[0]
+errors = []
+entries = YAML.safe_load(File.read("_data/redirects.yml", encoding: "utf-8")) rescue (abort("  - _data/redirects.yml is missing or not valid YAML"))
+abort("  - _data/redirects.yml must be a non-empty list of {from, to} entries") unless entries.is_a?(Array) && !entries.empty?
+built = ->(url) { File.size?(File.join(site_dir, url.to_s, "index.html")) }
+entries.each_with_index do |entry, index|
+  at = "_data/redirects.yml entry #{index + 1}"
+  (errors << "#{at} must be a map with from and to"; next) unless entry.is_a?(Hash) && entry["from"].is_a?(String) && entry["to"].is_a?(String)
+  from, to = entry["from"], entry["to"]
+  errors << "#{at}: from #{from.inspect} must be a path starting and ending with /" unless from.match?(%r{\A/.*/\z})
+  errors << "#{at}: to #{to.inspect} must be a path starting and ending with /" unless to.match?(%r{\A/.*/\z})
+  errors << "#{at}: from and to are the same" if from == to
+  errors << "#{at}: to #{to} is not a page of the built site" unless built.(to)
+  errors << "#{at}: from #{from} is a page of the built site: a redirect would shadow it" if built.(from)
+  errors << "#{at}: #{from} or #{to} has an /it/it/ prefix" if (from + to).include?("/it/it/")
+end
+entries.map { |e| e["from"] if e.is_a?(Hash) }.compact.tally.each { |from, n| errors << "from #{from} appears #{n} times" if n > 1 }
+%w[/case-study-ecommerce-platform/ /case-study-property-management-tourism-rome/].each do |old|
+  errors << "the live URL #{old} is not in _data/redirects.yml" unless entries.any? { |e| e.is_a?(Hash) && e["from"] == old }
+end
+abort(errors.map { |e| "  - #{e}" }.join("\n")) unless errors.empty?
+RUBY
+}
+check_redirects || fail "_data/redirects.yml is wrong (see the list above)"
+pass "_data/redirects.yml parses, every target is a built page, no source shadows a page, and the root-level live case study URLs are mapped"
 
 echo "==> Asserting the UI strings (EN and IT define the same keys, every nav entry is complete)"
 check_ui_strings() {

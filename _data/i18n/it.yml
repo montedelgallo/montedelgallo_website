@@ -147,6 +147,16 @@ projects:
   index_path: "/progetti/"
   gallery: "Galleria"
 
+case_studies:
+  view: "Leggi il caso di studio"
+  all: "Tutti i casi di studio"
+  index_path: "/casi-di-studio/"
+  results: "I risultati"
+  challenge: "La sfida"
+  solution: "La nostra soluzione"
+  client: "Cliente"
+  stack: "Realizzato con"
+
 footer:
   tagline: "Boutique di sviluppo software. Sistemi su misura, automazione e AI — realizzati a Roma."
   company: "Azienda"

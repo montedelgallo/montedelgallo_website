@@ -1,0 +1,33 @@
+{%- comment -%}
+  One case study as a card: sector, title, summary, its lead result figure and a
+  link to the case study page. Used by the case study index (case-studies.html,
+  it/casi-di-studio.html).
+
+    {% raw %}{% include case-card.html study=cs %}{% endraw %}
+
+  `study` is a document of the `case_studies` collection; everything shown comes
+  from its front matter (_case_studies/). Put the cards in <div class="pgrid">. The
+  title is an <h3>, for a card that sits under a section's <h2>.
+
+  The card has no picture: the live site has no image for its case studies, and a
+  stand-in would not be a real one. The lead figure (the first of `results`) is
+  what the card shows instead. It reuses the project card's classes (pcard__*), so
+  the two cards look alike; .ccard is only the hook for what differs.
+
+  This include assigns NO variable, and must stay that way: Liquid's `assign` is
+  global, and an include shares the variables of the page that includes it (see
+  _includes/project-card.html, and the canary in script/check-build.sh).
+
+  The link is a plain root-relative path: in the Italian build jekyll-polyglot puts
+  /it/ in front of it. The "Read the case study" label is in the language of the
+  document (its `lang`).
+{%- endcomment -%}
+<a class="pcard ccard" href="{{ include.study.url | relative_url }}">
+  <div class="pcard__body">
+    <span class="pcard__sector">{{ include.study.sector | escape }}</span>
+    <h3 class="pcard__title">{{ include.study.title | escape }}</h3>
+    <p class="ccard__summary">{{ include.study.summary | escape }}</p>
+    <div class="pcard__metric"><em>{{ include.study.results[0].value | escape }}</em> {{ include.study.results[0].label | escape }}</div>
+    <span class="pcard__more">{{ site.data.i18n[include.study.lang].case_studies.view | escape }} <span class="arrow" aria-hidden="true">→</span></span>
+  </div>
+</a>

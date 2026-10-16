@@ -155,6 +155,16 @@ projects: # the project card and the project page
   index_path: "/projects/" # where the project index is, written without the /it/ prefix (like nav.yml)
   gallery: "Gallery" # the heading of the pictures under a project's text
 
+case_studies: # the case study card, page and index
+  view: "Read the case study"
+  all: "All case studies" # the way back to the case study index, on a case study page
+  index_path: "/case-studies/" # where the case study index is, written without the /it/ prefix (like nav.yml)
+  results: "Results"
+  challenge: "The challenge"
+  solution: "Our solution"
+  client: "Client"
+  stack: "Built with"
+
 footer:
   tagline: "Software development boutique. Custom systems, automation and AI — built in Roma."
   company: "Company"

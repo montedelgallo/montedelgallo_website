@@ -33,6 +33,12 @@ kramdown:
 collections:
   projects:
     output: true
+  # Case studies: the same arrangement as the projects. One document per language
+  # per case study in _case_studies/ (the Italian ones in _case_studies/it/), tied by
+  # a shared `page_id`, each with a bare `permalink`: /case-studies/<slug>/ in
+  # English, /casi-di-studio/<slug>/ in Italian (polyglot adds /it/).
+  case_studies:
+    output: true
 
 defaults:
   - scope:
@@ -40,6 +46,11 @@ defaults:
       type: projects
     values:
       layout: project
+  - scope:
+      path: ""
+      type: case_studies
+    values:
+      layout: case_study
 
 # --- Styles ------------------------------------------------------------------
 sass:

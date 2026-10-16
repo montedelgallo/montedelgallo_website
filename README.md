@@ -53,6 +53,16 @@ bash script/check-build.sh   # clean build, then assert both languages, the desi
   index, a pair like a project (same `page_id`, no `/it/` in the permalink): every project of the
   language as a card, the featured ones first. Where the index is, per language, is `projects.index_path`
   in `_data/i18n/<lang>.yml`: the back link of a project page uses it.
+- `_case_studies/`: the case studies, laid out like the projects (one document per language, the Italian ones in
+  `_case_studies/it/`, a shared `page_id`, bare permalinks: `/case-studies/<slug>/` in English,
+  `/casi-di-studio/<slug>/` in Italian). Front matter: `title, lang, page_id, permalink, client, sector,
+  summary, challenge, solution, results` (a list of `{value, label}`: the figure tiles; the first one is the
+  lead figure of the card), `stack`, and, optional, `facts` (a map of `label: text`, in the document's
+  language) and `cover` + `cover_alt` (a real image under `assets/img/case-studies/`; the old site has none, so
+  without one the figures lead the page). The body is the migrated text. `_layouts/case_study.html` renders the
+  page, `_includes/case-card.html` the card on the index (`case-studies.html`, `it/casi-di-studio.html`, a pair
+  like the project index). `_data/redirects.yml` records old URL -> new URL for the pages whose address
+  changed (data only; the 301s are emitted later).
 - `assets/img/projects/`: the project covers, real images and never placeholders, shared by both
   languages (the gallery pictures of a project too). Make a cover 1200x675 (16:9): `cwebp -q 82 -m 6
   -sharp_yuv -resize 1200 675 in.jpg -o assets/img/projects/<name>-cover.webp`. Write `cover_alt` as a

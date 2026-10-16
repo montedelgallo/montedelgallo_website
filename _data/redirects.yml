@@ -1,0 +1,20 @@
+# The old WordPress URL -> the URL on this site, for every page whose address
+# changed in the migration. This file is DATA only: nothing reads it at build time
+# yet. Emitting the real 301 redirects is Plan 3 (they depend on the host). Pages that
+# kept their old URL are not listed. script/check-build.sh checks that the file parses,
+# that every `to` is a page of the build and that no `from` is a built page.
+#
+# Paths are public URL paths, with the /it/ prefix for the Italian site.
+
+# Case studies. The English ones lived at the site root (/case-study-<name>/); they
+# now sit under /case-studies/ like the one that already did. The two Italian case
+# studies and the restaurant one kept their address:
+#   /case-studies/restaurant-management-software-case-study/
+#   /it/casi-di-studio/case-study-su-un-software-di-gestione-per-ristoranti/
+#   /it/casi-di-studio/caso-studio-property-management-turismo-roma/
+# The Italian e-commerce page is new (the old site had it in English only), so it has
+# no old URL to redirect.
+- from: /case-study-ecommerce-platform/
+  to: /case-studies/ecommerce-platform/
+- from: /case-study-property-management-tourism-rome/
+  to: /case-studies/property-management-tourism-rome/

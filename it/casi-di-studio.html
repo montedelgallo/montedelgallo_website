@@ -1,0 +1,33 @@
+---
+layout: default
+title: Casi di studio
+lang: it
+page_id: case-studies-index
+permalink: /casi-di-studio/
+description: "I casi di studio di Monte del Gallo: cosa abbiamo realizzato per un brand di moda italiano, una catena di ristoranti e un property manager a Roma, e i risultati ottenuti."
+---
+{%- comment -%}
+  L'indice dei casi di studio, lato italiano: ogni caso di studio della lingua come
+  card (_includes/case-card.html). Il lato inglese è case-studies.html (permalink
+  /case-studies/, stesso page_id). Il permalink non porta il prefisso /it/: lo
+  aggiunge jekyll-polyglot (vedi README). Le variabili hanno un prefisso (cx_) per lo
+  stesso motivo del lato inglese.
+{%- endcomment -%}
+{%- assign cx_all = site.case_studies | where: "lang", site.active_lang -%}
+<section class="pindex pad">
+  <div class="wrap">
+    <div class="pindex__head">
+      <div class="sec-head">
+        <p class="eyebrow">Casi di studio · Software Boutique · Roma</p>
+        <h1 class="h2">I risultati dei clienti, in numeri.</h1>
+        <p class="lede">Cosa abbiamo realizzato per aziende reali, il problema da cui è partito ogni progetto e cosa è cambiato una volta online.</p>
+      </div>
+      <h2 class="pindex__count"><b>{{ cx_all.size }}</b> casi di studio</h2>
+    </div>
+    <div class="pgrid">
+      {%- for cx_study in cx_all %}
+      {% include case-card.html study=cx_study %}
+      {%- endfor %}
+    </div>
+  </div>
+</section>

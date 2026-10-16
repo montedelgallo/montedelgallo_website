@@ -1,0 +1,94 @@
+---
+layout: default
+---
+{%- comment -%}
+  The page of one case study (a document of the `case_studies` collection, see
+  _case_studies/). From top to bottom: the way back to the case study index, sector,
+  title and summary, the cover when there is one, the results as figure tiles, the
+  challenge and the solution side by side, then two columns like a project page:
+  the migrated text, and the facts (client, duration, services, stack) in a narrow
+  column that sits beside it from 900px up.
+
+  Front matter used here: title, client, sector, summary, challenge, solution,
+  results (a list of {value, label}), stack; and, optional, `cover` + `cover_alt`
+  (no case study of the old site has a picture, so most have none: the figures
+  lead the page instead) and `facts` (a map of label: text, in the language of the
+  document). script/check-build.sh checks all of it.
+
+  The page shares the project page's classes for what is the same (the way back,
+  the cover, the two-column layout, the facts, the stack chips, the text), see
+  _project-detail.scss; _case-study.scss only styles what is new here (the result
+  tiles, the challenge / solution blocks, quotes in the text).
+
+  The labels (Results, The challenge, Client, ...) come from
+  _data/i18n/<lang>.yml in the language of the document. The way back is a
+  root-relative path, which jekyll-polyglot turns into /it/casi-di-studio/ in the
+  Italian build: it is the Italian path of the index (case_studies.index_path).
+  The variables are prefixed (cs_): the layout is not an include, but the habit
+  keeps t, lang and p out of the way of anything rendered with it.
+{%- endcomment -%}
+{%- assign cs_lang = page.lang | default: site.active_lang -%}
+{%- assign cs_t = site.data.i18n[cs_lang].case_studies -%}
+<article class="project case pad">
+  <div class="wrap">
+    <p class="project__crumb"><a class="project__back" href="{{ cs_t.index_path | relative_url }}"><span class="arrow" aria-hidden="true">←</span> {{ cs_t.all | escape }}</a></p>
+    <header>
+      <p class="eyebrow">{{ page.sector | escape }}</p>
+      <h1 class="h2">{{ page.title | escape }}</h1>
+      <p class="lede">{{ page.summary | escape }}</p>
+    </header>
+    {%- if page.cover %}
+    {%- comment %} The cover is the largest image above the fold, so it is not lazy-loaded. 1200x675 is the size of a cover. {% endcomment %}
+    <img class="project__cover case__cover" src="{{ page.cover | relative_url }}" alt="{{ page.cover_alt | default: page.title | escape }}" width="1200" height="675" decoding="async" fetchpriority="high">
+    {%- endif %}
+    <section class="case__results" aria-labelledby="case-results-title">
+      <h2 class="case__title" id="case-results-title">{{ cs_t.results | escape }}</h2>
+      <ul class="case__metrics">
+        {%- for cs_result in page.results %}
+        <li class="case__metric"><b>{{ cs_result.value | escape }}</b> <span>{{ cs_result.label | escape }}</span></li>
+        {%- endfor %}
+      </ul>
+    </section>
+    <div class="case__story">
+      <section class="case__challenge">
+        <h2 class="case__title">{{ cs_t.challenge | escape }}</h2>
+        <p>{{ page.challenge | escape }}</p>
+      </section>
+      <section class="case__solution">
+        <h2 class="case__title">{{ cs_t.solution | escape }}</h2>
+        <p>{{ page.solution | escape }}</p>
+      </section>
+    </div>
+    <div class="project__layout">
+      {%- comment %} The facts come first in the page and sit beside the text from 900px up (see _project-detail.scss). {% endcomment %}
+      <div class="project__meta">
+        <dl class="project__facts">
+          <div>
+            <dt>{{ cs_t.client | escape }}</dt>
+            <dd>{{ page.client | escape }}</dd>
+          </div>
+          {%- for cs_fact in page.facts %}
+          <div>
+            <dt>{{ cs_fact[0] | escape }}</dt>
+            <dd>{{ cs_fact[1] | escape }}</dd>
+          </div>
+          {%- endfor %}
+          <div>
+            <dt>{{ cs_t.stack | escape }}</dt>
+            <dd>
+              <ul class="project__stack">
+                {%- for cs_item in page.stack %}
+                <li>{{ cs_item | escape }}</li>
+                {%- endfor %}
+              </ul>
+            </dd>
+          </div>
+        </dl>
+      </div>
+      <div class="project__body case__body">
+        {{ content }}
+      </div>
+    </div>
+    <p class="project__foot"><a class="btn btn--ghost project__back" href="{{ cs_t.index_path | relative_url }}"><span class="arrow" aria-hidden="true">←</span> {{ cs_t.all | escape }}</a></p>
+  </div>
+</article>

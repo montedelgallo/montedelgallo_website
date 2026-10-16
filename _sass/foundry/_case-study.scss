@@ -1,0 +1,136 @@
+// The case study page (_layouts/case_study.html) and its card on the index
+// (_includes/case-card.html).
+//
+// The page reuses the project page's rules for what it has in common: the way back,
+// the two-column layout with the facts beside the text, the stack chips and the
+// styling of the migrated text (all in _project-detail.scss, through the same class
+// names). This file adds only what is new: the result tiles, the challenge and
+// solution blocks, the quotes of the text, and the card's summary line. The card
+// itself is the project card (_projects.scss).
+
+// ---------- section heading ----------
+// The small heading of a block of the page (Results, The challenge, Our solution).
+.case__title{
+  font-family:var(--mono);
+  font-weight:500;
+  font-size:.72rem;
+  letter-spacing:.17em;
+  text-transform:uppercase;
+  color:var(--emerald);
+  margin:0 0 14px;
+}
+
+// ---------- results: the figures ----------
+// A tile per figure, as many across as the width allows. The figure is the loud
+// part, in emerald; its label sits under it. Without a cover this is what leads the
+// page, so it gets room above. The section drops the hairline every <section> has
+// (see _shell.scss): it is part of the article.
+.case__results,
+.case__challenge,
+.case__solution{
+  border-bottom:0;
+}
+
+.case__results{
+  margin-top:clamp(28px,4vw,44px);
+}
+
+.case__metrics{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));
+  gap:14px;
+  list-style:none;
+  margin:0;
+  padding:0;
+}
+
+.case__metric{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  padding:20px 20px 22px;
+  background:var(--surface-2);
+  border:1px solid var(--line);
+  border-radius:10px;
+}
+
+.case__metric b{
+  font-family:var(--display);
+  font-weight:800;
+  font-size:clamp(2rem,4vw,2.8rem);
+  letter-spacing:-.03em;
+  line-height:1;
+  color:var(--emerald);
+}
+
+.case__metric span{
+  color:var(--ink-2);
+  font-size:.95rem;
+  line-height:1.35;
+  text-wrap:balance;
+}
+
+// ---------- challenge and solution ----------
+// Side by side from 760px, one above the other on a phone, each with a hairline
+// above it.
+.case__story{
+  display:grid;
+  grid-template-columns:minmax(0,1fr);
+  gap:28px clamp(32px,5vw,64px);
+  margin-top:clamp(32px,5vw,52px);
+}
+
+@media (min-width:760px){
+  .case__story{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+}
+
+.case__challenge,
+.case__solution{
+  padding-top:20px;
+  border-top:1px solid var(--line);
+}
+
+.case__challenge p,
+.case__solution p{
+  margin:0;
+  color:var(--ink-2);
+  max-width:56ch;
+}
+
+// ---------- the text ----------
+// The text itself is styled by .project__body. A case study adds quotes (a client's
+// words) and, in its lists, items that carry a nested list (the phases of the
+// approach).
+.case__body blockquote{
+  margin:0 0 1.2em;
+  padding:2px 0 2px 20px;
+  border-left:3px solid var(--emerald);
+  color:var(--ink);
+  font-weight:500;
+}
+
+.case__body blockquote p{
+  margin:0;
+}
+
+.case__body li > ul{
+  margin:.65em 0 0;
+}
+
+// ---------- card ----------
+// The card is the project card without a picture; its summary sits between the title
+// and the lead figure.
+.ccard__summary{
+  margin:0;
+  color:var(--ink-2);
+  font-size:.92rem;
+  line-height:1.5;
+}
+
+// The lead figure's label is a phrase here ("table turnover at peak hours"), not a
+// word, so the figure is a little smaller than a project's headline metric.
+.ccard .pcard__metric{
+  font-size:1.5rem;
+}

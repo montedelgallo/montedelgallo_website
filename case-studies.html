@@ -1,0 +1,38 @@
+---
+layout: default
+title: Case studies
+lang: en
+page_id: case-studies-index
+permalink: /case-studies/
+description: "Case studies from Monte del Gallo: what we built for an Italian fashion brand, a restaurant chain and a property manager in Rome, and the results it produced."
+---
+{%- comment -%}
+  The case study index, English side: every case study of the language as a card
+  (_includes/case-card.html). Its Italian side is it/casi-di-studio.html (permalink
+  /casi-di-studio/, the same page_id); the two are one pair for jekyll-polyglot, like
+  the English and the Italian document of a case study. The words of the page are
+  written here, once per language, not in _data/i18n. It reuses the project index's
+  classes (pindex, pgrid).
+
+  The variables are prefixed (cx_): the card include shares the page's variables, and
+  a page that left t, lang or p in them would break the cards (see the rule in
+  index.html).
+{%- endcomment -%}
+{%- assign cx_all = site.case_studies | where: "lang", site.active_lang -%}
+<section class="pindex pad">
+  <div class="wrap">
+    <div class="pindex__head">
+      <div class="sec-head">
+        <p class="eyebrow">Case studies · Software Boutique · Roma</p>
+        <h1 class="h2">Client results, in numbers.</h1>
+        <p class="lede">What we built for real businesses, the problem each project started from and what changed once it was live.</p>
+      </div>
+      <h2 class="pindex__count"><b>{{ cx_all.size }}</b> case studies</h2>
+    </div>
+    <div class="pgrid">
+      {%- for cx_study in cx_all %}
+      {% include case-card.html study=cx_study %}
+      {%- endfor %}
+    </div>
+  </div>
+</section>
