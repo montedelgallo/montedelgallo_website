@@ -1,0 +1,20 @@
+{%- comment -%}
+  The growth system: the dark band with three layers (AI, Rails, web + growth),
+  each an icon, a title, a line and a one-word tag (Build, Ship, Rank). Words:
+  t.home.growth. The band is dark, so the CSS lightens the focus ring on it. Read
+  t, never assign t, lang or p (see index.html).
+{%- endcomment -%}
+<section class="stack pad">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">{{ t.home.growth.eyebrow | escape }}</p>
+      <h2 class="h2">{{ t.home.growth.title | escape }}</h2>
+      <p class="lede">{{ t.home.growth.lede | escape }}</p>
+    </div>
+    <div class="stack__grid">
+      {%- for growth_item in t.home.growth.items %}
+      <div class="stack__c"><div class="ic"><svg class="ico" aria-hidden="true" focusable="false"><use href="#{{ growth_item.icon | escape }}"/></svg></div><h3>{{ growth_item.title | escape }}</h3><p>{{ growth_item.text | escape }}</p><span class="tag">{{ growth_item.tag | escape }}</span></div>
+      {%- endfor %}
+    </div>
+  </div>
+</section>

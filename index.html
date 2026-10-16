@@ -2,17 +2,30 @@
 layout: default
 ---
 {%- comment -%}
-  INTERIM page, replaced by the real home page (Task 5). It exists so the shell
-  (layout, head, header, footer) is built and checked on its own. The section ids
-  are the anchors _data/nav.yml links to; html-proofer verifies them.
+  The home page. One source, rendered once per language: English at /, Italian
+  at /it/. It has no `lang:` in its front matter (that is what makes it
+  single-source, see _includes/lang-url.html), and every word on it comes from
+  the home: tree of _data/i18n/<lang>.yml.
+
+  The sections are includes, in page order, each a port of the same section of the
+  approved mockup (design/home-foundry-mockup.html). Their styles are in
+  _sass/foundry/_home.scss; the cards of the work section reuse
+  _includes/project-card.html.
+
+  RULE FOR EVERYTHING IN _includes/home/: an include runs in THIS page's context
+  and shares its variables, and Liquid's `assign` is global. `t` is the whole i18n
+  tree of the language being built, and every section reads from it, so an include
+  that assigns `t`, `lang` or `p` blanks every section after it, with no error.
+  Read `t`, never assign it. A local gets a prefix of its own (work_cards, ...),
+  and so does a loop variable (work_proj, not p). script/check-build.sh fails when
+  a string of the home: tree is missing from the page.
 {%- endcomment -%}
 {%- assign t = site.data.i18n[site.active_lang] -%}
-<section class="pad">
-  <div class="wrap">
-    <h1 class="h2">{{ site.title | escape }}</h1>
-    <p class="lede">{{ site.data.site_meta[site.active_lang].description | escape }}</p>
-  </div>
-</section>
-<section id="services" class="pad"><div class="wrap"><h2 class="h2">{{ t.nav.services | escape }}</h2></div></section>
-<section id="work" class="pad"><div class="wrap"><h2 class="h2">{{ t.nav.work | escape }}</h2></div></section>
-<section id="about" class="pad"><div class="wrap"><h2 class="h2">{{ t.nav.about | escape }}</h2></div></section>
+{% include home/hero.html %}
+{% include home/tech.html %}
+{% include home/services.html %}
+{% include home/growth.html %}
+{% include home/work.html %}
+{% include home/who.html %}
+{% include home/process.html %}
+{% include home/cta.html %}

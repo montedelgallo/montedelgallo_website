@@ -1,0 +1,719 @@
+// The home page: the sections between the navigation and the footer, in page
+// order. A port of the approved mockup (design/home-foundry-mockup.html), with the
+// mockup's own class names. What the sections share lives elsewhere: .wrap,
+// .eyebrow, .h2, .lede, .btn and .ico in _components.scss; section{}, .pad,
+// .sec-head and .arrow in _shell.scss; the project cards of the work section
+// (.pgrid, .pcard) in _projects.scss, so there is no card CSS here.
+//
+// Markup: index.html and _includes/home/<section>.html.
+//
+// Grid columns: the multi-column grids use the mockup's own fr tracks (a track
+// grows to fit its content, which the dashboard figures rely on). The single-column
+// layouts of the narrow breakpoints use minmax(0,1fr), which is the same thing
+// until some content is wider than the column: then it stays in the column
+// instead of pushing the page sideways (the Italian copy has longer words).
+
+// ---------- hero ----------
+.hero{
+  position:relative;
+  overflow:hidden;
+}
+
+// The blueprint grid, fading out towards the bottom.
+.hero::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:0;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:44px 44px;
+  -webkit-mask-image:linear-gradient(180deg,#000 0%,#000 55%,transparent 92%);
+  mask-image:linear-gradient(180deg,#000 0%,#000 55%,transparent 92%);
+}
+
+// The mountain range along the bottom edge, a faint emerald.
+.hero__range{
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:-2px;
+  z-index:0;
+  color:var(--emerald);
+  opacity:.10;
+  width:100%;
+  height:auto;
+}
+
+.hero .wrap{
+  position:relative;
+  z-index:1;
+  display:grid;
+  grid-template-columns:1.18fr .92fr;
+  gap:48px;
+  align-items:center;
+  padding-block:clamp(44px,6vw,76px) clamp(40px,5vw,64px);
+}
+
+.hero h1{
+  font-family:var(--display);
+  font-weight:800;
+  letter-spacing:-.03em;
+  line-height:1;
+  font-size:clamp(2.4rem,5.8vw,4.3rem);
+  margin:16px 0 0;
+  max-width:15ch;
+  text-wrap:balance;
+}
+
+.hero__sub{
+  color:var(--ink-2);
+  font-size:clamp(1.05rem,1.6vw,1.2rem);
+  max-width:46ch;
+  margin:20px 0 0;
+}
+
+.hero__cta{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-top:28px;
+}
+
+// ---------- the proof numbers ----------
+.stats{
+  display:flex;
+  flex-wrap:wrap;
+  margin-top:38px;
+  border-top:1.5px solid var(--line-2);
+}
+
+.stats>div{
+  flex:1 1 130px;
+  padding:16px 18px 0;
+  border-right:1px solid var(--line);
+}
+
+.stats>div:last-child{
+  border-right:0;
+  padding-right:0;
+}
+
+.stats b{
+  display:block;
+  font-family:var(--display);
+  font-weight:800;
+  font-size:1.85rem;
+  letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums;
+}
+
+.stats span{
+  font-family:var(--mono);
+  font-size:.66rem;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:var(--muted);
+}
+
+// ---------- the dashboard picture ----------
+.shotwrap{
+  position:relative;
+}
+
+.shot{
+  border:1px solid var(--line-2);
+  border-radius:11px;
+  background:var(--surface-2);
+  overflow:hidden;
+  box-shadow:0 30px 60px -36px rgba(14,26,20,.55);
+}
+
+.shot__bar{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:11px 14px;
+  background:var(--surface);
+  border-bottom:1px solid var(--line);
+}
+
+.shot__dots{
+  display:flex;
+  gap:5px;
+}
+
+.shot__dots i{
+  width:9px;
+  height:9px;
+  border-radius:50%;
+  background:#cfd6d1;
+  display:block;
+}
+
+.shot__ttl{
+  font-family:var(--mono);
+  font-size:.72rem;
+  color:var(--muted);
+  margin-left:4px;
+}
+
+.shot__body{
+  padding:16px;
+}
+
+.shot__hd{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:10px;
+}
+
+.shot__hd .k{
+  font-family:var(--mono);
+  font-size:.7rem;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--muted);
+}
+
+.shot__hd .pill{
+  margin-left:auto;
+  font-family:var(--mono);
+  font-weight:600;
+  font-size:.74rem;
+  color:#fff;
+  background:var(--emerald);
+  border-radius:5px;
+  padding:3px 9px;
+}
+
+.shot__chart{
+  width:100%;
+  height:auto;
+  display:block;
+  border:1px solid var(--line);
+  border-radius:7px;
+  background:linear-gradient(var(--grid) 1px,transparent 1px) 0 0/100% 25%,var(--surface);
+}
+
+.shot__kpis{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+  margin-top:10px;
+}
+
+// Every div inside, the figure and its label too, gets the box: that is how the
+// mockup draws the figures (a box in a box), so it is kept.
+.shot__kpis div{
+  border:1px solid var(--line);
+  border-radius:7px;
+  padding:9px 10px;
+}
+
+.shot__kpis .n{
+  font-family:var(--display);
+  font-weight:800;
+  font-size:1.05rem;
+  letter-spacing:-.01em;
+}
+
+.shot__kpis .l{
+  font-family:var(--mono);
+  font-size:.6rem;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--muted);
+}
+
+// A narrow phone: the three boxes-in-boxes need more room than the picture has.
+// The mockup fits them at 375px with no space to spare and clips the last one
+// below that, and the Italian labels are longer, so here they give up some
+// padding.
+@media (max-width:400px){
+  .shot__kpis{
+    gap:6px;
+  }
+
+  .shot__kpis div{
+    padding-inline:6px;
+  }
+}
+
+.shot__log{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-top:10px;
+  font-family:var(--mono);
+  font-size:.74rem;
+  color:var(--ink-2);
+}
+
+// The pulsing status dots. They stop under prefers-reduced-motion (see _base.scss).
+.shot__log .dot{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:var(--emerald-l);
+  flex:none;
+  animation:pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes pulse{
+  0%,100%{
+    opacity:1;
+  }
+
+  50%{
+    opacity:.35;
+  }
+}
+
+// The "AI automation" chip over the lower left corner of the picture.
+.chip{
+  position:absolute;
+  left:-16px;
+  bottom:-18px;
+  background:var(--ink);
+  color:#eafaf2;
+  border-radius:9px;
+  padding:11px 14px;
+  display:flex;
+  align-items:center;
+  gap:9px;
+  box-shadow:0 18px 40px -22px rgba(14,26,20,.7);
+}
+
+.chip .dot{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:var(--emerald-l);
+  animation:pulse 2.4s ease-in-out infinite;
+}
+
+.chip b{
+  font-size:.84rem;
+}
+
+.chip span{
+  display:block;
+  font-family:var(--mono);
+  font-size:.64rem;
+  color:#9fc6b4;
+}
+
+@media (max-width:860px){
+  .hero .wrap{
+    grid-template-columns:minmax(0,1fr);
+    gap:40px;
+  }
+
+  .shotwrap{
+    max-width:460px;
+  }
+
+  .chip{
+    left:auto;
+    right:8px;
+  }
+}
+
+// ---------- built-with strip ----------
+.tech .wrap{
+  display:flex;
+  align-items:center;
+  gap:14px 30px;
+  flex-wrap:wrap;
+  padding-block:20px;
+}
+
+.tech .lab{
+  font-family:var(--mono);
+  font-size:.72rem;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:var(--muted);
+}
+
+.tech .row{
+  display:flex;
+  gap:14px 26px;
+  flex-wrap:wrap;
+  align-items:center;
+}
+
+.tech .row span{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  font-family:var(--display);
+  font-weight:700;
+  font-size:.98rem;
+  color:var(--ink-2);
+}
+
+.tech .row span::before{
+  content:"";
+  width:9px;
+  height:9px;
+  border-radius:50%;
+  background:var(--emerald);
+}
+
+// ---------- services grid ----------
+.svc{
+  margin-top:38px;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  border-top:1px solid var(--line);
+  border-left:1px solid var(--line);
+}
+
+.svc__cell{
+  border-right:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+  padding:24px 22px 26px;
+  min-height:196px;
+  display:flex;
+  flex-direction:column;
+  background:var(--bg);
+  transition:background .15s;
+}
+
+.svc__cell:hover{
+  background:var(--surface);
+}
+
+.svc__ic{
+  width:40px;
+  height:40px;
+  border:1px solid var(--line-2);
+  border-radius:9px;
+  display:grid;
+  place-items:center;
+  color:var(--emerald);
+  margin-bottom:auto;
+}
+
+.svc__cell h3{
+  font-family:var(--display);
+  font-weight:700;
+  font-size:1.1rem;
+  letter-spacing:-.01em;
+  margin:26px 0 8px;
+}
+
+.svc__cell p{
+  color:var(--muted);
+  font-size:.89rem;
+  margin:0;
+}
+
+@media (max-width:980px){
+  .svc{
+    grid-template-columns:repeat(2,1fr);
+  }
+}
+
+@media (max-width:520px){
+  .svc{
+    grid-template-columns:minmax(0,1fr);
+  }
+
+  .svc__cell{
+    min-height:0;
+  }
+}
+
+// ---------- growth system band ----------
+// A dark band: the focus ring is lightened (see --focus in _tokens.scss).
+.stack{
+  --focus:var(--emerald-xl);
+  background:var(--dark);
+  color:#e7efe9;
+  border-bottom:0;
+}
+
+.stack .eyebrow{
+  color:#7fe3b6;
+}
+
+.stack .h2{
+  color:#fff;
+}
+
+.stack .lede{
+  color:#aebfb4;
+}
+
+.stack__grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+  margin-top:40px;
+}
+
+.stack__c{
+  border:1px solid #ffffff1f;
+  border-radius:11px;
+  padding:22px;
+  background:#111f18;
+  position:relative;
+}
+
+.stack__c .ic{
+  width:44px;
+  height:44px;
+  border:1px solid #ffffff26;
+  border-radius:10px;
+  display:grid;
+  place-items:center;
+  color:var(--emerald-xl);
+}
+
+.stack__c h3{
+  font-family:var(--display);
+  font-weight:700;
+  font-size:1.15rem;
+  margin:18px 0 6px;
+  color:#fff;
+}
+
+.stack__c p{
+  color:#9fb2a7;
+  font-size:.9rem;
+  margin:0 0 16px;
+}
+
+.stack__c .tag{
+  font-family:var(--mono);
+  font-size:.72rem;
+  font-weight:600;
+  color:var(--dark);
+  background:var(--emerald-xl);
+  border-radius:5px;
+  padding:4px 10px;
+}
+
+@media (max-width:820px){
+  .stack__grid{
+    grid-template-columns:minmax(0,1fr);
+  }
+}
+
+// ---------- selected work ----------
+// Only the space between the heading and the cards: the grid and the cards are
+// .pgrid and .pcard (_projects.scss).
+.work .pgrid{
+  margin-top:38px;
+}
+
+// ---------- who we are ----------
+.who .wrap{
+  display:grid;
+  grid-template-columns:.9fr 1.1fr;
+  gap:44px;
+  align-items:center;
+}
+
+.who__art{
+  border:1px solid var(--line-2);
+  border-radius:12px;
+  overflow:hidden;
+  background:var(--surface);
+  aspect-ratio:4/3;
+  position:relative;
+}
+
+.who__art svg{
+  display:block;
+  width:100%;
+  height:100%;
+}
+
+.who__badge{
+  position:absolute;
+  left:16px;
+  bottom:16px;
+  font-family:var(--mono);
+  font-size:.68rem;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--ink);
+  background:#ffffffcc;
+  border:1px solid var(--line);
+  border-radius:6px;
+  padding:5px 9px;
+}
+
+.who__grid{
+  display:grid;
+  grid-template-columns:minmax(0,1fr);
+  gap:0;
+  margin-top:26px;
+}
+
+.who__grid>div{
+  padding:20px 0 16px;
+  border-top:2px solid var(--ink);
+}
+
+.who__grid h3{
+  font-family:var(--display);
+  font-weight:700;
+  font-size:1.12rem;
+  margin:0 0 6px;
+}
+
+.who__grid p{
+  color:var(--muted);
+  font-size:.92rem;
+  margin:0;
+  max-width:52ch;
+}
+
+@media (max-width:820px){
+  .who .wrap{
+    grid-template-columns:minmax(0,1fr);
+    gap:28px;
+  }
+}
+
+// ---------- process ----------
+.proc{
+  background:var(--surface);
+}
+
+.steps{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:0;
+  margin-top:40px;
+  border-top:1px solid var(--line);
+}
+
+.steps>div{
+  padding:24px 22px 8px;
+  border-right:1px solid var(--line);
+}
+
+.steps>div:last-child{
+  border-right:0;
+}
+
+// The number is an outline: transparent fill, a hairline stroke.
+.steps .num{
+  font-family:var(--display);
+  font-weight:800;
+  font-size:2.2rem;
+  color:transparent;
+  -webkit-text-stroke:1.5px var(--line-2);
+  line-height:1;
+}
+
+.steps h3{
+  font-family:var(--display);
+  font-weight:700;
+  font-size:1.05rem;
+  margin:12px 0 6px;
+}
+
+.steps p{
+  color:var(--muted);
+  font-size:.89rem;
+  margin:0;
+}
+
+@media (max-width:820px){
+  .steps{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .steps>div:nth-child(2n){
+    border-right:0;
+  }
+}
+
+@media (max-width:460px){
+  .steps{
+    grid-template-columns:minmax(0,1fr);
+  }
+
+  .steps>div{
+    border-right:0;
+    border-bottom:1px solid var(--line);
+  }
+}
+
+// ---------- final call to action ----------
+// A dark band: the focus ring is lightened (see --focus in _tokens.scss).
+.cta{
+  --focus:var(--emerald-xl);
+  background:var(--dark-em);
+  color:#eafaf2;
+  border-bottom:0;
+  position:relative;
+  overflow:hidden;
+}
+
+.cta__range{
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  color:#fff;
+  opacity:.08;
+  width:100%;
+  height:auto;
+}
+
+.cta .wrap{
+  position:relative;
+  z-index:1;
+  padding-block:clamp(50px,7vw,94px);
+  text-align:center;
+}
+
+.cta .eyebrow{
+  color:#9fe6c6;
+}
+
+.cta h2{
+  font-family:var(--display);
+  font-weight:800;
+  letter-spacing:-.02em;
+  line-height:1.02;
+  font-size:clamp(1.9rem,4.6vw,3.2rem);
+  margin:.4em auto 0;
+  max-width:18ch;
+  text-wrap:balance;
+  color:#fff;
+}
+
+.cta p{
+  color:#bfe9d4;
+  max-width:52ch;
+  margin:16px auto 0;
+  font-size:1.05rem;
+}
+
+.cta__btns{
+  display:flex;
+  gap:14px;
+  justify-content:center;
+  flex-wrap:wrap;
+  margin-top:30px;
+}
+
+.cta .btn--solid{
+  background:#fff;
+  color:var(--dark-em);
+  border-color:#fff;
+}
+
+.cta .btn--ghost{
+  color:#eafaf2;
+  border-color:#ffffff4d;
+}

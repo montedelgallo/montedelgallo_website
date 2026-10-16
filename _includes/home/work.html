@@ -1,0 +1,25 @@
+{%- comment -%}
+  Selected work: the featured projects of the language being built, as cards with
+  their REAL covers (not drawn placeholders). The cards are project-card.html and
+  their styles are .pgrid / .pcard in _projects.scss; the projects are the
+  documents of _projects/ with `featured: true`. id="work" is the anchor of the
+  navigation, of the footer and of the hero button, keep it. Words (heading only):
+  t.home.work.
+
+  work_cards and work_proj carry the prefix on purpose: this include shares the
+  variables of index.html, so it must not assign t, lang or p (see index.html).
+{%- endcomment -%}
+{%- assign work_cards = site.projects | where: "featured", true | where: "lang", site.active_lang -%}
+<section id="work" class="work pad">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">{{ t.home.work.eyebrow | escape }}</p>
+      <h2 class="h2">{{ t.home.work.title | escape }}</h2>
+    </div>
+    <div class="pgrid">
+      {%- for work_proj in work_cards %}
+      {% include project-card.html project=work_proj %}
+      {%- endfor %}
+    </div>
+  </div>
+</section>

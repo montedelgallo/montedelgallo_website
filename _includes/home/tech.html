@@ -1,0 +1,15 @@
+{%- comment -%}
+  The "built with" strip: a label and the technologies, each with a green dot
+  (drawn by the CSS). Words: t.home.tech. Read t, never assign t, lang or p (see
+  index.html).
+{%- endcomment -%}
+<section class="tech">
+  <div class="wrap">
+    <span class="lab">{{ t.home.tech.label | escape }}</span>
+    <div class="row">
+      {%- for tech_item in t.home.tech.items %}
+      <span>{{ tech_item | escape }}</span>
+      {%- endfor %}
+    </div>
+  </div>
+</section>

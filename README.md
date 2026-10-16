@@ -18,7 +18,7 @@ The output is plain static files, so it can be deployed to any host. It is built
 bundle install               # install the gems (first run, and after Gemfile changes)
 bundle exec jekyll serve     # dev server: http://localhost:4000 (EN) and http://localhost:4000/it/ (IT)
 bundle exec jekyll build     # one-off build into _site/
-bash script/check-build.sh   # clean build, then assert both languages, the design-system CSS, the self-hosted fonts, the page shell (hreflang, navigation, footer, language switch), the featured projects (documents, real covers, detail pages, cards) and the links (html-proofer)
+bash script/check-build.sh   # clean build, then assert both languages, the design-system CSS, the self-hosted fonts, the page shell (hreflang, navigation, footer, language switch), the featured projects (documents, real covers, detail pages, cards), the home page (every string of both languages on the page, sections, links, covers) and the links (html-proofer)
 ```
 
 ## Where things live
@@ -30,7 +30,13 @@ bash script/check-build.sh   # clean build, then assert both languages, the desi
 - `_data/nav.yml`: where the header and footer links point, per language. `_data/site_meta.yml`: SEO defaults,
   the booking URL and the company facts (VAT number, phone, email).
 - `_sass/foundry/`: the design system (`_shell.scss` styles the header, footer and section helpers,
-  `_projects.scss` the project card and the project page).
+  `_projects.scss` the project card and the project page, `_home.scss` the sections of the home).
+- The home page is `index.html` plus one include per section in `_includes/home/` (hero, tech, services,
+  growth, work, who, process, cta), a port of `design/home-foundry-mockup.html`. Its words are the `home:`
+  tree of `_data/i18n/<lang>.yml` (a list such as the services is a YAML list of maps, shown in order; an
+  `icon` names a symbol of `_includes/icons.html`). The work section lists the `featured` projects of the
+  language through `project-card.html`. An include of the home must never `assign` `t`, `lang` or `p`
+  (see the rule in `index.html`: it shares the page's variables and would blank the sections after it).
 - `_projects/`: the projects, one Markdown document per language (the Italian ones in `_projects/it/`),
   tied together by a shared `page_id`. Front matter: `title, lang, page_id, permalink, sector, year,
   stack, summary, metric {value, label}, cover, cover_alt, featured`; `featured: true` puts a project

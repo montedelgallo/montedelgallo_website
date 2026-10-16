@@ -1,0 +1,21 @@
+{%- comment -%}
+  The services: a heading and a grid of cells, each an icon (a symbol of
+  icons.html, named by the item's `icon`), a title and a line. The cells are not
+  links (there are no service pages yet). id="services" is the anchor of the
+  navigation and of the footer, keep it. Words: t.home.services. Read t, never
+  assign t, lang or p (see index.html).
+{%- endcomment -%}
+<section id="services" class="pad">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">{{ t.home.services.eyebrow | escape }}</p>
+      <h2 class="h2">{{ t.home.services.title | escape }}</h2>
+      <p class="lede">{{ t.home.services.lede | escape }}</p>
+    </div>
+    <div class="svc">
+      {%- for svc_item in t.home.services.items %}
+      <div class="svc__cell"><div class="svc__ic"><svg class="ico" aria-hidden="true" focusable="false"><use href="#{{ svc_item.icon | escape }}"/></svg></div><h3>{{ svc_item.title | escape }}</h3><p>{{ svc_item.text | escape }}</p></div>
+      {%- endfor %}
+    </div>
+  </div>
+</section>

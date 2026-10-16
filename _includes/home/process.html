@@ -1,0 +1,19 @@
+{%- comment -%}
+  The process: four numbered steps (Map, Build, Automate, Measure). The numbers
+  are not copy: the page counts them (01, 02, ...), so there can be up to nine
+  steps. Words: t.home.process. Read t, never assign t, lang or p (see
+  index.html).
+{%- endcomment -%}
+<section class="proc pad">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">{{ t.home.process.eyebrow | escape }}</p>
+      <h2 class="h2">{{ t.home.process.title | escape }}</h2>
+    </div>
+    <div class="steps">
+      {%- for step_item in t.home.process.items %}
+      <div><div class="num">0{{ forloop.index }}</div><h3>{{ step_item.title | escape }}</h3><p>{{ step_item.text | escape }}</p></div>
+      {%- endfor %}
+    </div>
+  </div>
+</section>

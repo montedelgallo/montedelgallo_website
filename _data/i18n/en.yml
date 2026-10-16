@@ -6,8 +6,12 @@
 # starts with a symbol; `&` and `<` are escaped by the templates, so write them
 # as plain text.
 #
-# The `home:` tree (hero, stats, services, work, who we are, process, final call to
-# action) is added with the home page.
+# The `home:` tree holds the words of the home page, section by section in page
+# order (hero, built-with strip, services, growth system, work, who we are,
+# process, final call to action). Read in _includes/home/<section>.html as
+# t.home.<section>.<key>. A list (stats, services, ...) is a YAML list of maps and
+# the page shows its items in that order. An `icon` names a symbol of
+# _includes/icons.html and is the same in both languages (the check compares it).
 
 lang:
   name: "English" # the language's own name, used by the language switch
@@ -29,6 +33,119 @@ nav:
 
 cta:
   book_call: "Book a call"
+
+home:
+  hero:
+    eyebrow: "Software · Automation · AI — Roma"
+    title: "We build the software your business runs on."
+    sub: "Monte del Gallo is a software boutique in Rome. We design custom systems, automate the work you repeat, and put AI where it actually pays off."
+    cta_primary: "Book a 30-min call" # leads to the booking page
+    cta_secondary: "See our work" # scrolls to the work section
+    stats: # the proof rail under the buttons
+      - value: "+140%"
+        label: "Direct bookings"
+      - value: "+150%"
+        label: "Online sales"
+      - value: "600+"
+        label: "Businesses served"
+    shot: # the dashboard picture beside the headline; `label` describes it to screen readers
+      label: "Example operations dashboard built by Monte del Gallo"
+      title: "operations · montedelgallo"
+      heading: "Online sales · last 30 days"
+      pill: "+150%"
+      kpis:
+        - value: "1,284"
+          label: "Orders"
+        - value: "€62"
+          label: "Avg. cart"
+        - value: "7 live"
+          label: "Automations"
+      log: "agent synced inventory · 2m ago"
+      chip_title: "AI automation"
+      chip_text: "running in production"
+  tech: # the "built with" strip
+    label: "Built with"
+    items: ["Ruby on Rails", "Hotwire", "Tailwind", "PostgreSQL", "OpenAI"]
+  services:
+    eyebrow: "What we do"
+    title: "Digital systems designed for better operations."
+    lede: "Software, automation and measurable growth, built around how your business actually works."
+    items:
+      - icon: "i-code"
+        title: "Custom software"
+        text: "Internal tools, SaaS products, dashboards and platforms built around real workflows."
+      - icon: "i-ai"
+        title: "AI & automation"
+        text: "LLM workflows, document processing, CRM automations and back-office copilots."
+      - icon: "i-data"
+        title: "Data systems"
+        text: "Analytics, reporting layers and integrations that make decisions clearer."
+      - icon: "i-mobile"
+        title: "Mobile apps"
+        text: "Native and hybrid apps for customers, teams and field operations."
+      - icon: "i-web"
+        title: "Websites"
+        text: "High-performing marketing sites and landing pages that convert."
+      - icon: "i-cart"
+        title: "E-commerce"
+        text: "Online stores, checkout optimization and operational automation."
+      - icon: "i-signage"
+        title: "Digital signage"
+        text: "Screens, playlists and infrastructure for venues and multi-location networks."
+      - icon: "i-seo"
+        title: "SEO & GEO"
+        text: "Visibility in search and AI answers, built on structured content and entities."
+  growth: # the dark "growth system" band
+    eyebrow: "Growth system · one stack"
+    title: "Design, code and automation in one workflow."
+    lede: "Three layers that work together — so what we build keeps paying off after launch."
+    items:
+      - icon: "i-ai"
+        title: "AI agents & RAG"
+        text: "Automation grounded in your own data, documents and operations."
+        tag: "Build"
+      - icon: "i-ship"
+        title: "Ruby on Rails"
+        text: "Reliable products, dashboards and workflows shipped fast."
+        tag: "Ship"
+      - icon: "i-seo"
+        title: "Web + growth"
+        text: "Performance, content and visibility across search and AI answers."
+        tag: "Rank"
+  work: # the cards under it are the featured projects (_projects/), not copy
+    eyebrow: "Selected work"
+    title: "Systems in production, outcomes you can measure."
+  who:
+    eyebrow: "Who we are"
+    title: "A software boutique, not a traditional agency."
+    lede: "We combine creativity and engineering to build essential, reliable systems. Lean process, dependable delivery, no unnecessary complexity."
+    art_label: "Monte del Gallo mark over a blueprint field" # describes the picture to screen readers
+    badge: "Studio · Roma"
+    items:
+      - title: "Less is more"
+        text: "We focus on what creates measurable value: clean architecture, fast interfaces, products that stay easy to maintain."
+      - title: "Agile by design"
+        text: "No heavy overhead. We adapt quickly as requirements change and keep progress visible throughout."
+      - title: "Constraints as leverage"
+        text: "Budget, timing and legacy systems become design constraints that lead to sharper, more useful solutions."
+  process: # the steps are numbered 01, 02, ... by the page
+    eyebrow: "How we work"
+    title: "From messy operations to a system that runs itself."
+    items:
+      - title: "Map"
+        text: "We map your data, tools and the workflows your team repeats every day."
+      - title: "Build"
+        text: "We ship the custom software and integrations the work actually needs."
+      - title: "Automate"
+        text: "We remove the manual steps with automation and AI where it pays off."
+      - title: "Measure"
+        text: "We track real outcomes and keep improving what moves the numbers."
+  cta: # the final call to action
+    eyebrow: "Start here"
+    title: "Let's build something useful together."
+    text: "In 30 minutes we map where your business can grow across software, automation and AI — then define a practical path to measurable results."
+    book: "Book a 30-min call" # leads to the booking page
+    whatsapp: "Chat on WhatsApp" # leads to the company phone on WhatsApp
 
 projects: # the project card and the project page
   view: "View project"

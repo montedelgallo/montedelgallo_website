@@ -1,0 +1,53 @@
+{%- comment -%}
+  Hero: eyebrow, headline, sub, the two buttons and the proof numbers; beside
+  them a drawn operations dashboard with its "AI automation" chip. The mountain
+  range sits behind it all. Words: t.home.hero (see index.html for the rule on
+  variables: read t, never assign t, lang or p).
+
+  The dashboard is a drawing, so it is one image for assistive technology
+  (role="img" with a description) and its inner text is not read. The "book a
+  call" button leads to the booking page; "see our work" scrolls to #work.
+{%- endcomment -%}
+<section class="hero">
+  <svg class="hero__range" aria-hidden="true" focusable="false"><use href="#mdg-range"/></svg>
+  <div class="wrap">
+    <div>
+      <p class="eyebrow">{{ t.home.hero.eyebrow | escape }}</p>
+      <h1>{{ t.home.hero.title | escape }}</h1>
+      <p class="hero__sub">{{ t.home.hero.sub | escape }}</p>
+      <div class="hero__cta">
+        <a class="btn btn--solid" href="{{ site.data.site_meta.booking_url }}">{{ t.home.hero.cta_primary | escape }}</a>
+        <a class="btn btn--ghost" href="#work">{{ t.home.hero.cta_secondary | escape }} <span class="arrow" aria-hidden="true">→</span></a>
+      </div>
+      <div class="stats">
+        {%- for hero_stat in t.home.hero.stats %}
+        <div><b>{{ hero_stat.value | escape }}</b><span>{{ hero_stat.label | escape }}</span></div>
+        {%- endfor %}
+      </div>
+    </div>
+
+    <div class="shotwrap">
+      <div class="shot" role="img" aria-label="{{ t.home.hero.shot.label | escape }}">
+        <div class="shot__bar"><div class="shot__dots"><i></i><i></i><i></i></div><div class="shot__ttl">{{ t.home.hero.shot.title | escape }}</div></div>
+        <div class="shot__body">
+          <div class="shot__hd"><span class="k">{{ t.home.hero.shot.heading | escape }}</span><span class="pill">{{ t.home.hero.shot.pill | escape }}</span></div>
+          <svg class="shot__chart" viewBox="0 0 300 96" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+            <defs><linearGradient id="shot-fill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#17A86C" stop-opacity=".34"/><stop offset="1" stop-color="#17A86C" stop-opacity="0"/>
+            </linearGradient></defs>
+            <path d="M0 78 L40 70 L75 72 L110 56 L150 60 L190 40 L225 46 L260 24 L300 14 L300 96 L0 96 Z" fill="url(#shot-fill)"/>
+            <path d="M0 78 L40 70 L75 72 L110 56 L150 60 L190 40 L225 46 L260 24 L300 14" fill="none" stroke="#0A6B45" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>
+            <circle cx="300" cy="14" r="3.4" fill="#0A6B45"/>
+          </svg>
+          <div class="shot__kpis">
+            {%- for hero_kpi in t.home.hero.shot.kpis %}
+            <div><div class="n">{{ hero_kpi.value | escape }}</div><div class="l">{{ hero_kpi.label | escape }}</div></div>
+            {%- endfor %}
+          </div>
+          <div class="shot__log"><span class="dot"></span> {{ t.home.hero.shot.log | escape }}</div>
+        </div>
+      </div>
+      <div class="chip"><span class="dot"></span><div><b>{{ t.home.hero.shot.chip_title | escape }}</b><span>{{ t.home.hero.shot.chip_text | escape }}</span></div></div>
+    </div>
+  </div>
+</section>

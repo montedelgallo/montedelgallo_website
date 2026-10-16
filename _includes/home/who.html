@@ -1,0 +1,35 @@
+{%- comment -%}
+  Who we are: a drawn panel (the brand mark and the mountain range over a
+  blueprint grid) beside the heading, a line and three principles. id="about" is
+  the anchor of the navigation and of the footer, keep it. Words: t.home.who. Read
+  t, never assign t, lang or p (see index.html).
+
+  The mark and the range are drawn in currentColor, which here is the ink of the
+  page: that is how the approved mockup renders them (its fill="#0A6B45" on the
+  <use> never took effect). To make them emerald, set a color on .who__art.
+{%- endcomment -%}
+<section id="about" class="who pad">
+  <div class="wrap">
+    <div class="who__art">
+      <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" role="img" aria-label="{{ t.home.who.art_label | escape }}">
+        <rect width="400" height="300" fill="#F8FAF9"/>
+        <g opacity=".5" stroke="rgba(14,26,20,.12)"><path d="M0 60 H400 M0 120 H400 M0 180 H400 M0 240 H400 M80 0 V300 M160 0 V300 M240 0 V300 M320 0 V300"/></g>
+        <use href="#mdg-range" x="0" y="150" width="400" height="150" opacity=".16"/>
+        <use href="#mdg-mark" x="150" y="80" width="100" height="100"/>
+        <circle cx="320" cy="70" r="26" fill="none" stroke="#0A6B45" stroke-width="1.5" opacity=".5"/>
+        <path d="M60 240 L140 200" stroke="#0A6B45" stroke-width="1.5" opacity=".4"/>
+      </svg>
+      <span class="who__badge">{{ t.home.who.badge | escape }}</span>
+    </div>
+    <div>
+      <p class="eyebrow">{{ t.home.who.eyebrow | escape }}</p>
+      <h2 class="h2">{{ t.home.who.title | escape }}</h2>
+      <p class="lede">{{ t.home.who.lede | escape }}</p>
+      <div class="who__grid">
+        {%- for who_item in t.home.who.items %}
+        <div><h3>{{ who_item.title | escape }}</h3><p>{{ who_item.text | escape }}</p></div>
+        {%- endfor %}
+      </div>
+    </div>
+  </div>
+</section>

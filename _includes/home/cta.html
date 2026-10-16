@@ -1,0 +1,19 @@
+{%- comment -%}
+  The final call to action: a dark-emerald band with a heading and two buttons,
+  "book a 30-min call" (the Soshiki booking page of _data/site_meta.yml) and
+  "chat on WhatsApp" (the company phone, digits only, in a wa.me link). Words:
+  t.home.cta. The band is dark, so the CSS lightens the focus ring on it. Read t,
+  never assign t, lang or p (see index.html).
+{%- endcomment -%}
+<section id="contact" class="cta">
+  <svg class="cta__range" aria-hidden="true" focusable="false"><use href="#mdg-range"/></svg>
+  <div class="wrap">
+    <p class="eyebrow">{{ t.home.cta.eyebrow | escape }}</p>
+    <h2>{{ t.home.cta.title | escape }}</h2>
+    <p>{{ t.home.cta.text | escape }}</p>
+    <div class="cta__btns">
+      <a class="btn btn--solid" href="{{ site.data.site_meta.booking_url }}">{{ t.home.cta.book | escape }}</a>
+      <a class="btn btn--ghost" href="https://wa.me/{{ site.data.site_meta.company.phone | remove: ' ' | remove: '+' }}">{{ t.home.cta.whatsapp | escape }}</a>
+    </div>
+  </div>
+</section>

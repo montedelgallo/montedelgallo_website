@@ -121,13 +121,13 @@ pass "reduced-motion guard disables animations and transitions on every element"
 
 # Keyboard focus (AA): the emerald ring is about 2.7:1 on the dark bands, below
 # the 3:1 a focus indicator needs, so every dark band must lighten it by setting
-# --focus on itself. Today those are the utility strip, the footer and the skip
-# link; a later dark band (growth system, final call to action) adds its own.
-for band in util foot skip; do
+# --focus on itself. Those are the utility strip, the footer and the skip link,
+# and on the home the growth system (.stack) and the final call to action (.cta).
+for band in util foot skip stack cta; do
   grep -qE "\.$band\{[^}]*--focus:var\(--emerald-xl\)" "$CSS" ||
     fail "the .$band rule in $CSS does not set --focus:var(--emerald-xl): the focus ring would be too faint on its dark background"
 done
-pass "dark bands (.util, .foot, .skip) lighten the focus ring"
+pass "dark bands (.util, .foot, .skip, .stack, .cta) lighten the focus ring"
 
 # The committed light world: no dark-mode variants.
 if grep -qF 'prefers-color-scheme' "$CSS"; then
@@ -774,30 +774,39 @@ pass "translations with different slugs: switch and hreflang are reciprocal"
 echo "==> Asserting the project cards (the include the home page and the project index reuse)"
 # _includes/project-card.html is exercised by the throw-away page cards-test,
 # built in both languages in the fixture: it lists the featured projects of the
-# language being built, the way the home page will. The cards must be exactly the
+# language being built, the way the home page does. The cards must be exactly the
 # featured projects, each with a real, lazy-loaded image that has a non-empty
 # alt, and a link to a page that exists; and the include must leave the
 # variables of the page that includes it alone (the canary).
+#
+# check_project_cards <lang> <built page> <site dir> <scope> <canary page?>
+# <scope> is the CSS selector of the element that holds the cards ("" for the
+# whole page); <canary page?> is "yes" for cards-test, which prints its own
+# variables after the cards. The real home page is checked with the same function
+# (scope "#work", no canary) under "Asserting the home page" below.
 check_project_cards() {
   bundle exec ruby - "$@" <<'RUBY'
 require "json"
 require "nokogiri"
 
-lang, page_file, root = ARGV
+lang, page_file, root, scope, canary_page = ARGV
 prefix = lang == "it" ? "/it" : ""
+where = scope.to_s.empty? ? "the #{lang} cards page" : "the #{lang} #{scope} section"
 text_of = ->(node) { node ? node.text.gsub(/\s+/, " ").strip : "" }
 featured = JSON.parse(ENV.fetch("PROJECTS_JSON")).map { |pair| pair[lang] }.select { |doc| doc["featured"] }
 expected = featured.map { |doc| prefix + doc["permalink"] }.sort
 
 page = Nokogiri::HTML5(File.read(page_file, encoding: "utf-8"))
-cards = page.css("a.pcard")
+cards = page.css(scope.to_s.empty? ? "a.pcard" : "#{scope} a.pcard")
 errors = []
-errors << "the #{lang} cards page has #{cards.size} project card(s), at least 3 are needed" if cards.size < 3
+errors << "#{where} has #{cards.size} project card(s), at least 3 are needed" if cards.size < 3
 links = cards.map { |card| card["href"] }.sort
-errors << "the #{lang} cards page links to #{links.inspect}, but the featured #{lang} projects are #{expected.inspect}" unless links == expected
+errors << "#{where} links to #{links.inspect}, but the featured #{lang} projects are #{expected.inspect}" unless links == expected
 
-canary = text_of.(page.at_css("#canary"))
-errors << "the #{lang} cards page lost its own variables to the card include (an include shares them): t, lang and p should still read \"keep keep keep\" after the cards, found #{canary.inspect}" unless canary == "keep keep keep"
+if canary_page == "yes"
+  canary = text_of.(page.at_css("#canary"))
+  errors << "#{where} lost its own variables to the card include (an include shares them): t, lang and p should still read \"keep keep keep\" after the cards, found #{canary.inspect}" unless canary == "keep keep keep"
+end
 
 cards.each do |card|
   at = "#{lang} card #{card["href"]}"
@@ -821,48 +830,251 @@ end
 abort(errors.map { |e| "  - #{e}" }.join("\n")) unless errors.empty?
 RUBY
 }
-check_project_cards en "$FX/cards-test/index.html" "$FX" ||
+check_project_cards en "$FX/cards-test/index.html" "$FX" "" yes ||
   fail "the English project cards are wrong (see the list above)"
-check_project_cards it "$FX/it/cards-test/index.html" "$FX" ||
+check_project_cards it "$FX/it/cards-test/index.html" "$FX" "" yes ||
   fail "the Italian project cards are wrong (see the list above)"
 pass "project cards: exactly the featured projects in each language, each with a real lazy-loaded image, non-empty alt, sector, title, metric and a link to a built page; the include leaves the page's own t, lang and p alone"
 
 echo "==> Asserting the UI strings (EN and IT define the same keys, every nav entry is complete)"
-bundle exec ruby -ryaml -e '
-  def leaves(node, path = [])
-    return [[path.join("."), node]] unless node.is_a?(Hash)
-    node.flat_map { |key, value| leaves(value, path + [key.to_s]) }
+check_ui_strings() {
+  bundle exec ruby -ryaml - <<'RUBY'
+# Every value of a file, with its path ("home.services.items.0.title"). A list is
+# read item by item, so the two languages are compared item by item too.
+def leaves(node, path = [])
+  case node
+  when Hash, Array
+    return [[path.join("."), node]] if node.empty? # no text at all: reported below
+    pairs = node.is_a?(Hash) ? node.map { |key, value| [key.to_s, value] } : node.each_with_index.map { |value, index| [index.to_s, value] }
+    pairs.flat_map { |key, value| leaves(value, path + [key]) }
+  else
+    [[path.join("."), node]]
   end
+end
 
-  langs = %w[en it]
-  strings = langs.to_h { |lang| [lang, leaves(YAML.load_file("_data/i18n/#{lang}.yml")).to_h] }
-  errors = []
+langs = %w[en it]
+strings = langs.to_h { |lang| [lang, leaves(YAML.load_file("_data/i18n/#{lang}.yml")).to_h] }
+errors = []
 
-  (strings["en"].keys - strings["it"].keys).each { |k| errors << "i18n key #{k} is in en.yml but not in it.yml" }
-  (strings["it"].keys - strings["en"].keys).each { |k| errors << "i18n key #{k} is in it.yml but not in en.yml" }
-  strings.each do |lang, map|
-    map.each do |key, value|
-      ok = value.is_a?(String) && !value.strip.empty?
-      errors << "#{lang}.yml: #{key} is #{value.inspect}, but every value must be a non-empty string" unless ok
+(strings["en"].keys - strings["it"].keys).each { |k| errors << "i18n key #{k} is in en.yml but not in it.yml" }
+(strings["it"].keys - strings["en"].keys).each { |k| errors << "i18n key #{k} is in it.yml but not in en.yml" }
+strings.each do |lang, map|
+  map.each do |key, value|
+    ok = value.is_a?(String) && !value.strip.empty?
+    errors << "#{lang}.yml: #{key} is #{value.inspect}, but every value must be a non-empty string" unless ok
+  end
+end
+
+shared = strings["en"].keys & strings["it"].keys
+# An icon is the name of a symbol of the sprite, not a word: it must not change
+# with the language.
+shared.select { |key| key.split(".").last == "icon" }.each do |key|
+  errors << "#{key} is #{strings["en"][key].inspect} in en.yml but #{strings["it"][key].inspect} in it.yml: an icon does not change with the language" unless strings["en"][key] == strings["it"][key]
+end
+# A sentence that is word for word the same in both files was pasted, not
+# translated. (A short label can be the same in both: a brand name, "E-commerce".)
+shared.each do |key|
+  english = strings["en"][key]
+  next unless english.is_a?(String) && english.split.size >= 4
+  errors << "it.yml: #{key} is the English text #{english.inspect}, not a translation" if english == strings["it"][key]
+end
+
+# Where each navigation list finds its labels.
+label_scope = { "main" => "nav", "footer_company" => "footer.links", "footer_services" => "footer.service_links" }
+YAML.load_file("_data/nav.yml").each do |list, items|
+  scope = label_scope[list]
+  (errors << "nav.yml: list #{list} has no label scope in this check"; next) unless scope
+  items.each do |item|
+    langs.each do |lang|
+      errors << "nav.yml #{list}/#{item["key"]}: no #{lang} href" if item[lang].to_s.strip.empty?
+      errors << "#{lang}.yml: no label #{scope}.#{item["key"]} (used by nav.yml #{list})" unless strings[lang].key?("#{scope}.#{item["key"]}")
     end
   end
+end
 
-  # Where each navigation list finds its labels.
-  label_scope = { "main" => "nav", "footer_company" => "footer.links", "footer_services" => "footer.service_links" }
-  YAML.load_file("_data/nav.yml").each do |list, items|
-    scope = label_scope[list]
-    (errors << "nav.yml: list #{list} has no label scope in this check"; next) unless scope
-    items.each do |item|
-      langs.each do |lang|
-        errors << "nav.yml #{list}/#{item["key"]}: no #{lang} href" if item[lang].to_s.strip.empty?
-        errors << "#{lang}.yml: no label #{scope}.#{item["key"]} (used by nav.yml #{list})" unless strings[lang].key?("#{scope}.#{item["key"]}")
-      end
-    end
+abort(errors.map { |e| "  - #{e}" }.join("\n")) unless errors.empty?
+RUBY
+}
+check_ui_strings || fail "the UI strings in _data/ are inconsistent (see the list above)"
+pass "en.yml and it.yml have the same keys (lists item by item), all non-empty, no icon differing by language, no long sentence left in English; every nav entry has an href and a label in both languages"
+
+echo "==> Asserting the home page (both languages: copy, sections, real project covers)"
+# The home is one source (index.html plus _includes/home/*) rendered once per
+# language, its words in the home: tree of _data/i18n/<lang>.yml. Its hreflang
+# alternates, canonical URL and language switch are asserted with the page shell
+# above; what is asserted here is the page body.
+#
+# First, the facts of the approved design (design/home-foundry-mockup.html),
+# pinned as literals: the English headline, the three proof numbers and the three
+# tags of the growth system.
+assert_contains "$EN_HOME" 'We build the software your business runs on.' \
+  "the English home must carry the hero headline of the approved design"
+for stat in '+140%' '+150%' '600+'; do
+  assert_contains "$EN_HOME" ">$stat<" "the hero shows three proof numbers"
+done
+for tag in Build Ship Rank; do
+  assert_contains "$EN_HOME" ">$tag</span>" "the growth system shows a Build / Ship / Rank tag"
+done
+
+# The Italian home carries the Italian headline from _data/i18n/it.yml (escaped as
+# the template escapes it), and not the English one.
+i18n_html() {
+  bundle exec ruby -ryaml -rcgi -e '
+    value = ARGV[1].split(".").reduce(YAML.load_file("_data/i18n/#{ARGV[0]}.yml")) { |node, key| node.is_a?(Hash) ? node[key] : nil }
+    abort("no string at #{ARGV[1]} in _data/i18n/#{ARGV[0]}.yml") unless value.is_a?(String) && !value.empty?
+    print CGI.escapeHTML(value)
+  ' "$1" "$2"
+}
+it_title="$(i18n_html it home.hero.title)" || fail "_data/i18n/it.yml has no home.hero.title"
+assert_contains "$IT_HOME" "$it_title" "the Italian home must carry the Italian hero headline"
+if grep -qF 'We build the software your business runs on.' "$IT_HOME"; then
+  fail "$IT_HOME carries the English headline: the Italian home must be in Italian"
+fi
+
+# The rule of index.html, at its source: the includes of the home share the
+# variables of the home page, so none of them may assign t, lang or p (nor capture
+# into one, nor loop with one). A section that reads one of them after a section
+# that changed it prints blanks, with no error.
+if grep -nE '\{%-?[[:space:]]*(assign|capture)[[:space:]]+(t|lang|p)[[:space:]]*(=|-?%\})|\{%-?[[:space:]]*for[[:space:]]+(t|lang|p)[[:space:]]+in[[:space:]]' _includes/home/*.html; then
+  fail "an include in _includes/home/ assigns (or loops with) t, lang or p (see the rule in index.html): give the variable a prefix of its own"
+fi
+pass "no include of the home assigns t, lang or p"
+
+# Then the structure, read from the built page, for each language.
+#
+# The strongest assertion is that EVERY string of the home: tree is on the page,
+# in its own section. The sections are separate includes that share index.html's
+# variables (t is the whole i18n tree), so an include that assigns t, lang or p
+# blanks every section that comes after it, with no error. Blank sections, a
+# misspelled key and a key nobody uses all show up there.
+check_home_page() {
+  bundle exec ruby - "$@" <<'RUBY'
+require "nokogiri"
+require "yaml"
+
+lang, file = ARGV
+norm = ->(text) { text.to_s.gsub(/\s+/, " ").strip }
+errors = []
+
+home = YAML.load_file("_data/i18n/#{lang}.yml")["home"]
+abort("  - _data/i18n/#{lang}.yml has no home: tree") unless home.is_a?(Hash)
+site_meta = YAML.load_file("_data/site_meta.yml")
+booking_url = site_meta["booking_url"].to_s
+whatsapp_url = "https://wa.me/#{site_meta.dig("company", "phone").to_s.gsub(/\D/, "")}"
+list = ->(*path) { value = home.dig(*path); value.is_a?(Array) ? value : [] }
+
+# Every value of the home: tree, with its path (["services", "items", "0", "title"]).
+def leaves(node, path = [])
+  case node
+  when Hash then node.flat_map { |key, value| leaves(value, path + [key.to_s]) }
+  when Array then node.each_with_index.flat_map { |value, index| leaves(value, path + [index.to_s]) }
+  else [[path, node]]
   end
+end
 
-  abort(errors.map { |e| "  - #{e}" }.join("\n")) unless errors.empty?
-' || fail "the UI strings in _data/ are inconsistent (see the list above)"
-pass "en.yml and it.yml have the same keys, all non-empty; every nav entry has an href and a label in both languages"
+page = Nokogiri::HTML5(File.read(file, encoding: "utf-8"))
+main = page.at_css("main")
+abort("  - #{file} has no <main>") unless main
+
+# One <h1>, the hero headline.
+headline = norm.(home.dig("hero", "title"))
+h1s = main.css("h1").map { |node| norm.(node.text) }
+errors << "main must hold exactly one <h1>, the hero headline #{headline.inspect}; it holds #{h1s.inspect}" unless h1s == [headline]
+
+# The sections, in order: each is its id, or else its first class.
+sections = main.xpath("./section").map { |node| node["id"] || node["class"].to_s.split.first }
+order = %w[hero tech services stack work about proc contact]
+errors << "the sections of the home are #{sections.inspect}; expected #{order.inspect} (hero, built-with strip, services, growth system, work, who we are, process, final call to action)" unless sections == order
+# The ids services, work and about are the anchors the navigation, the footer and
+# the hero button link to.
+%w[services work about].each do |anchor|
+  errors << "no <section id=\"#{anchor}\">: the navigation and the footer link to ##{anchor}" unless main.at_css("section##{anchor}")
+end
+
+# An id is unique in a page (an anchor and a label must find ONE element).
+duplicated = page.css("[id]").map { |node| node["id"] }.group_by(&:itself).select { |_, nodes| nodes.size > 1 }.keys
+errors << "the page has duplicate id(s): #{duplicated.inspect}" unless duplicated.empty?
+
+# Every string of the home: tree is on the page, inside the section it belongs to
+# (a short word such as "Build" must not be found in another section), as text or
+# as an aria-label.
+area_of = { "hero" => "section.hero", "tech" => "section.tech", "services" => "#services", "growth" => "section.stack",
+            "work" => "#work", "who" => "#about", "process" => "section.proc", "cta" => "#contact" }
+missing = []
+home.each do |key, tree|
+  area = area_of[key] && main.at_css(area_of[key])
+  (errors << "home.#{key} in _data/i18n/#{lang}.yml has no section on the page (#{area_of[key] || "no section is known for it in this check"})"; next) unless area
+  shown = [norm.(area.text), *area.css("[aria-label]").map { |node| norm.(node["aria-label"]) }].join("\n")
+  leaves(tree, [key]).reject { |path, _| path.last == "icon" }.each do |path, value|
+    text = norm.(value)
+    missing << ["home.#{path.join(".")}", text] unless shown.include?(text)
+  end
+end
+unless missing.empty?
+  sample = missing.first(6).map { |key, text| "#{key} (#{text.inspect})" }.join(", ")
+  errors << "#{missing.size} string(s) of the home: tree in _data/i18n/#{lang}.yml are not in their section of the page: #{sample}#{missing.size > 6 ? ", ..." : ""}. Either a key is misspelled in _includes/home/, or an include assigned t, lang or p and blanked the sections after it, or the string is not used"
+end
+
+# The headings never skip a level (h1, h2, h3: not h1, h3).
+levels = main.css("h1, h2, h3, h4, h5, h6").map { |node| node.name[1].to_i }
+levels.each_cons(2) { |above, below| errors << "the headings jump from h#{above} to h#{below}: a level is skipped" if below - above > 1 }
+
+# The lists show as many items as the data has.
+{
+  "the proof numbers" => [".hero .stats > div", list.("hero", "stats")],
+  "the dashboard figures" => [".hero .shot__kpis > div", list.("hero", "shot", "kpis")],
+  "the built-with strip" => [".tech .row > span", list.("tech", "items")],
+  "the services" => ["#services .svc__cell", list.("services", "items")],
+  "the growth system cards" => [".stack .stack__c", list.("growth", "items")],
+  "the principles" => ["#about .who__grid > div", list.("who", "items")],
+  "the process steps" => [".proc .steps > div", list.("process", "items")]
+}.each do |name, (selector, items)|
+  found = main.css(selector).size
+  errors << "#{name}: the page shows #{found}, home: in _data/i18n/#{lang}.yml has #{items.size}" unless found == items.size && !items.empty?
+end
+
+# ...with the icon the data names, in order, and every <use> finds its symbol (a
+# missing one is an empty box, with no error).
+[["services", "services", "#services .svc__cell use"], ["growth system", "growth", ".stack .stack__c use"]].each do |name, key, selector|
+  want = list.(key, "items").map { |item| "##{item["icon"]}" }
+  got = main.css(selector).map { |node| node["href"] }
+  errors << "the #{name} icons are #{got.inspect}, home.#{key}.items says #{want.inspect}" unless got == want
+end
+symbols = page.css("symbol[id]").map { |node| node["id"] }
+page.css("use").each do |node|
+  reference = node["href"].to_s
+  errors << "<use href=\"#{reference}\"> points at a symbol that is not in the icon sprite" unless reference.start_with?("#") && symbols.include?(reference.delete_prefix("#"))
+end
+
+# The process steps are numbered 01, 02, ...
+numbers = main.css(".proc .steps .num").map { |node| norm.(node.text) }
+errors << "the process steps are numbered #{numbers.inspect}, expected 01, 02, ..." unless numbers == (1..list.("process", "items").size).map { |index| format("%02d", index) }
+
+# The calls to action: booking goes to Soshiki, WhatsApp to the company phone, and
+# "see our work" scrolls to the work section.
+href_of = ->(selector) { main.at_css(selector)&.[]("href") }
+errors << "the hero booking button must lead to #{booking_url}, it leads to #{href_of.(".hero__cta a.btn--solid").inspect}" unless href_of.(".hero__cta a.btn--solid") == booking_url
+errors << "the second hero button must lead to #work, it leads to #{href_of.(".hero__cta a.btn--ghost").inspect}" unless href_of.(".hero__cta a.btn--ghost") == "#work"
+errors << "the final booking button must lead to #{booking_url}, it leads to #{href_of.("#contact .cta__btns a.btn--solid").inspect}" unless href_of.("#contact .cta__btns a.btn--solid") == booking_url
+errors << "the WhatsApp button must lead to #{whatsapp_url}, it leads to #{href_of.("#contact .cta__btns a.btn--ghost").inspect}" unless href_of.("#contact .cta__btns a.btn--ghost") == whatsapp_url
+
+# The work section shows the real covers of the featured projects, no drawn
+# placeholder (the cards themselves are checked by check_project_cards).
+covers = main.css("#work img").map { |node| node["src"].to_s }
+errors << "the work section shows no project cover" if covers.empty?
+covers.reject { |src| src.start_with?("/assets/img/projects/") }.each { |src| errors << "the work section shows #{src.inspect}, which is not a cover from /assets/img/projects/" }
+errors << "the work section holds an <svg>: it must show real project covers, not drawn placeholders" unless main.css("#work svg").empty?
+
+abort(errors.map { |e| "  - #{e}" }.join("\n")) unless errors.empty?
+RUBY
+}
+check_home_page en "$EN_HOME" || fail "the English home is wrong (see the list above)"
+check_home_page it "$IT_HOME" || fail "the Italian home is wrong (see the list above)"
+check_project_cards en "$EN_HOME" "$SITE_DIR" "#work" no ||
+  fail "the project cards on the English home are wrong (see the list above)"
+check_project_cards it "$IT_HOME" "$SITE_DIR" "#work" no ||
+  fail "the project cards on the Italian home are wrong (see the list above)"
+pass "both homes: one h1, the eight sections in order (ids services, work, about), every string of the home: tree on the page, the icons and counts the data asks for, booking and WhatsApp links, and the featured projects with their real covers in the work section"
 
 echo "==> Validating links, images and scripts in the built site (html-proofer, internal only)"
 # Only internal checks: external URLs (the booking page, hreflang and canonical
