@@ -1,0 +1,46 @@
+{%- comment -%}
+  The URL path of the CURRENT page in another language, language prefix included
+  ("/it/servizi/"). Prints nothing when the page has no version in that language.
+  Used by head.html (hreflang, canonical) and lang-switch.html. Capture the output
+  and strip it:
+
+    {% raw %}{% capture path %}{% include lang-url.html lang="it" %}{% endcapture %}
+    {% assign path = path | strip %}{% endraw %}
+
+  Parameter: lang, a code from site.languages.
+
+  The two kinds of page are told apart by `lang:` in their front matter:
+
+  - Without `lang:` the page is SINGLE-SOURCE, like the home page: one file,
+    rendered once per language at the same path, its text coming from
+    _data/i18n. It exists in every language, except those left out by
+    `lang-exclusive:`.
+  - With `lang:` the page is ONE LANGUAGE'S VERSION of a document. Its other
+    versions share its `page_id:`, and polyglot lists the paths of all of them in
+    page.permalink_lang, for example { "en": "/pair/", "it": "/coppia/" }. A
+    language missing from that list has no version.
+
+  Permalinks are written WITHOUT the language prefix: polyglot builds the Italian
+  site under /it/ by itself, so `permalink: /it/coppia/` ends up at /it/it/coppia/.
+  A prefixed permalink is still read as the URL its author meant, so the hreflang
+  and canonical URLs name a page that was not built, and script/check-build.sh
+  fails on that instead of letting double-prefixed URLs ship.
+{%- endcomment -%}
+{%- assign target = include.lang -%}
+{%- assign path = "" -%}
+{%- if page.lang -%}
+  {%- assign path = page.permalink_lang[target] -%}
+{%- else -%}
+  {%- assign path = page.url -%}
+  {%- if page.lang-exclusive -%}
+    {%- unless page.lang-exclusive contains target -%}{%- assign path = "" -%}{%- endunless -%}
+  {%- endif -%}
+{%- endif -%}
+{%- if path and path != "" -%}
+  {%- assign prefix = "/" | append: target | append: "/" -%}
+  {%- assign path_start = path | slice: 0, prefix.size -%}
+  {%- if path_start == prefix -%}
+    {%- assign path = path | remove_first: prefix | prepend: "/" -%}
+  {%- endif -%}
+  {%- if target == site.default_lang -%}{{ path }}{%- else -%}/{{ target }}{{ path }}{%- endif -%}
+{%- endif -%}

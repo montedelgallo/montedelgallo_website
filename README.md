@@ -18,8 +18,22 @@ The output is plain static files, so it can be deployed to any host. It is built
 bundle install               # install the gems (first run, and after Gemfile changes)
 bundle exec jekyll serve     # dev server: http://localhost:4000 (EN) and http://localhost:4000/it/ (IT)
 bundle exec jekyll build     # one-off build into _site/
-bash script/check-build.sh   # clean build, then assert both languages, the design-system CSS and the self-hosted fonts
+bash script/check-build.sh   # clean build, then assert both languages, the design-system CSS, the self-hosted fonts, the page shell (hreflang, navigation, footer, language switch) and the links (html-proofer)
 ```
+
+## Where things live
+
+- `_layouts/default.html` wraps every page. `_includes/` has the head (SEO, hreflang), header, footer,
+  language switch and the SVG icon sprite.
+- `_data/i18n/en.yml` and `it.yml`: every UI string, one file per language with the same keys (the check
+  compares them). Read as `site.data.i18n[site.active_lang].<key>`.
+- `_data/nav.yml`: where the header and footer links point, per language. `_data/site_meta.yml`: SEO defaults,
+  the booking URL and the company facts (VAT number, phone, email).
+- `_sass/foundry/`: the design system (`_shell.scss` styles the header, footer and section helpers).
+- A page that is one file rendered in both languages (the home) has no `lang:` in its front matter. A page
+  written once per language has `lang:` and a shared `page_id:` (see `_includes/lang-url.html`); an
+  English-only one adds `lang-exclusive: [en]`, so nothing is built under `/it/`. Permalinks never carry
+  the `/it/` prefix (polyglot adds it): write `/servizi/`, not `/it/servizi/`.
 
 ## Continuous integration
 

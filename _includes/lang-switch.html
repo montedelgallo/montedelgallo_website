@@ -1,0 +1,26 @@
+{%- comment -%}
+  Language switch: the current language as plain text, every other language as a
+  link to THIS page in that language. When the page has no version in that
+  language the link goes to that language's home instead, so it never dangles.
+  Included by header.html.
+
+  The links are wrapped in static_href so that jekyll-polyglot leaves them alone:
+  it would otherwise put the current language's prefix on them (an English link on
+  the Italian page would become /it/...).
+{%- endcomment -%}
+{%- assign here = site.active_lang -%}
+<nav class="langsw" aria-label="{{ site.data.i18n[here].a11y.language | escape }}">
+  {%- for l in site.languages -%}
+    {%- if l == here -%}
+      <span class="langsw__current" aria-current="true">{{ l | upcase }}</span>
+    {%- else -%}
+      {%- capture there %}{% include lang-url.html lang=l %}{% endcapture -%}
+      {%- assign there = there | strip -%}
+      {%- if there == "" -%}
+        {%- if l == site.default_lang -%}{%- assign there = "/" -%}{%- else -%}{%- assign there = "/" | append: l | append: "/" -%}{%- endif -%}
+      {%- endif -%}
+      <a class="langsw__link" {% static_href %}href="{{ there | prepend: site.baseurl }}"{% endstatic_href %} hreflang="{{ l }}" lang="{{ l }}" aria-label="{{ site.data.i18n[l].lang.name | escape }}">{{ l | upcase }}</a>
+    {%- endif -%}
+    {%- unless forloop.last -%}<span aria-hidden="true">·</span>{%- endunless -%}
+  {%- endfor -%}
+</nav>

@@ -1,6 +1,18 @@
 ---
-# TEMPORARY scaffold marker; replaced by the real home page in a later task.
-# The front matter must stay: a file without it is copied verbatim as a static
-# asset instead of being rendered (and localized) as a page.
+layout: default
 ---
-MDG_SCAFFOLD_OK
+{%- comment -%}
+  INTERIM page, replaced by the real home page (Task 5). It exists so the shell
+  (layout, head, header, footer) is built and checked on its own. The section ids
+  are the anchors _data/nav.yml links to; html-proofer verifies them.
+{%- endcomment -%}
+{%- assign t = site.data.i18n[site.active_lang] -%}
+<section class="pad">
+  <div class="wrap">
+    <h1 class="h2">{{ site.title | escape }}</h1>
+    <p class="lede">{{ site.data.site_meta[site.active_lang].description | escape }}</p>
+  </div>
+</section>
+<section id="services" class="pad"><div class="wrap"><h2 class="h2">{{ t.nav.services | escape }}</h2></div></section>
+<section id="work" class="pad"><div class="wrap"><h2 class="h2">{{ t.nav.work | escape }}</h2></div></section>
+<section id="about" class="pad"><div class="wrap"><h2 class="h2">{{ t.nav.about | escape }}</h2></div></section>

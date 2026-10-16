@@ -1,0 +1,84 @@
+{%- comment -%}
+  Everything inside <head>, for every page: title, description, canonical URL,
+  hreflang alternates, Open Graph / Twitter, font preloads, stylesheet.
+
+  Front matter a page can set: title, meta_title, description, image (see
+  _data/site_meta.yml). A page that sets none gets the site defaults of its
+  language.
+
+  Canonical and hreflang are written here and not with polyglot's I18n_Headers
+  tag: that tag finds a page's other languages only through `lang:` + `page_id:`
+  front matter, so for the single-source home (one file, rendered once per
+  language) it leaves out the Italian alternate. lang-url.html knows both kinds
+  of page.
+
+  The URLs are wrapped in static_href: polyglot would otherwise rewrite the
+  English ones in the Italian build (it puts /it/ onto internal URLs).
+{%- endcomment -%}
+{%- assign lang = site.active_lang -%}
+{%- comment -%} The language of the page itself: its `lang:`, or the language being built for a single-source page. They differ only for a fallback copy of another language's page (see lang-url.html). The metadata describes the content, so it is in this language. {%- endcomment -%}
+{%- assign own_lang = page.lang | default: lang -%}
+{%- assign meta = site.data.site_meta[own_lang] -%}
+{%- assign origin = site.url | append: site.baseurl -%}
+
+{%- if page.meta_title -%}
+  {%- assign seo_title = page.meta_title -%}
+{%- elsif page.title -%}
+  {%- assign seo_title = page.title | append: " | " | append: site.title -%}
+{%- else -%}
+  {%- assign seo_title = meta.title -%}
+{%- endif -%}
+{%- assign seo_description = page.description | default: meta.description -%}
+{%- assign seo_image = page.image | default: site.data.site_meta.share_image -%}
+
+{%- comment -%} The canonical URL is the page's own, in its own language: for a fallback copy that is the original, not the copy. {%- endcomment -%}
+{%- capture canonical_path %}{% include lang-url.html lang=own_lang %}{% endcapture -%}
+{%- assign canonical_path = canonical_path | strip -%}
+{%- if canonical_path == "" -%}
+  {%- if lang == site.default_lang -%}{%- assign canonical_path = page.url -%}{%- else -%}{%- assign canonical_path = "/" | append: lang | append: page.url -%}{%- endif -%}
+{%- endif -%}
+{%- capture default_path %}{% include lang-url.html lang=site.default_lang %}{% endcapture -%}
+{%- assign default_path = default_path | strip | default: canonical_path -%}
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>{{ seo_title | escape }}</title>
+<meta name="description" content="{{ seo_description | escape }}">
+<link rel="canonical" {% static_href %}href="{{ origin }}{{ canonical_path }}"{% endstatic_href %}>
+{%- for l in site.languages -%}
+  {%- capture alt_path %}{% include lang-url.html lang=l %}{% endcapture -%}
+  {%- assign alt_path = alt_path | strip -%}
+  {%- if alt_path != "" %}
+<link rel="alternate" hreflang="{{ l }}" {% static_href %}href="{{ origin }}{{ alt_path }}"{% endstatic_href %}>
+  {%- endif -%}
+{%- endfor %}
+<link rel="alternate" hreflang="x-default" {% static_href %}href="{{ origin }}{{ default_path }}"{% endstatic_href %}>
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="{{ site.title | escape }}">
+<meta property="og:title" content="{{ seo_title | escape }}">
+<meta property="og:description" content="{{ seo_description | escape }}">
+<meta property="og:url" content="{{ origin }}{{ canonical_path }}">
+<meta property="og:locale" content="{{ meta.locale }}">
+{%- for l in site.languages -%}
+  {%- if l != own_lang -%}
+    {%- capture alt_path %}{% include lang-url.html lang=l %}{% endcapture -%}
+    {%- assign alt_path = alt_path | strip -%}
+    {%- if alt_path != "" %}
+<meta property="og:locale:alternate" content="{{ site.data.site_meta[l].locale }}">
+    {%- endif -%}
+  {%- endif -%}
+{%- endfor %}
+{%- if seo_image and seo_image != "" %}
+<meta property="og:image" content="{{ seo_image | absolute_url }}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="{{ seo_image | absolute_url }}">
+{%- else %}
+<meta name="twitter:card" content="summary">
+{%- endif %}
+<meta name="twitter:title" content="{{ seo_title | escape }}">
+<meta name="twitter:description" content="{{ seo_description | escape }}">
+
+<link rel="preload" href="{{ '/assets/fonts/archivo-latin-wght-normal.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="{{ '/assets/fonts/hanken-grotesk-latin-wght-normal.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">

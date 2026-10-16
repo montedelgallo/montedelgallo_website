@@ -1,0 +1,44 @@
+# Stringhe dell'interfaccia, italiano. Si leggono nei template come
+# site.data.i18n[site.active_lang].<chiave>.
+#
+# Deve definire esattamente le stesse chiavi di en.yml (lo verifica
+# script/check-build.sh). Vedi en.yml per le convenzioni.
+
+lang:
+  name: "Italiano" # il nome della lingua nella lingua stessa, usato dal selettore di lingua
+
+a11y:
+  skip: "Vai al contenuto"
+  main_nav: "Principale"
+  language: "Lingua"
+
+util:
+  location: "Roma, Italia"
+
+nav:
+  services: "Servizi"
+  work: "Progetti"
+  about: "Chi siamo"
+  blog: "Blog"
+  contact: "Contatti"
+
+cta:
+  book_call: "Prenota una call"
+
+footer:
+  tagline: "Boutique di sviluppo software. Sistemi su misura, automazione e AI — realizzati a Roma."
+  company: "Azienda"
+  services: "Servizi"
+  contact: "Contatti"
+  rights: "Tutti i diritti riservati."
+  vat: "P.IVA"
+  links:
+    services: "Servizi"
+    case_studies: "Casi di studio"
+    about: "Chi siamo"
+    blog: "Blog"
+  service_links:
+    software: "Software"
+    ai_data: "AI e dati"
+    websites: "Siti web"
+    mobile: "App mobile"

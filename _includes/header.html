@@ -1,0 +1,32 @@
+{%- comment -%}
+  The top of every page: the utility strip (location, phone, language switch) and
+  the sticky navigation (brand, links, booking button). The links come from
+  _data/nav.yml, their labels from _data/i18n/<lang>.yml.
+
+  The links are plain root-relative paths on purpose: in the Italian build
+  jekyll-polyglot puts /it/ in front of them.
+{%- endcomment -%}
+{%- assign lang = site.active_lang -%}
+{%- assign t = site.data.i18n[lang] -%}
+{%- assign company = site.data.site_meta.company -%}
+<div class="util">
+  <div class="wrap">
+    <span>{{ t.util.location | escape }}</span>
+    <a href="tel:{{ company.phone | remove: ' ' }}">{{ company.phone }}</a>
+    <div class="sp">{% include lang-switch.html %}</div>
+  </div>
+</div>
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="{{ '/' | relative_url }}"><svg aria-hidden="true" focusable="false"><use href="#mdg-mark"/></svg>{{ site.title | escape }}</a>
+    <nav class="nav__links" aria-label="{{ t.a11y.main_nav | escape }}">
+      {%- for item in site.data.nav.main -%}
+      <a href="{{ item[lang] | relative_url }}">{{ t.nav[item.key] | escape }}</a>
+      {%- endfor -%}
+    </nav>
+    <div class="nav__cta">
+      <span class="nav__lang" aria-hidden="true">{{ lang | upcase }}</span>
+      <a class="btn btn--solid" href="{{ site.data.site_meta.booking_url }}">{{ t.cta.book_call | escape }}</a>
+    </div>
+  </div>
+</header>

@@ -1,0 +1,55 @@
+# Where the header navigation and the footer link columns point. The LABELS are
+# not here: they come from _data/i18n/<lang>.yml (nav.<key> for `main`,
+# footer.links.<key> for `footer_company`, footer.service_links.<key> for
+# `footer_services`).
+#
+# Every entry has one path per language. Write the path WITHOUT the /it/ prefix:
+# jekyll-polyglot adds it to internal links in the Italian build, so an Italian
+# slug that differs from the English one (/services/ and /servizi/) is written
+# as it is.
+#
+# For now the site is a single page, so the links are anchors on the home page,
+# and the pages that do not exist yet (the blog) point at the home itself. When
+# a section gets its own page, change its two paths here; no template changes.
+
+main:
+  - key: services
+    en: "/#services"
+    it: "/#services"
+  - key: work
+    en: "/#work"
+    it: "/#work"
+  - key: about
+    en: "/#about"
+    it: "/#about"
+  - key: blog # no blog yet
+    en: "/"
+    it: "/"
+
+footer_company:
+  - key: services
+    en: "/#services"
+    it: "/#services"
+  - key: case_studies
+    en: "/#work"
+    it: "/#work"
+  - key: about
+    en: "/#about"
+    it: "/#about"
+  - key: blog # no blog yet
+    en: "/"
+    it: "/"
+
+footer_services: # one page per service comes later; until then they all lead to the services section
+  - key: software
+    en: "/#services"
+    it: "/#services"
+  - key: ai_data
+    en: "/#services"
+    it: "/#services"
+  - key: websites
+    en: "/#services"
+    it: "/#services"
+  - key: mobile
+    en: "/#services"
+    it: "/#services"

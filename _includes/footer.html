@@ -1,0 +1,46 @@
+{%- comment -%}
+  The dark footer: brand and tagline, two link columns (_data/nav.yml), the
+  contact details and the legal line (company, VAT number, copyright year).
+  Company facts come from _data/site_meta.yml, labels from _data/i18n/<lang>.yml.
+{%- endcomment -%}
+{%- assign lang = site.active_lang -%}
+{%- assign t = site.data.i18n[lang] -%}
+{%- assign company = site.data.site_meta.company -%}
+<footer class="foot">
+  <div class="wrap">
+    <div>
+      <div class="brand"><svg aria-hidden="true" focusable="false"><use href="#mdg-mark"/></svg>{{ site.title | escape }}</div>
+      <p class="tag">{{ t.footer.tagline | escape }}</p>
+    </div>
+    <div>
+      <h2 class="foot__title">{{ t.footer.company | escape }}</h2>
+      <ul>
+        {%- for item in site.data.nav.footer_company %}
+        <li><a href="{{ item[lang] | relative_url }}">{{ t.footer.links[item.key] | escape }}</a></li>
+        {%- endfor %}
+      </ul>
+    </div>
+    <div>
+      <h2 class="foot__title">{{ t.footer.services | escape }}</h2>
+      <ul>
+        {%- for item in site.data.nav.footer_services %}
+        <li><a href="{{ item[lang] | relative_url }}">{{ t.footer.service_links[item.key] | escape }}</a></li>
+        {%- endfor %}
+      </ul>
+    </div>
+    <div>
+      <h2 class="foot__title">{{ t.footer.contact | escape }}</h2>
+      <address class="contact">
+        <div>{{ company.locality }}, {{ company.postal_code }}</div>
+        <div><a href="tel:{{ company.phone | remove: ' ' }}">{{ company.phone }}</a></div>
+        <div><a href="mailto:{{ company.email }}">{{ company.email }}</a></div>
+      </address>
+    </div>
+  </div>
+  <div class="footbar">
+    <div class="wrap">
+      <span>© {{ site.time | date: "%Y" }} {{ company.name }}. {{ t.footer.rights | escape }}</span>
+      <span class="sp">{{ t.footer.vat | escape }} {{ company.vat }}</span>
+    </div>
+  </div>
+</footer>

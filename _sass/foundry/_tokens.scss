@@ -29,6 +29,11 @@
   --dark:#0C1712;
   --dark-em:#0A5C3C;
 
+  // Colour of the keyboard focus ring (see _base.scss). Emerald is too faint on
+  // the dark bands, so a dark section sets --focus:var(--emerald-xl) on itself
+  // and everything inside it gets the lighter ring.
+  --focus:var(--emerald);
+
   // Type stacks. The web fonts are self-hosted (see _fonts.scss). Each stack
   // ends in real system fonts, which show until the web font arrives
   // (font-display: swap). ui-monospace is Safari-only, so the common platform

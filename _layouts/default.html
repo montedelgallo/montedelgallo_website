@@ -1,0 +1,21 @@
+{%- comment -%}
+  Base layout of every page: head, SVG sprite, skip link, header (utility strip +
+  navigation), <main> and footer. The text of the chrome comes from
+  _data/i18n/<lang>.yml, so one source renders both languages.
+{%- endcomment -%}
+<!DOCTYPE html>
+<html lang="{{ site.active_lang }}">
+<head>
+{% include head.html %}
+</head>
+<body>
+{% include icons.html %}
+<a class="skip" href="#main">{{ site.data.i18n[site.active_lang].a11y.skip | escape }}</a>
+{% include header.html %}
+{%- comment -%} A page written in another language than the one being built (a fallback copy, see lang-url.html) says so, so screen readers pronounce it right. {%- endcomment %}
+<main id="main"{% if page.lang and page.lang != site.active_lang %} lang="{{ page.lang }}"{% endif %}>
+{{ content }}
+</main>
+{% include footer.html %}
+</body>
+</html>

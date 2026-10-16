@@ -1,0 +1,49 @@
+# UI strings, English. Read in templates as site.data.i18n[site.active_lang].<key>.
+#
+# Italian lives in it.yml and must define exactly the same keys (script/check-build.sh
+# compares the two files), so a missing translation fails the build instead of
+# showing up as a blank on the Italian page. Quote a value that contains `: ` or
+# starts with a symbol; `&` and `<` are escaped by the templates, so write them
+# as plain text.
+#
+# The `home:` tree (hero, stats, services, work, who we are, process, final call to
+# action) is added with the home page.
+
+lang:
+  name: "English" # the language's own name, used by the language switch
+
+a11y:
+  skip: "Skip to content"
+  main_nav: "Main"
+  language: "Language"
+
+util:
+  location: "Roma, Italy"
+
+nav:
+  services: "Services"
+  work: "Work"
+  about: "About"
+  blog: "Blog"
+  contact: "Contact"
+
+cta:
+  book_call: "Book a call"
+
+footer:
+  tagline: "Software development boutique. Custom systems, automation and AI — built in Roma."
+  company: "Company"
+  services: "Services"
+  contact: "Contact"
+  rights: "All rights reserved."
+  vat: "VAT"
+  links: # the Company column, in the order of nav.yml footer_company
+    services: "Services"
+    case_studies: "Case studies"
+    about: "About"
+    blog: "Blog"
+  service_links: # the Services column, in the order of nav.yml footer_services
+    software: "Software"
+    ai_data: "AI & data"
+    websites: "Websites"
+    mobile: "Mobile apps"
