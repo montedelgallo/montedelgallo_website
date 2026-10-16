@@ -2531,7 +2531,7 @@ team_data = YAML.load_file("_data/team.yml")["members"]
 team = main.at_css("section#team")
 if team
   members = team.css(".team__member")
-  errors << "the Team section shows #{members.size} member(s), _data/team.yml has #{team_data.size}" unless members.size == team_data.size && team_data.size >= 10
+  errors << "the Team section shows #{members.size} member(s), _data/team.yml has #{team_data.size}" unless members.size == team_data.size
   members.each_with_index do |node, index|
     name = norm.(node.at_css(".team__name")&.text)
     img = node.at_css("img")
@@ -2668,11 +2668,14 @@ it|$IT_HOME|$FX/it/index.html|/it/progetti/fixture-nascosto/|Progetto fixture na
 EOF
 pass "the featured filter drops a project that is not featured: the work section of the fixture homes (EN and IT) lists the same cards as the real homes, and not the project with featured: false, which has pages of its own"
 
-echo "==> Asserting the blog (9 articles, detail pages, indexes, feeds, redirects)"
+echo "==> Asserting the blog (the 9 migrated articles and any the client adds, detail pages, indexes, feeds, redirects)"
 # An article is a Markdown document in _posts/ (YYYY-MM-DD-<slug>.md), in ONE language:
-# the eight English articles set `lang: en` and `lang-exclusive: [en]` (nothing is
-# built under /it/ for them, and none of them was machine-translated), the one article
-# the old site wrote in Italian sets `lang: it` and `lang-exclusive: [it]`. Permalinks
+# the English articles set `lang: en` and `lang-exclusive: [en]` (nothing is built under
+# /it/ for them, and none of them was machine-translated), the one article the old site
+# wrote in Italian sets `lang: it` and `lang-exclusive: [it]`. The nine migrated articles
+# are a MUST-EXIST list, not the whole list: the client publishes a post by adding a
+# document to _posts/, and the checks follow the data (counts are minimums; the
+# categories are the ones _data/i18n/*.yml defines). Permalinks
 # are bare (polyglot adds /it/): /blog/<slug>/ in English, /articoli/<slug>/ in Italian.
 # The old site served all nine at the root (/<slug>/): _data/redirects.yml maps them.
 #
@@ -2688,16 +2691,22 @@ require "json"
 require "yaml"
 
 wanted, min_body = ARGV[0].to_i, ARGV[1].to_i
-categories = %w[frontend products story team web-design]
-# The nine articles of the live site (its post sitemap), by slug. The Italian one is
-# the article written in Italian that the old site served at an English root URL.
+# The category keys come from the UI strings (blog.categories), the one place that gives a
+# category its label: a post may use any of them, and both languages must define the same.
+category_keys = %w[en it].to_h { |l| [l, YAML.load_file("_data/i18n/#{l}.yml").dig("blog", "categories").to_h.keys.sort] }
+errors_pre = []
+errors_pre << "blog.categories defines #{category_keys["en"].inspect} in English and #{category_keys["it"].inspect} in Italian: the keys must be the same" unless category_keys["en"] == category_keys["it"] && !category_keys["en"].empty?
+categories = category_keys["en"]
+# The nine articles of the live site (its post sitemap), by slug: they MUST exist (more may
+# be added). The Italian one is the article written in Italian that the old site served at
+# an English root URL.
 live = %w[welcome-claudio-aiello how-i-started-creating-a-product-a-month-just-for-fun
           software-development-done-right-the-mdg-way welcome-mouaz-el-molkey welcome-marco-cherubini
           meet-consultala-the-legal-tech-start-up-erasing-labor-law-bureaucracy
           design-minimalista-la-semplicita-come-chiave-per-il-successo-digitale-nel-2025
           saladil-revolutionizing-wordpress-support-one-ticket-at-a-time get-ready-for-your-next-react-job-interview]
 italian = %w[design-minimalista-la-semplicita-come-chiave-per-il-successo-digitale-nel-2025]
-errors = []
+errors = errors_pre
 
 # The size of a WebP file, read from its header (lossy VP8, lossless VP8L or extended VP8X).
 webp_size = lambda do |path|
@@ -2726,14 +2735,14 @@ posts = Dir.glob("_posts/*.md").sort.filter_map do |file|
   errors << "#{at}: the date #{time.utc.strftime("%Y-%m-%d")} is not the one in the file name (#{name[1]})" if time.is_a?(Time) && time.utc.strftime("%Y-%m-%d") != name[1]
   errors << "#{at}: title must be a non-empty string" unless data["title"].is_a?(String) && !data["title"].strip.empty?
   errors << "#{at}: lang must be en or it, it is #{lang.inspect}" unless %w[en it].include?(lang)
-  errors << "#{at}: lang must be #{italian.include?(slug) ? "it" : "en"} (only #{italian.first} is written in Italian)" if %w[en it].include?(lang) && (lang == "it") != italian.include?(slug)
+  errors << "#{at}: lang must be it (#{slug} is the migrated article written in Italian)" if lang == "en" && italian.include?(slug)
   errors << "#{at}: page_id must be post-#{slug}, it is #{data["page_id"].inspect}" unless data["page_id"] == "post-#{slug}"
   want_permalink = "#{lang == "it" ? "/articoli/" : "/blog/"}#{slug}/"
   errors << "#{at}: permalink must be #{want_permalink} (bare: polyglot adds /it/), it is #{data["permalink"].inspect}" unless data["permalink"] == want_permalink
   errors << "#{at}: lang-exclusive must be [#{lang}] (no translation exists: the article must not be built in the other language), it is #{data["lang-exclusive"].inspect}" unless data["lang-exclusive"] == [lang]
   errors << "#{at}: author must be a non-empty string" unless data["author"].is_a?(String) && !data["author"].strip.empty?
   cats = data["categories"]
-  errors << "#{at}: categories must be a non-empty list of #{categories.join(", ")}, it is #{cats.inspect}" unless cats.is_a?(Array) && !cats.empty? && (cats - categories).empty?
+  errors << "#{at}: categories must be a non-empty list of keys of blog.categories in _data/i18n/*.yml (#{categories.join(", ")}), it is #{cats.inspect}" unless cats.is_a?(Array) && !cats.empty? && (cats - categories).empty?
   excerpt = data["excerpt"]
   errors << "#{at}: excerpt must be a sentence of 40 to 300 characters, it is #{excerpt.to_s.size}" unless excerpt.is_a?(String) && (40..300).cover?(excerpt.strip.size)
 
@@ -2770,7 +2779,7 @@ posts = Dir.glob("_posts/*.md").sort.filter_map do |file|
   fences = body.scan(/^\s*```/).size
   errors << "#{at}: an unclosed code fence" if fences.odd?
 
-  { "file" => file, "slug" => slug, "lang" => lang, "title" => data["title"], "page_id" => data["page_id"],
+  { "file" => file, "slug" => slug, "migrated" => live.include?(slug), "lang" => lang, "title" => data["title"], "page_id" => data["page_id"],
     "permalink" => data["permalink"], "date" => time.is_a?(Time) ? time.utc.strftime("%Y-%m-%d %H:%M:%S") : nil,
     "day" => time.is_a?(Time) ? time.utc.strftime("%Y-%m-%d") : nil,
     "author" => data["author"], "categories" => cats, "excerpt" => excerpt, "cover" => data["cover"], "cover_alt" => data["cover_alt"],
@@ -2779,14 +2788,12 @@ posts = Dir.glob("_posts/*.md").sort.filter_map do |file|
     "body_images" => images.count { |i| i["kind"] == "body" } }
 end
 
-errors << "#{posts.size} article(s) in _posts/, #{wanted} are expected (the live site has 9)" unless posts.size == wanted
-(live - posts.map { |p| p["slug"] }).each { |slug| errors << "the live article #{slug} has no document in _posts/" }
-(posts.map { |p| p["slug"] } - live).each { |slug| errors << "_posts/ has #{slug}, which is not an article of the live site (add it to this list if it is new)" }
+errors << "#{posts.size} article(s) in _posts/, at least #{wanted} are expected (the live site has 9; more may be added)" unless posts.size >= wanted
+(live - posts.map { |p| p["slug"] }).each { |slug| errors << "the migrated article #{slug} has no document in _posts/" }
 %w[page_id permalink].each do |key|
   posts.map { |p| p[key] }.tally.each { |value, n| errors << "#{key} #{value} is used by #{n} articles" if n > 1 }
 end
-errors << "the English articles are #{posts.count { |p| p["lang"] == "en" }}, 8 are expected, and exactly 1 Italian" unless posts.count { |p| p["lang"] == "en" } == 8 && posts.count { |p| p["lang"] == "it" } == 1
-errors << "the categories in use are #{posts.flat_map { |p| p["categories"].to_a }.uniq.sort.inspect}, the live site uses #{categories.sort.inspect}" unless posts.flat_map { |p| p["categories"].to_a }.uniq.sort == categories.sort
+errors << "the English articles are #{posts.count { |p| p["lang"] == "en" }}, at least 8 are expected, and at least 1 Italian (#{posts.count { |p| p["lang"] == "it" }} found)" unless posts.count { |p| p["lang"] == "en" } >= 8 && posts.count { |p| p["lang"] == "it" } >= 1
 abort(errors.map { |e| "  - #{e}" }.join("\n")) unless errors.empty?
 puts JSON.generate(posts.sort_by { |p| [p["date"], p["slug"]] }.reverse)
 RUBY
@@ -2801,7 +2808,7 @@ posts_lines="$(bundle exec ruby -rjson -e '
 post_images="$(bundle exec ruby -rjson -e '
   puts JSON.parse(ENV.fetch("POSTS_JSON")).flat_map { |p| p["images"].map { |i| i["src"] } }.uniq.sort
 ')"
-pass "$(wc -l <<<"$posts_lines" | tr -d ' ') articles (8 English, 1 Italian), each valid: bare permalink, lang-exclusive to its own language, real date from the live site, author, categories from the five live ones, excerpt, WebP pictures with an alt text and the size of the file, a non-trivial text"
+pass "$(wc -l <<<"$posts_lines" | tr -d ' ') articles (the 9 migrated ones all present, more allowed), each valid: bare permalink, lang-exclusive to its own language, a real date, author, categories defined in _data/i18n/*.yml, excerpt, WebP pictures with an alt text and the size of the file, a non-trivial text"
 
 # Where each article is built, and where it must not be.
 while IFS='|' read -r lang slug permalink; do
@@ -3123,7 +3130,7 @@ abort(errors.map { |e| "  - #{e}" }.join("\n")) unless errors.empty?
 RUBY
 }
 check_feeds "$SITE_DIR" "$SITE_URL" || fail "an Atom feed is wrong (see the list above)"
-pass "/feed.xml lists the 8 English articles and /it/feed.xml the Italian one, newest first, each entry a built page with title, date, author, summary and text"
+pass "/feed.xml lists every English article and /it/feed.xml every Italian one, newest first, each entry a built page with title, date, author, summary and text"
 
 # Links stay in the page's language on the blog pages (the note on each index, which
 # leads to the other language's blog, is the one link that crosses over).
@@ -3149,7 +3156,8 @@ require "yaml"
 
 entries = YAML.safe_load(File.read("_data/redirects.yml", encoding: "utf-8"))
 errors = []
-JSON.parse(ENV.fetch("POSTS_JSON")).each do |post|
+# Only the migrated articles had an old URL; an article the client adds later has none.
+JSON.parse(ENV.fetch("POSTS_JSON")).select { |post| post["migrated"] }.each do |post|
   from = "/#{post["slug"]}/"
   to = "#{post["lang"] == "it" ? "/it" : ""}#{post["permalink"]}"
   entry = entries.find { |e| e.is_a?(Hash) && e["from"] == from }
@@ -3360,10 +3368,18 @@ if mode == "fixture"
 else
   data = team["members"]
   errors << "#{lang}: the grid shows #{members.size} member(s), _data/team.yml has #{data.size}" unless members.size == data.size
-  errors << "#{lang}: at least 10 members are expected (the live About page lists 9, the blog welcomes a tenth)" if data.size < 10
-  names = members.map { |m| text_of.(m.at_css(".team__name")) }
-  ["Giovanni Panasiti", "Claudio Aiello", "Mouaz El Molkey", "Marco Cherubini", "Francesco", "Niccolò", "Davide", "Emanuela", "Giuseppe", "Carlo"].each do |name|
-    errors << "#{lang}: #{name} is missing from the team grid (it shows #{names.inspect})" unless names.include?(name)
+  errors << "_data/team.yml has no member" if data.empty?
+  # The roster is DATA: the client adds or removes a person in _data/team.yml and nothing
+  # here names anybody. Every member needs a name, a role in both languages and either a
+  # real portrait with its pixel size or (no `photo`) the initials tile.
+  data.each_with_index do |member, i|
+    who = member["name"].to_s.strip.empty? ? "member #{i + 1}" : member["name"]
+    errors << "_data/team.yml: #{who} has no name" if member["name"].to_s.strip.empty?
+    %w[en it].each { |l| errors << "_data/team.yml: #{who} has no #{l} role" if member.dig("role", l).to_s.strip.empty? }
+    if member["photo"]
+      errors << "_data/team.yml: #{who}: photo_w and photo_h must be positive numbers (the pixel size of #{member["photo"]})" unless member["photo_w"].to_i.positive? && member["photo_h"].to_i.positive?
+      msg = real_image.(member["photo"]) and errors << "_data/team.yml: #{who}: #{msg}"
+    end
   end
   data.each_with_index do |member, i|
     node = members[i] or next
@@ -3399,18 +3415,21 @@ fi
 pass "the team grid include assigns no t, lang or p"
 
 # The grid on a phone and the size of a portrait, read from the compiled CSS: at least two
-# columns before any media query (a single column is ~4,500px of scroll for ten tiles),
-# five from the tablet width up (ten members, two full rows), and a portrait drawn at most 140px wide, the pixel width of the smallest real portrait, so that every tile is the same size
+# columns before any media query (a single column is thousands of pixels of scroll),
+# five from the tablet width up, and a portrait drawn at most as wide as the .team__photo cap, which no portrait may be narrower than, so that every tile is the same size
 # and none is stretched.
 grep -qE '\.team\{[^}]*grid-template-columns:repeat\(2,' "$CSS" ||
   fail "the .team rule in $CSS must start with two columns (grid-template-columns:repeat(2,...)): one column on a phone is too long"
 grep -qE '@media ?\(min-width: ?[0-9]+px\)\{\.team\{[^}]*grid-template-columns:repeat\(5,' "$CSS" ||
-  fail "$CSS has no media query that gives .team five columns (ten members, two full rows) at the wider widths"
-grep -qE '\.team__photo[^{]*\{[^}]*width:min\(100%, ?140px\)' "$CSS" ||
-  fail "the .team__photo rule in $CSS must size a portrait width:min(100%,140px) (the smallest real portrait is 140px wide)"
+  fail "$CSS has no media query that gives .team five columns at the wider widths"
+# The cap is the number in the CSS itself, so the guard follows a change of it: no portrait of
+# _data/team.yml may be narrower than the tile cap (it would be stretched and blur).
+tile_cap="$(grep -oE '\.team__photo[^{]*\{[^}]*width:min\(100%, ?[0-9]+px\)' "$CSS" | grep -oE '[0-9]+px\)$' | grep -oE '^[0-9]+' || true)"
+[[ -n "$tile_cap" ]] ||
+  fail "the .team__photo rule in $CSS must size a portrait width:min(100%,<n>px): the cap the portraits are checked against"
 smallest="$(bundle exec ruby -ryaml -e 'puts YAML.load_file("_data/team.yml")["members"].filter_map { |m| m["photo_w"] }.min')"
-[[ "$smallest" -ge 140 ]] || fail "a portrait of _data/team.yml is only ${smallest}px wide, below the 140px cap of .team__photo: it would be stretched"
-pass "the team grid has two columns on a phone and five from the tablet width up, and a portrait is drawn at most 140px wide (the smallest real one is ${smallest}px)"
+[[ -z "$smallest" || "$smallest" -ge "$tile_cap" ]] || fail "a portrait of _data/team.yml is only ${smallest}px wide, below the ${tile_cap}px cap of .team__photo: it would be stretched"
+pass "the team grid has two columns on a phone and five from the tablet width up, and a portrait is drawn at most ${tile_cap}px wide (the CSS cap; the smallest portrait is ${smallest:-none}px)"
 
 # MotioForge: the download links point at the files that are already live on the old
 # server, as absolute external URLs (the 214 MB archive and the PDFs must not be copied
