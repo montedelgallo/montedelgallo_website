@@ -55,9 +55,6 @@ home:
       log: "agente: inventario sincronizzato · 2 min fa"
       chip_title: "Automazione AI"
       chip_text: "attiva in produzione"
-  tech:
-    label: "Realizzato con"
-    items: ["Ruby on Rails", "Hotwire", "Tailwind", "PostgreSQL", "OpenAI"]
   services:
     eyebrow: "Cosa facciamo"
     title: "Sistemi digitali progettati per operare meglio."
@@ -107,6 +104,20 @@ home:
   work:
     eyebrow: "Progetti selezionati"
     title: "Sistemi in produzione, risultati misurabili."
+  robotic_lab:
+    eyebrow: "Dal laboratorio"
+    facts:
+      - value: "1 ms"
+        label: "di precisione sulla timeline"
+      - value: "30 FPS"
+        label: "ciclo di runtime"
+      - value: "4"
+        label: "tipi di elemento, una sola timeline"
+    note: "Il software di authoring del movimento sviluppato nel laboratorio è oggi MotioForge Studio, una Beta pubblica per Windows."
+    cta_project: "Leggi il progetto"
+    cta_forge: "Scopri MotioForge Studio"
+    shots:
+      timeline_alt: "Timeline editor di MotioForge Studio con tracce servo colorate, uscita switch e forma d'onda audio"
   who:
     eyebrow: "Chi siamo"
     title: "Una boutique del software, non un'agenzia tradizionale."
@@ -120,6 +131,12 @@ home:
         text: "Niente burocrazia inutile. Ci adattiamo in fretta quando i requisiti cambiano e teniamo sempre visibile l'avanzamento."
       - title: "I vincoli come leva"
         text: "Budget, tempi e sistemi legacy diventano vincoli di progetto che portano a soluzioni più mirate e più utili."
+  team:
+    eyebrow: "Il team"
+    title: "Le persone dietro il codice."
+    lede: "Un team multidisciplinare compatto: sviluppo software, design, dati, cloud, WordPress e business development, sempre vicino al cliente."
+    more: "Conosci il team"
+    more_path: "/chi-siamo/#team"
   process:
     eyebrow: "Come lavoriamo"
     title: "Da operazioni caotiche a un sistema che funziona da solo."

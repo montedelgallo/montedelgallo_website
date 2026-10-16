@@ -7,7 +7,7 @@
 # as plain text.
 #
 # The `home:` tree holds the words of the home page, section by section in page
-# order (hero, built-with strip, services, growth system, work, who we are,
+# order (hero, services, growth system, work, Robotic Lab, who we are, team,
 # process, final call to action). Read in _includes/home/<section>.html as
 # t.home.<section>.<key>. A list (stats, services, ...) is a YAML list of maps and
 # the page shows its items in that order. An `icon` names a symbol of
@@ -63,9 +63,6 @@ home:
       log: "agent synced inventory · 2m ago"
       chip_title: "AI automation"
       chip_text: "running in production"
-  tech: # the "built with" strip
-    label: "Built with"
-    items: ["Ruby on Rails", "Hotwire", "Tailwind", "PostgreSQL", "OpenAI"]
   services:
     eyebrow: "What we do"
     title: "Digital systems designed for better operations."
@@ -115,6 +112,20 @@ home:
   work: # the cards under it are the featured projects (_projects/), not copy
     eyebrow: "Selected work"
     title: "Systems in production, outcomes you can measure."
+  robotic_lab: # the dark Robotic Lab band; its title and summary are the project's (_projects/mdg-robotic-lab.md)
+    eyebrow: "From the lab"
+    facts: # figures printed in the project's text
+      - value: "1 ms"
+        label: "timeline precision"
+      - value: "30 FPS"
+        label: "runtime loop"
+      - value: "4"
+        label: "element types, one timeline"
+    note: "The motion authoring software developed in the lab is now MotioForge Studio, a public Beta for Windows."
+    cta_project: "Read the project"
+    cta_forge: "Discover MotioForge Studio"
+    shots: # alt text of the MotioForge picture (the two photos use the project's own)
+      timeline_alt: "MotioForge Studio timeline editor with colored servo tracks, switch output and audio waveform"
   who:
     eyebrow: "Who we are"
     title: "A software boutique, not a traditional agency."
@@ -128,6 +139,12 @@ home:
         text: "No heavy overhead. We adapt quickly as requirements change and keep progress visible throughout."
       - title: "Constraints as leverage"
         text: "Budget, timing and legacy systems become design constraints that lead to sharper, more useful solutions."
+  team: # the grid under it is the team (_data/team.yml), not copy
+    eyebrow: "Our team"
+    title: "The people behind the code."
+    lede: "A compact multidisciplinary team: software engineering, design, data, cloud, WordPress and business development working close to the client."
+    more: "Meet the team"
+    more_path: "/about/#team" # the About hub's team section, written without the /it/ prefix (like nav.yml)
   process: # the steps are numbered 01, 02, ... by the page
     eyebrow: "How we work"
     title: "From messy operations to a system that runs itself."

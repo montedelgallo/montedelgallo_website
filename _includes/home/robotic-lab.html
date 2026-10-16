@@ -1,0 +1,44 @@
+{%- comment -%}
+  The Robotic Lab: a dark band between the selected work and "who we are". Its
+  title, its summary and two of its pictures are the Robotic Lab project's own
+  (the document of _projects/ with page_id project-mdg-robotic-lab, in the
+  language being built: _projects/mdg-robotic-lab.md, _projects/it/mdg-robotic-lab.md),
+  so they cannot drift from the project page. The figures, the note about
+  MotioForge and the button labels are t.home.robotic_lab; script/check-build.sh
+  proves every figure is printed in the project's text. The third picture is the
+  MotioForge editor (assets/img/motioforge/). Two buttons: the project page and the
+  MotioForge page, both found by page_id so they stay in the language of the page.
+  id="robotic-lab" is the anchor of this section. The band is dark, so the CSS
+  lightens the focus ring on it.
+
+  Read t, never assign t, lang or p (see index.html): the locals carry the prefix
+  rl_.
+{%- endcomment -%}
+{%- assign rl_project = site.projects | where: "page_id", "project-mdg-robotic-lab" | where: "lang", site.active_lang | first -%}
+{%- assign rl_forge = site.pages | where: "page_id", "motioforge" | where: "lang", site.active_lang | first -%}
+<section id="robotic-lab" class="rlab pad">
+  <div class="wrap">
+    <div class="rlab__text">
+      <p class="eyebrow">{{ t.home.robotic_lab.eyebrow | escape }}</p>
+      <h2 class="h2">{{ rl_project.title | escape }}</h2>
+      <p class="lede">{{ rl_project.summary | escape }}</p>
+      <ul class="rlab__facts">
+        {%- for rl_fact in t.home.robotic_lab.facts %}
+        <li class="rlab__fact"><b>{{ rl_fact.value | escape }}</b><span>{{ rl_fact.label | escape }}</span></li>
+        {%- endfor %}
+      </ul>
+      <p class="rlab__note">{{ t.home.robotic_lab.note | escape }}</p>
+      <div class="rlab__cta">
+        <a class="btn btn--solid" href="{{ rl_project.url | relative_url }}">{{ t.home.robotic_lab.cta_project | escape }} <span class="arrow" aria-hidden="true">→</span></a>
+        <a class="btn btn--ghost" href="{{ rl_forge.url | relative_url }}">{{ t.home.robotic_lab.cta_forge | escape }} <span class="arrow" aria-hidden="true">→</span></a>
+      </div>
+    </div>
+    <ul class="rlab__shots">
+      {%- assign rl_ref = rl_project.gallery[0] -%}
+      {%- assign rl_face = rl_project.gallery[2] %}
+      <li><img src="{{ rl_ref.src | relative_url }}" alt="{{ rl_ref.alt | escape }}" width="{{ rl_ref.width }}" height="{{ rl_ref.height }}" loading="lazy" decoding="async"></li>
+      <li><img src="{{ '/assets/img/motioforge/timeline-editor.webp' | relative_url }}" alt="{{ t.home.robotic_lab.shots.timeline_alt | escape }}" width="1920" height="1039" loading="lazy" decoding="async"></li>
+      <li><img src="{{ rl_face.src | relative_url }}" alt="{{ rl_face.alt | escape }}" width="{{ rl_face.width }}" height="{{ rl_face.height }}" loading="lazy" decoding="async"></li>
+    </ul>
+  </div>
+</section>

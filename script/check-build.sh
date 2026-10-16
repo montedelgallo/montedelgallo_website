@@ -122,12 +122,13 @@ pass "reduced-motion guard disables animations and transitions on every element"
 # Keyboard focus (AA): the emerald ring is about 2.7:1 on the dark bands, below
 # the 3:1 a focus indicator needs, so every dark band must lighten it by setting
 # --focus on itself. Those are the utility strip, the footer and the skip link,
-# and on the home the growth system (.stack) and the final call to action (.cta).
-for band in util foot skip stack cta; do
+# and on the home the growth system (.stack), the Robotic Lab band (.rlab) and the final
+# call to action (.cta).
+for band in util foot skip stack rlab cta; do
   grep -qE "\.$band\{[^}]*--focus:var\(--emerald-xl\)" "$CSS" ||
     fail "the .$band rule in $CSS does not set --focus:var(--emerald-xl): the focus ring would be too faint on its dark background"
 done
-pass "dark bands (.util, .foot, .skip, .stack, .cta) lighten the focus ring"
+pass "dark bands (.util, .foot, .skip, .stack, .rlab, .cta) lighten the focus ring"
 
 # The committed light world: no dark-mode variants.
 if grep -qF 'prefers-color-scheme' "$CSS"; then
@@ -2230,8 +2231,8 @@ errors << "main must hold exactly one <h1>, the hero headline #{headline.inspect
 
 # The sections, in order: each is its id, or else its first class.
 sections = main.xpath("./section").map { |node| node["id"] || node["class"].to_s.split.first }
-order = %w[hero tech services stack work about proc contact]
-errors << "the sections of the home are #{sections.inspect}; expected #{order.inspect} (hero, built-with strip, services, growth system, work, who we are, process, final call to action)" unless sections == order
+order = %w[hero services stack work robotic-lab about team proc contact]
+errors << "the sections of the home are #{sections.inspect}; expected #{order.inspect} (hero, services, growth system, work, Robotic Lab, who we are, team, process, final call to action)" unless sections == order
 # The ids services, work and about are the anchors the navigation, the footer and
 # the hero button link to.
 %w[services work about].each do |anchor|
@@ -2243,16 +2244,17 @@ duplicated = page.css("[id]").map { |node| node["id"] }.group_by(&:itself).selec
 errors << "the page has duplicate id(s): #{duplicated.inspect}" unless duplicated.empty?
 
 # Every string of the home: tree is on the page, inside the section it belongs to
-# (a short word such as "Build" must not be found in another section), as text or
-# as an aria-label.
-area_of = { "hero" => "section.hero", "tech" => "section.tech", "services" => "#services", "growth" => "section.stack",
-            "work" => "#work", "who" => "#about", "process" => "section.proc", "cta" => "#contact" }
+# (a short word such as "Build" must not be found in another section), as text, as an
+# aria-label or as the alt text of a picture.
+area_of = { "hero" => "section.hero", "services" => "#services", "growth" => "section.stack",
+            "work" => "#work", "robotic_lab" => "#robotic-lab", "who" => "#about", "team" => "#team",
+            "process" => "section.proc", "cta" => "#contact" }
 missing = []
 home.each do |key, tree|
   area = area_of[key] && main.at_css(area_of[key])
   (errors << "home.#{key} in _data/i18n/#{lang}.yml has no section on the page (#{area_of[key] || "no section is known for it in this check"})"; next) unless area
-  shown = [norm.(area.text), *area.css("[aria-label]").map { |node| norm.(node["aria-label"]) }].join("\n")
-  leaves(tree, [key]).reject { |path, _| path.last == "icon" }.each do |path, value|
+  shown = [norm.(area.text), *area.css("[aria-label]").map { |node| norm.(node["aria-label"]) }, *area.css("img[alt]").map { |node| norm.(node["alt"]) }].join("\n")
+  leaves(tree, [key]).reject { |path, _| path.last == "icon" || path.last.end_with?("_path") }.each do |path, value|
     text = norm.(value)
     missing << ["home.#{path.join(".")}", text] unless shown.include?(text)
   end
@@ -2270,7 +2272,6 @@ levels.each_cons(2) { |above, below| errors << "the headings jump from h#{above}
 {
   "the proof numbers" => [".hero .stats > div", list.("hero", "stats")],
   "the dashboard figures" => [".hero .shot__kpis > div", list.("hero", "shot", "kpis")],
-  "the built-with strip" => [".tech .row > span", list.("tech", "items")],
   "the services" => ["#services .svc__cell", list.("services", "items")],
   "the growth system cards" => [".stack .stack__c", list.("growth", "items")],
   "the principles" => ["#about .who__grid > div", list.("who", "items")],
@@ -2312,6 +2313,83 @@ errors << "the work section shows no project cover" if covers.empty?
 covers.reject { |src| src.start_with?("/assets/img/projects/") }.each { |src| errors << "the work section shows #{src.inspect}, which is not a cover from /assets/img/projects/" }
 errors << "the work section holds an <svg>: it must show real project covers, not drawn placeholders" unless main.css("#work svg").empty?
 
+# The "built with" strip is gone (the client asked to drop it): no section, no keys, no file.
+errors << "the home still has the built-with strip (section.tech)" if main.at_css("section.tech")
+errors << "home.tech is still in _data/i18n/#{lang}.yml: the built-with strip was removed" if home.key?("tech")
+errors << "_includes/home/tech.html still exists: the built-with strip was removed" if File.exist?("_includes/home/tech.html")
+errors << "index.html still includes home/tech.html" if File.read("index.html", encoding: "utf-8").include?("home/tech")
+
+# The Team section: the shared team grid (every member of _data/team.yml, each with a
+# portrait with alt text or the initials tile) and a link to the About hub's team
+# section in the same language.
+team_data = YAML.load_file("_data/team.yml")["members"]
+team = main.at_css("section#team")
+if team
+  members = team.css(".team__member")
+  errors << "the Team section shows #{members.size} member(s), _data/team.yml has #{team_data.size}" unless members.size == team_data.size && team_data.size >= 10
+  members.each_with_index do |node, index|
+    name = norm.(node.at_css(".team__name")&.text)
+    img = node.at_css("img")
+    errors << "team member #{index + 1} (#{name.inspect}) has neither a portrait nor the initials tile" unless img || node.at_css(".team__ph")
+    next unless img
+    errors << "team member #{name.inspect}: the portrait has no alt text naming the person" unless img["alt"].to_s.include?(name) && !name.empty?
+    errors << "team member #{name.inspect}: the portrait has no width and height" if img["width"].to_s.empty? || img["height"].to_s.empty?
+    errors << "team member #{name.inspect}: the portrait must be lazy-loaded (the section is below the fold)" unless img["loading"] == "lazy"
+  end
+  about_href = lang == "it" ? "/it/chi-siamo/#team" : "/about/#team"
+  errors << "the Team section must link to the About hub's team section (#{about_href}), it links to #{team.css("a").map { |a| a["href"] }.inspect}" unless team.css("a").any? { |a| a["href"] == about_href }
+  built_target = File.join(ENV.fetch("SITE_DIR", "_site"), about_href.split("#").first, "index.html")
+  errors << "#{about_href} leads to #{built_target}, which was not built" unless File.size?(built_target)
+  errors << "#{about_href}: the page has no element with id=\"team\"" if File.size?(built_target) && !File.read(built_target, encoding: "utf-8").match?(/\sid="team"/)
+end
+
+# The Robotic Lab section: a dark band whose words come from the Robotic Lab project of
+# the language (its title and its summary), two or four facts that are printed in that
+# project's text, real pictures with alt text and size, and the two calls to action,
+# the project page and the MotioForge page, both in the page's language.
+rl = main.at_css("section#robotic-lab")
+if rl
+  project_file = lang == "it" ? "_projects/it/mdg-robotic-lab.md" : "_projects/mdg-robotic-lab.md"
+  source = File.read(project_file, encoding: "utf-8")
+  front = YAML.safe_load(source.match(/\A---\n(.*?)\n---\n/m)[1])
+  body = norm.(source.sub(/\A---\n.*?\n---\n/m, "").gsub(/[*_`]/, ""))
+  errors << "the Robotic Lab section should be a dark band (class rlab)" unless rl["class"].to_s.split.include?("rlab")
+  errors << "the Robotic Lab heading should be the project's title #{front["title"].inspect}" unless norm.(rl.at_css("h2")&.text) == norm.(front["title"])
+  errors << "the Robotic Lab section should print the project's summary" unless norm.(rl.text).include?(norm.(front["summary"]))
+  facts = rl.css(".rlab__fact")
+  errors << "the Robotic Lab section should show 2 to 4 facts, it shows #{facts.size}" unless (2..4).cover?(facts.size)
+  facts.each do |fact|
+    value = norm.(fact.at_css("b")&.text)
+    errors << "Robotic Lab fact #{value.inspect} is not in #{project_file} (a fact must come from the project text)" unless value.empty? || body.include?(value) || norm.(front.dig("metric", "value")) == value
+  end
+  pics = rl.css("img")
+  errors << "the Robotic Lab section shows no real image" if pics.empty?
+  pics.each do |img|
+    src = img["src"].to_s
+    errors << "Robotic Lab image #{src.inspect} is not one of /assets/img/projects/mdg-robotic-lab-* or /assets/img/motioforge/*" unless src.match?(%r{\A/assets/img/(projects/mdg-robotic-lab-|motioforge/)[\w-]+\.webp\z})
+    path = File.join(ENV.fetch("SITE_DIR", "_site"), src)
+    head = File.size?(path) ? File.binread(path, 12) : ""
+    errors << "Robotic Lab image #{src.inspect} is not a built WEBP file" unless head[0, 4] == "RIFF" && head[8, 4] == "WEBP"
+    errors << "Robotic Lab image #{src.inspect} has no alt text" if img["alt"].to_s.strip.empty?
+    errors << "Robotic Lab image #{src.inspect} has no width and height" if img["width"].to_s.empty? || img["height"].to_s.empty?
+    errors << "Robotic Lab image #{src.inspect} must be lazy-loaded" unless img["loading"] == "lazy"
+  end
+  project_href = lang == "it" ? "/it/progetti/mdg-robotic-lab/" : "/projects/mdg-robotic-lab/"
+  forge_href = lang == "it" ? "/it/motioforge/" : "/motioforge/"
+  buttons = rl.css("a.btn").map { |a| a["href"] }
+  errors << "the Robotic Lab section needs two buttons, the project #{project_href} and MotioForge #{forge_href}; it has #{buttons.inspect}" unless buttons.sort == [project_href, forge_href].sort
+  [project_href, forge_href].each do |href|
+    built_page = File.join(ENV.fetch("SITE_DIR", "_site"), href, "index.html")
+    if File.size?(built_page)
+      errors << "#{href} is not in #{lang}" unless File.read(built_page, encoding: "utf-8").match?(/<html lang="#{lang}"/)
+    else
+      errors << "#{href} (a button of the Robotic Lab section) was not built"
+    end
+  end
+else
+  errors << "no <section id=\"robotic-lab\">"
+end
+
 abort(errors.map { |e| "  - #{e}" }.join("\n")) unless errors.empty?
 RUBY
 }
@@ -2321,7 +2399,7 @@ check_project_cards en "$EN_HOME" "$SITE_DIR" "#work" no ||
   fail "the project cards on the English home are wrong (see the list above)"
 check_project_cards it "$IT_HOME" "$SITE_DIR" "#work" no ||
   fail "the project cards on the Italian home are wrong (see the list above)"
-pass "both homes: one h1, the eight sections in order (ids services, work, about), every string of the home: tree on the page, the icons and counts the data asks for, booking and WhatsApp links, and the featured projects with their real covers in the work section"
+pass "both homes: one h1, the nine sections in order (ids services, work, robotic-lab, about, team; no built-with strip), every string of the home: tree on the page, the icons and counts the data asks for, booking and WhatsApp links, and the featured projects with their real covers in the work section"
 
 # The featured filter, on both sides. Every real project is `featured: true`, so
 # the real homes only prove that the work section KEEPS the featured projects: a

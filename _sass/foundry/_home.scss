@@ -320,48 +320,6 @@
   }
 }
 
-// ---------- built-with strip ----------
-.tech .wrap{
-  display:flex;
-  align-items:center;
-  gap:14px 30px;
-  flex-wrap:wrap;
-  padding-block:20px;
-}
-
-.tech .lab{
-  font-family:var(--mono);
-  font-size:.72rem;
-  letter-spacing:.12em;
-  text-transform:uppercase;
-  color:var(--muted);
-}
-
-.tech .row{
-  display:flex;
-  gap:14px 26px;
-  flex-wrap:wrap;
-  align-items:center;
-}
-
-.tech .row span{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  font-family:var(--display);
-  font-weight:700;
-  font-size:.98rem;
-  color:var(--ink-2);
-}
-
-.tech .row span::before{
-  content:"";
-  width:9px;
-  height:9px;
-  border-radius:50%;
-  background:var(--emerald);
-}
-
 // ---------- services grid ----------
 .svc{
   margin-top:38px;
@@ -508,6 +466,160 @@
 // .pgrid and .pcard (_projects.scss).
 .work .pgrid{
   margin-top:38px;
+}
+
+// ---------- Robotic Lab ----------
+// A dark band like the growth system, but a different shape: the words and the
+// calls to action on the left, a collage of three real pictures on the right (a
+// photo from the project, the MotioForge editor, a second photo). The pictures keep
+// their width and height attributes (the page does not jump when they load); the
+// CSS fixes the frame of each, so the photos and the screenshot line up. The band
+// is dark, so the focus ring is lightened (see --focus in _tokens.scss).
+.rlab{
+  --focus:var(--emerald-xl);
+  background:var(--dark);
+  color:#e7efe9;
+  border-bottom:0;
+  position:relative;
+  overflow:hidden;
+}
+
+// The blueprint grid of the hero, on the dark ground and faint.
+.rlab::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background-image:linear-gradient(#ffffff0d 1px,transparent 1px),linear-gradient(90deg,#ffffff0d 1px,transparent 1px);
+  background-size:44px 44px;
+  -webkit-mask-image:linear-gradient(180deg,#000 0%,transparent 85%);
+  mask-image:linear-gradient(180deg,#000 0%,transparent 85%);
+  pointer-events:none;
+}
+
+.rlab .wrap{
+  position:relative;
+  display:grid;
+  grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);
+  gap:clamp(32px,5vw,64px);
+  align-items:center;
+}
+
+.rlab .eyebrow{
+  color:#7fe3b6;
+}
+
+.rlab .h2{
+  color:#fff;
+}
+
+.rlab .lede{
+  color:#aebfb4;
+}
+
+.rlab__note{
+  color:#aebfb4;
+  max-width:56ch;
+  margin:14px 0 0;
+}
+
+.rlab__facts{
+  display:flex;
+  flex-wrap:wrap;
+  margin:30px 0 0;
+  padding:0;
+  list-style:none;
+  border-top:1px solid #ffffff2e;
+}
+
+.rlab__fact{
+  flex:1 1 120px;
+  padding:16px 18px 0 0;
+}
+
+.rlab__fact b{
+  display:block;
+  font-family:var(--display);
+  font-weight:800;
+  font-size:1.7rem;
+  letter-spacing:-.02em;
+  color:var(--emerald-xl);
+  font-variant-numeric:tabular-nums;
+}
+
+.rlab__fact span{
+  font-family:var(--mono);
+  font-size:.66rem;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:#9fb2a7;
+}
+
+.rlab__cta{
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+  margin-top:30px;
+}
+
+.rlab .btn--solid{
+  background:#fff;
+  color:var(--dark);
+  border-color:#fff;
+}
+
+.rlab .btn--ghost{
+  color:#eafaf2;
+  border-color:#ffffff59;
+}
+
+// The collage: the wide photo on top, two frames under it.
+.rlab__shots{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+  margin:0;
+  padding:0;
+  list-style:none;
+}
+
+.rlab__shots li{
+  margin:0;
+  min-width:0;
+}
+
+.rlab__shots li:first-child{
+  grid-column:1 / -1;
+}
+
+.rlab__shots img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border:1px solid #ffffff26;
+  border-radius:10px;
+  background:#111f18;
+}
+
+.rlab__shots li:first-child img{
+  aspect-ratio:16 / 9;
+}
+
+.rlab__shots li:not(:first-child) img{
+  aspect-ratio:4 / 3;
+}
+
+@media (max-width:860px){
+  .rlab .wrap{
+    grid-template-columns:minmax(0,1fr);
+  }
+}
+
+// ---------- team ----------
+// The grid itself is the About hub's (.team, _pages.scss, _includes/team-grid.html);
+// this is the heading's neighbour: the link to the full team section.
+.team-home__more{
+  margin:clamp(24px,3vw,36px) 0 0;
 }
 
 // ---------- who we are ----------

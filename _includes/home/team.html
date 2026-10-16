@@ -1,0 +1,21 @@
+{%- comment -%}
+  The team: the same grid as the About hub (_includes/team-grid.html, members in
+  _data/team.yml, portraits in assets/team/), under a heading and a line, and a button
+  to the team section of the About hub in the language of the page. id="team" is the
+  anchor of this section. Words: t.home.team (the path of the button is written
+  without the /it/ prefix, like nav.yml: jekyll-polyglot adds it).
+
+  Read t, never assign t, lang or p (see index.html). The grid include prefixes its
+  own variables (tg_) for the same reason.
+{%- endcomment -%}
+<section id="team" class="team-home pad">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">{{ t.home.team.eyebrow | escape }}</p>
+      <h2 class="h2">{{ t.home.team.title | escape }}</h2>
+      <p class="lede">{{ t.home.team.lede | escape }}</p>
+    </div>
+    {% include team-grid.html %}
+    <p class="team-home__more"><a class="btn btn--ghost" href="{{ t.home.team.more_path | relative_url }}">{{ t.home.team.more | escape }} <span class="arrow" aria-hidden="true">→</span></a></p>
+  </div>
+</section>
