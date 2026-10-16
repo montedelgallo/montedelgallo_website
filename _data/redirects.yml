@@ -18,3 +18,21 @@
   to: /case-studies/ecommerce-platform/
 - from: /case-study-property-management-tourism-rome/
   to: /case-studies/property-management-tourism-rome/
+
+# Services. The overview pages kept their address (/services/, /it/servizi/). The live
+# pages below were folded into service pages: the data and mobile pages into the
+# service of the same subject, the technologies pages (a list of tools) into Custom
+# software, which now carries the stack. The Italian addresses sat at the root of the
+# Italian site and now sit under /it/servizi/.
+- from: /data-analysis/
+  to: /services/data-systems/
+- from: /mobile-development/
+  to: /services/mobile-apps/
+- from: /technologies/
+  to: /services/custom-software/
+- from: /it/analisi-dati-ai/
+  to: /it/servizi/sistemi-di-dati/
+- from: /it/sviluppo-mobile/
+  to: /it/servizi/app-mobile/
+- from: /it/tecnologie/
+  to: /it/servizi/software-su-misura/

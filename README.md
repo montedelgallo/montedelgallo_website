@@ -63,6 +63,16 @@ bash script/check-build.sh   # clean build, then assert both languages, the desi
   page, `_includes/case-card.html` the card on the index (`case-studies.html`, `it/casi-di-studio.html`, a pair
   like the project index). `_data/redirects.yml` records old URL -> new URL for the pages whose address
   changed (data only; the 301s are emitted later).
+- `_services/`: the eight services of the home page (Custom software, AI & automation, Data systems, Mobile
+  apps, Websites, E-commerce, Digital signage, SEO & GEO), one document per language (the Italian ones in
+  `_services/it/`), a shared `page_id`, bare permalinks: `/services/<slug>/` in English, `/servizi/<slug>/` in
+  Italian. Front matter: `title` and `icon` (the same as the home's `home.services.items`), `summary` (also the
+  text of the overview cell and the meta description), `order` (1 to 8), and, optional, `related_projects` (a
+  list of project `page_id`s: the cards are the projects of the page's language) and `faq` (a list of `{q, a}`,
+  shown as `<details>`). A `# draft:` comment at the top of a file says what the text was written from and that
+  it needs review. `_layouts/service.html` renders the page; `services.html` (permalink `/services/`) and
+  `it/servizi.html` (permalink `/servizi/`) are the overview, a pair like the project index, a grid of
+  `_includes/service-cell.html` (the home's `.svc` classes, each cell a link).
 - `assets/img/projects/`: the project covers, real images and never placeholders, shared by both
   languages (the gallery pictures of a project too). Make a cover 1200x675 (16:9): `cwebp -q 82 -m 6
   -sharp_yuv -resize 1200 675 in.jpg -o assets/img/projects/<name>-cover.webp`. Write `cover_alt` as a

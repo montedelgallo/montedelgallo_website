@@ -1,0 +1,39 @@
+---
+layout: default
+title: Services
+lang: en
+page_id: services-index
+permalink: /services/
+description: "What Monte del Gallo builds: custom software, AI and automation, data systems, mobile apps, websites, e-commerce, digital signage and SEO & GEO."
+---
+{%- comment -%}
+  The services overview, English side: the eight services as a grid of links to
+  their pages (_includes/service-cell.html, the home's .svc grid), in `order`. Its
+  Italian side is it/servizi.html (permalink /servizi/, the same page_id); the two
+  are one pair for jekyll-polyglot, like the English and the Italian document of a
+  service. The words of the page are written here, once per language, not in
+  _data/i18n. The home page's own services section (_includes/home/services.html)
+  is separate and its cells are not links.
+
+  The variables are prefixed (sx_): the cell include shares the page's variables,
+  and a page that left t, lang or p in them would break the cells (see the rule in
+  index.html).
+{%- endcomment -%}
+{%- assign sx_all = site.services | where: "lang", site.active_lang | sort: "order" -%}
+<section class="pindex pad">
+  <div class="wrap">
+    <div class="pindex__head">
+      <div class="sec-head">
+        <p class="eyebrow">Services · Software Boutique · Roma</p>
+        <h1 class="h2">Software, automation and growth, built around your business.</h1>
+        <p class="lede">From the first idea to a system in production and the work that keeps it improving: eight services that share one team and one way of working.</p>
+      </div>
+      <h2 class="pindex__count"><b>{{ sx_all.size }}</b> services</h2>
+    </div>
+    <div class="svc">
+      {%- for sx_item in sx_all %}
+      {% include service-cell.html service=sx_item %}
+      {%- endfor %}
+    </div>
+  </div>
+</section>

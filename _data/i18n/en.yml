@@ -165,6 +165,18 @@ case_studies: # the case study card, page and index
   client: "Client"
   stack: "Built with"
 
+services: # the service cell, page and overview
+  view: "Learn more" # the label of a cell of the overview
+  all: "All services" # the way back to the services overview, on a service page
+  index_path: "/services/" # where the overview is, written without the /it/ prefix (like nav.yml)
+  eyebrow: "Services · Monte del Gallo" # above the title of a service page
+  faq: "Frequently asked questions"
+  related: "Related work" # the heading of the project cards under the text
+  cta_eyebrow: "Start here"
+  cta_title: "Talk to us about your project."
+  cta_text: "In 30 minutes we look at what you need and define a practical path to a working result."
+  book: "Book a 30-min call" # leads to the booking page
+
 footer:
   tagline: "Software development boutique. Custom systems, automation and AI — built in Roma."
   company: "Company"

@@ -1,0 +1,116 @@
+// The service page (_layouts/service.html) and the cells of the services overview
+// (_includes/service-cell.html).
+//
+// The page shares the project page's rules for what it has in common: the way back
+// and the styling of the text (_project-detail.scss, through the same class names),
+// and the home's call to action band (.cta, _home.scss). The overview's cells are
+// the home's (.svc / .svc__cell, _home.scss) and the project cards (.pgrid / .pcard,
+// _projects.scss) are reused as they are. This file adds only what is new: the
+// icon and the head of the page, the FAQ, the heading of the related work, and the
+// cell as a link.
+
+// ---------- head ----------
+// The icon is the home's tile (.svc__ic), without the margin that pushes the title
+// down inside a cell.
+.svc__ic.service__icon{
+  margin:0 0 20px;
+}
+
+// The text is a reading column under the head.
+.service__body{
+  margin-top:clamp(28px,4vw,44px);
+}
+
+// ---------- small headings ----------
+.service__title{
+  font-family:var(--mono);
+  font-weight:500;
+  font-size:.72rem;
+  letter-spacing:.17em;
+  text-transform:uppercase;
+  color:var(--emerald);
+  margin:0 0 16px;
+}
+
+// ---------- FAQ ----------
+// The sections drop the hairline every <section> has (see _shell.scss): they are
+// part of the article. A question is a <details>, the answer opens under it.
+.service__faq,
+.service__related{
+  margin-top:clamp(36px,5vw,56px);
+  border-bottom:0;
+}
+
+.service__questions{
+  max-width:68ch;
+  border-top:1px solid var(--line);
+}
+
+.service__questions details{
+  border-bottom:1px solid var(--line);
+}
+
+.service__questions summary{
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  gap:16px;
+  padding:16px 0;
+  font-family:var(--display);
+  font-weight:700;
+  font-size:1.05rem;
+  letter-spacing:-.01em;
+  cursor:pointer;
+  list-style:none;
+}
+
+// The default marker is hidden; a "+" that turns into a "−" replaces it.
+.service__questions summary::-webkit-details-marker{
+  display:none;
+}
+
+.service__questions summary::after{
+  content:"+";
+  flex:none;
+  font-family:var(--mono);
+  font-weight:500;
+  color:var(--emerald);
+}
+
+.service__questions details[open] summary::after{
+  content:"\2212";
+}
+
+.service__answer{
+  margin:0 0 18px;
+  max-width:62ch;
+  color:var(--ink-2);
+}
+
+// ---------- the call to action ----------
+// The band is the home's; on a service page it sits under the article, with
+// nothing between it and the footer.
+.service__cta{
+  margin-top:0;
+}
+
+// ---------- the overview ----------
+// A cell of the overview is a link: it keeps the colour of the text and shows a
+// "learn more" label at the bottom.
+a.svc__cell{
+  color:inherit;
+  text-decoration:none;
+}
+
+.svc__more{
+  margin-top:18px;
+  font-family:var(--mono);
+  font-size:.76rem;
+  letter-spacing:.06em;
+  color:var(--emerald);
+}
+
+a.svc__cell:hover .svc__more{
+  text-decoration:underline;
+  text-underline-offset:3px;
+}

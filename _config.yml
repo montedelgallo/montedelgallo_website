@@ -39,6 +39,13 @@ collections:
   # English, /casi-di-studio/<slug>/ in Italian (polyglot adds /it/).
   case_studies:
     output: true
+  # Services: the eight services of the home page, one document per language per
+  # service in _services/ (the Italian ones in _services/it/), tied by a shared
+  # `page_id`, each with a bare `permalink`: /services/<slug>/ in English,
+  # /servizi/<slug>/ in Italian (polyglot adds /it/). The overview pages are
+  # services.html and it/servizi.html.
+  services:
+    output: true
 
 defaults:
   - scope:
@@ -51,6 +58,11 @@ defaults:
       type: case_studies
     values:
       layout: case_study
+  - scope:
+      path: ""
+      type: services
+    values:
+      layout: service
 
 # --- Styles ------------------------------------------------------------------
 sass:

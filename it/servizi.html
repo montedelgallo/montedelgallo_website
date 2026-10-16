@@ -1,0 +1,33 @@
+---
+layout: default
+title: Servizi
+lang: it
+page_id: services-index
+permalink: /servizi/
+description: "Cosa realizza Monte del Gallo: software su misura, AI e automazione, sistemi di dati, app mobile, siti web, e-commerce, digital signage e SEO e GEO."
+---
+{%- comment -%}
+  La panoramica dei servizi, lato italiano: gli otto servizi come griglia di link alle
+  loro pagine (_includes/service-cell.html, la griglia .svc della home), in ordine di
+  `order`. Il lato inglese è services.html (permalink /services/, stesso page_id). Il
+  permalink non porta il prefisso /it/: lo aggiunge jekyll-polyglot (vedi README). Le
+  variabili hanno un prefisso (sx_) per lo stesso motivo del lato inglese.
+{%- endcomment -%}
+{%- assign sx_all = site.services | where: "lang", site.active_lang | sort: "order" -%}
+<section class="pindex pad">
+  <div class="wrap">
+    <div class="pindex__head">
+      <div class="sec-head">
+        <p class="eyebrow">Servizi · Software Boutique · Roma</p>
+        <h1 class="h2">Software, automazione e crescita, costruiti attorno alla tua azienda.</h1>
+        <p class="lede">Dalla prima idea a un sistema in produzione, fino al lavoro che continua a migliorarlo: otto servizi che condividono un solo team e un solo modo di lavorare.</p>
+      </div>
+      <h2 class="pindex__count"><b>{{ sx_all.size }}</b> servizi</h2>
+    </div>
+    <div class="svc">
+      {%- for sx_item in sx_all %}
+      {% include service-cell.html service=sx_item %}
+      {%- endfor %}
+    </div>
+  </div>
+</section>

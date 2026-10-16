@@ -878,10 +878,11 @@ for spec in "$EN_HOME|it|/it/" "$IT_HOME|en|/"; do
 done
 
 # Pages that are NOT single-source need their own proof. Build a copy of the
-# site with six throw-away pages and check what the switch, the canonical URL
+# site with eight throw-away pages and check what the switch, the canonical URL
 # and the hreflang tags do when (a) a page has no translation and (b) the two
 # translations have different slugs. (The sixth page lists the project cards;
-# see "Asserting the project cards" below.) The copy also holds one project that
+# see "Asserting the project cards" below. The case study and the service
+# cell pages are canaries of their own includes.) The copy also holds one project that
 # is not featured, in each language (see the end of "Asserting the home page").
 # The real source tree is not touched.
 FIXTURE="$(mktemp -d "${TMPDIR:-/tmp}/mdg-check.XXXXXX")"
@@ -983,6 +984,26 @@ permalink: /case-cards-test/
 </div>
 <p id="canary">{{ t }} {{ lang }} {{ p }}</p>
 PAGE
+# The same canary for the service cell: the page sets t, lang and p to a known
+# value, lists every service of its language through service-cell.html, and prints
+# the three after the cells.
+cat >"$FIXTURE/service-cells-test.html" <<'PAGE'
+---
+layout: default
+title: Service cells
+permalink: /service-cells-test/
+---
+{%- assign t = "keep" -%}
+{%- assign lang = "keep" -%}
+{%- assign p = "keep" -%}
+{%- assign sc_all = site.services | where: "lang", site.active_lang | sort: "order" -%}
+<div class="svc">
+{%- for sc_item in sc_all %}
+{% include service-cell.html service=sc_item %}
+{%- endfor %}
+</div>
+<p id="canary">{{ t }} {{ lang }} {{ p }}</p>
+PAGE
 # A project with `featured: false`, as an English and an Italian document tied by
 # page_id, like the real ones. Every real project is featured, so without this
 # pair nothing ever gives the featured filter of the home something to drop. The
@@ -1029,7 +1050,7 @@ Non in evidenza: ha una pagina propria e nessuna card nella home.
 PAGE
 
 (cd "$FIXTURE" && BUNDLE_GEMFILE="$ROOT_DIR/Gemfile" bundle exec jekyll build --quiet) ||
-  fail "the fixture build (home + six test pages + a project that is not featured) failed"
+  fail "the fixture build (home + eight test pages + a project that is not featured) failed"
 FX="$FIXTURE/_site"
 
 # polyglot turns a static_href link into ferh="..." and back into href="..." only
@@ -1582,7 +1603,8 @@ pass "every root-relative link on the ${#cs_en_pages[@]} English and ${#cs_it_pa
 # The old -> new URL map, as data (Plan 3 emits the real redirects): every entry
 # has a `from` and a `to`, every `to` is a page that was built, no `from` is
 # itself a built page (it would shadow it), and the two case studies the live site
-# keeps at the root (/case-study-...) are in it.
+# keeps at the root (/case-study-...) and the live data, mobile and technologies
+# pages are in it.
 check_redirects() {
   bundle exec ruby - "$SITE_DIR" <<'RUBY'
 require "yaml"
@@ -1604,7 +1626,11 @@ entries.each_with_index do |entry, index|
   errors << "#{at}: #{from} or #{to} has an /it/it/ prefix" if (from + to).include?("/it/it/")
 end
 entries.map { |e| e["from"] if e.is_a?(Hash) }.compact.tally.each { |from, n| errors << "from #{from} appears #{n} times" if n > 1 }
-%w[/case-study-ecommerce-platform/ /case-study-property-management-tourism-rome/].each do |old|
+# ...and so are the live service pages whose address changed with the services
+# pages: the data, mobile and technologies pages of both languages.
+%w[/case-study-ecommerce-platform/ /case-study-property-management-tourism-rome/
+   /data-analysis/ /mobile-development/ /technologies/
+   /it/analisi-dati-ai/ /it/sviluppo-mobile/ /it/tecnologie/].each do |old|
   errors << "the live URL #{old} is not in _data/redirects.yml" unless entries.any? { |e| e.is_a?(Hash) && e["from"] == old }
 end
 abort(errors.map { |e| "  - #{e}" }.join("\n")) unless errors.empty?
@@ -1612,6 +1638,392 @@ RUBY
 }
 check_redirects || fail "_data/redirects.yml is wrong (see the list above)"
 pass "_data/redirects.yml parses, every target is a built page, no source shadows a page, and the root-level live case study URLs are mapped"
+
+echo "==> Asserting the services (8 documents per language, detail pages, overview pages)"
+# A service is a Markdown document per language in _services/ (the Italian ones in
+# _services/it/), tied together by a shared page_id like a project. Permalinks are
+# bare (no /it/ prefix, polyglot adds it): /services/<slug>/ in English,
+# /servizi/<slug>/ in Italian. The set is fixed by the approved home page: the same
+# eight services, in the same order, with the home's titles and icons.
+#
+# services_manifest validates the documents and prints them as JSON, one entry per
+# page_id, in `order`. The later steps read it from $SERVICES_JSON.
+MIN_SERVICES=8
+MIN_SERVICE_BODY_CHARS=400
+services_manifest() {
+  bundle exec ruby - "$MIN_SERVICES" <<'RUBY'
+require "date"
+require "json"
+require "yaml"
+
+wanted = ARGV[0].to_i
+errors = []
+docs = Dir.glob("_services/**/*.md").sort.filter_map do |path|
+  match = File.read(path, encoding: "utf-8").match(/\A---[ \t]*\n(.*?)\n---[ \t]*(?:\n|\z)/m)
+  (errors << "#{path}: no YAML front matter"; next) unless match
+  begin
+    front = YAML.safe_load(match[1], permitted_classes: [Date, Time]) || {}
+  rescue Psych::Exception => e
+    errors << "#{path}: the front matter is not valid YAML (#{e.message})"
+    next
+  end
+  (errors << "#{path}: the front matter must be a list of key: value lines"; next) unless front.is_a?(Hash)
+  front.merge("path" => path)
+end
+errors << "_services/ holds no service document" if docs.empty?
+
+text = ->(value) { value.is_a?(String) && !value.strip.empty? }
+section = { "en" => "services", "it" => "servizi" }
+sprite = File.read("_includes/icons.html", encoding: "utf-8").scan(/id="(i-[a-z-]+)"/).flatten
+projects = Dir.glob("_projects/**/*.md").filter_map do |path|
+  front = File.read(path, encoding: "utf-8")[/\A---[ \t]*\n(.*?)\n---/m, 1]
+  YAML.safe_load(front, permitted_classes: [Date, Time]) if front
+end
+home = %w[en it].to_h { |lang| [lang, YAML.load_file("_data/i18n/#{lang}.yml").dig("home", "services", "items")] }
+
+docs.each do |doc|
+  at = doc["path"]
+  %w[title summary page_id].each { |key| errors << "#{at}: #{key} must be a non-empty string" unless text.(doc[key]) }
+  errors << "#{at}: lang must be en or it, not #{doc["lang"].inspect}" unless section.key?(doc["lang"])
+  errors << "#{at}: icon #{doc["icon"].inspect} is not a symbol of _includes/icons.html (#{sprite.join(", ")})" unless sprite.include?(doc["icon"])
+  errors << "#{at}: order must be an integer from 1 to #{wanted}" unless doc["order"].is_a?(Integer) && doc["order"].between?(1, wanted)
+  if doc["order"].is_a?(Integer) && home[doc["lang"]] && home[doc["lang"]][doc["order"] - 1]
+    item = home[doc["lang"]][doc["order"] - 1]
+    errors << "#{at}: service #{doc["order"]} is #{item["title"].inspect} on the home page, its title here is #{doc["title"].inspect}" unless doc["title"] == item["title"]
+    errors << "#{at}: service #{doc["order"]} has the icon #{item["icon"]} on the home page, here #{doc["icon"].inspect}" unless doc["icon"] == item["icon"]
+  end
+  if doc.key?("related_projects")
+    related = doc["related_projects"]
+    if related.is_a?(Array) && !related.empty? && related.all?(&text)
+      related.each do |id|
+        langs = projects.select { |project| project["page_id"] == id }.map { |project| project["lang"] }.sort
+        errors << "#{at}: related project #{id.inspect} must exist in English and in Italian in _projects/, found #{langs.inspect}" unless langs == %w[en it]
+      end
+    else
+      errors << "#{at}: related_projects must be a non-empty list of project page_ids"
+    end
+  end
+  if doc.key?("faq")
+    faq = doc["faq"]
+    ok = faq.is_a?(Array) && !faq.empty? && faq.all? { |entry| entry.is_a?(Hash) && text.(entry["q"]) && text.(entry["a"]) }
+    errors << "#{at}: faq must be a non-empty list of {q, a} with a question and an answer" unless ok
+  end
+  link = doc["permalink"].to_s
+  if link.start_with?("/it/")
+    errors << "#{at}: permalink #{link} starts with /it/, but jekyll-polyglot adds that prefix itself (the page would be built at /it#{link})"
+  elsif section.key?(doc["lang"]) && link !~ %r{\A/#{section[doc["lang"]]}/[a-z0-9]+(?:-[a-z0-9]+)*/\z}
+    errors << "#{at}: permalink #{link.inspect} must look like /#{section[doc["lang"]]}/<slug>/"
+  end
+end
+
+%w[en it].each do |lang|
+  mine = docs.select { |doc| doc["lang"] == lang }
+  errors << "#{mine.size} #{lang} service document(s), exactly #{wanted} are expected" unless mine.size == wanted
+  errors << "the #{lang} services must have the orders 1 to #{wanted}, each once, found #{mine.map { |doc| doc["order"] }.sort.inspect}" unless mine.map { |doc| doc["order"] }.sort == (1..wanted).to_a
+  mine.group_by { |doc| doc["permalink"] }.each { |link, group| errors << "two #{lang} services share the permalink #{link}" if group.size > 1 }
+end
+by_id = docs.group_by { |doc| doc["page_id"] }
+by_id.each do |id, group|
+  langs = group.map { |doc| doc["lang"].to_s }.sort
+  if langs == %w[en it]
+    en, it = group.find { |doc| doc["lang"] == "en" }, group.find { |doc| doc["lang"] == "it" }
+    errors << "page_id #{id.inspect}: the English and Italian documents must have the same order and icon" unless en["order"] == it["order"] && en["icon"] == it["icon"]
+    errors << "page_id #{id.inspect}: the English and Italian documents must list the same related_projects" unless en["related_projects"] == it["related_projects"]
+    errors << "page_id #{id.inspect}: the English and Italian documents must have the same number of faq entries" unless (en["faq"] || []).size == (it["faq"] || []).size
+  else
+    errors << "page_id #{id.inspect}: expected one en and one it document, found #{langs.inspect}"
+  end
+end
+
+abort(errors.map { |e| "  - #{e}" }.join("\n")) unless errors.empty?
+
+puts JSON.generate(by_id.values.map { |group|
+  { "page_id" => group.first["page_id"], "en" => group.find { |doc| doc["lang"] == "en" }, "it" => group.find { |doc| doc["lang"] == "it" } }
+}.sort_by { |pair| pair["en"]["order"] })
+RUBY
+}
+SERVICES_JSON="$(services_manifest)" ||
+  fail "the service documents in _services/ are invalid (see the list above)"
+export SERVICES_JSON
+services_pairs="$(bundle exec ruby -rjson -e '
+  JSON.parse(ENV.fetch("SERVICES_JSON")).each do |pair|
+    puts [pair["page_id"], pair["en"]["permalink"], pair["it"]["permalink"]].join("|")
+  end
+')"
+pass "$MIN_SERVICES services in each language, each valid, English and Italian documents tied by page_id, the home's titles and icons, bare permalinks"
+
+# The detail pages, in both languages, at the permalinks the documents ask for.
+while IFS='|' read -r page_id en_path it_path; do
+  en_page="$SITE_DIR${en_path}index.html"
+  it_page="$SITE_DIR/it${it_path}index.html"
+  en_url="$SITE_URL$en_path"
+  it_url="$SITE_URL/it$it_path"
+  [[ -s "$en_page" ]] || fail "$en_page is missing or empty: the English page of $page_id must be built at $en_path"
+  [[ -s "$it_page" ]] || fail "$it_page is missing or empty: the Italian page of $page_id must be built at /it$it_path (polyglot adds the /it/ prefix itself)"
+  require_contains "$en_page" '<html lang="en"' "the page must declare its language"
+  require_contains "$it_page" '<html lang="it"' "the page must declare its language"
+  require_contains "$en_page" "rel=\"canonical\" href=\"$en_url\"" "a service page is its own canonical"
+  require_contains "$it_page" "rel=\"canonical\" href=\"$it_url\"" "a service page is its own canonical"
+  for page in "$en_page" "$it_page"; do
+    require_contains "$page" "rel=\"alternate\" hreflang=\"en\" href=\"$en_url\"" "the pair must advertise its English page (tied by page_id?)"
+    require_contains "$page" "rel=\"alternate\" hreflang=\"it\" href=\"$it_url\"" "the pair must advertise its Italian page (tied by page_id?)"
+    require_contains "$page" "rel=\"alternate\" hreflang=\"x-default\" href=\"$en_url\"" "x-default is the English page"
+  done
+  [[ "$(switch_href "$en_page" it)" == "/it$it_path" ]] ||
+    fail "the language switch on $en_path must lead to /it$it_path, not '$(switch_href "$en_page" it)'"
+  [[ "$(switch_href "$it_page" en)" == "$en_path" ]] ||
+    fail "the language switch on /it$it_path must lead to $en_path, not '$(switch_href "$it_page" en)'"
+done <<<"$services_pairs"
+pass "every service page is built in both languages, its own canonical, with reciprocal hreflang and language switch"
+
+# What a detail page shows must be what its document says: title, icon, summary,
+# the migrated or drafted text, the FAQ when the document declares one, the related
+# projects in the page's own language, the call to book, a way back to the services
+# index of its own language. The Italian text must be a translation, not pasted
+# English.
+check_service_pages() {
+  bundle exec ruby - "$SITE_DIR" "$MIN_SERVICE_BODY_CHARS" <<'RUBY'
+require "date"
+require "json"
+require "nokogiri"
+require "yaml"
+
+site_dir, min_body = ARGV[0], ARGV[1].to_i
+text_of = ->(node) { node ? node.text.gsub(/\s+/, " ").strip : "" }
+booking = YAML.load_file("_data/site_meta.yml").fetch("booking_url")
+projects = Dir.glob("_projects/**/*.md").filter_map do |path|
+  front = File.read(path, encoding: "utf-8")[/\A---[ \t]*\n(.*?)\n---/m, 1]
+  YAML.safe_load(front, permitted_classes: [Date, Time]) if front
+end
+errors = []
+
+JSON.parse(ENV.fetch("SERVICES_JSON")).each do |pair|
+  bodies = {}
+  %w[en it].each do |lang|
+    doc = pair[lang]
+    prefix = lang == "it" ? "/it" : ""
+    file = File.join(site_dir, prefix, doc["permalink"], "index.html")
+    page = Nokogiri::HTML5(File.read(file, encoding: "utf-8"))
+    main = page.at_css("main")
+
+    headings = main.css("h1").map { |node| text_of.(node) }
+    errors << "#{file}: the <h1> should be #{doc["title"].inspect}, found #{headings.inspect}" unless headings == [doc["title"]]
+    errors << "#{file}: the <title> should start with the service title" unless text_of.(page.at_css("title")).start_with?(doc["title"])
+    errors << "#{file}: the eyebrow (header .eyebrow) is empty" if text_of.(main.at_css("header .eyebrow")).empty?
+    errors << "#{file}: the summary is not shown as the lede" unless text_of.(main.at_css("header .lede")) == doc["summary"]
+    errors << "#{file}: the meta description should be the summary" unless page.at_css('meta[name="description"]')&.[]("content") == doc["summary"]
+    icon = main.at_css("header .service__icon use")
+    errors << "#{file}: the icon should be the symbol ##{doc["icon"]}, the page uses #{icon && icon["href"].inspect}" unless icon && icon["href"] == "##{doc["icon"]}"
+    errors << "#{file}: the symbol ##{doc["icon"]} is not in the page's sprite" unless page.at_css("symbol##{doc["icon"]}")
+
+    # The text.
+    body = main.at_css(".service__body")
+    if body.nil?
+      errors << "#{file}: the service text (.service__body) is missing"
+    else
+      body_text = text_of.(body)
+      sections = body.css("h2").map { |node| text_of.(node) }
+      errors << "#{file}: the text is only #{body_text.size} characters, a service page has at least #{min_body}" if body_text.size < min_body
+      errors << "#{file}: the text has #{sections.size} section heading(s) (h2), at least 2 are expected" if sections.size < 2
+      bodies[lang] = [body_text, sections]
+    end
+
+    # The FAQ: as <details>, one per entry, only when the document declares it.
+    faq = main.at_css(".service__faq")
+    if doc["faq"]
+      if faq.nil?
+        errors << "#{file}: the document declares a faq, the page shows none (.service__faq)"
+      else
+        errors << "#{file}: the FAQ has no <h2>" if text_of.(faq.at_css("h2")).empty?
+        entries = faq.css("details")
+        errors << "#{file}: the FAQ shows #{entries.size} question(s), the document has #{doc["faq"].size}" unless entries.size == doc["faq"].size
+        doc["faq"].each_with_index do |entry, index|
+          shown = entries[index] or next
+          errors << "#{file}: FAQ question #{index + 1} should be #{entry["q"].inspect}, found #{text_of.(shown.at_css("summary")).inspect}" unless text_of.(shown.at_css("summary")) == entry["q"]
+          errors << "#{file}: FAQ answer #{index + 1} should be #{entry["a"].inspect}" unless text_of.(shown.at_css(".service__answer")) == entry["a"]
+        end
+      end
+    else
+      errors << "#{file}: the page shows a FAQ the document does not declare" if faq
+      errors << "#{file}: the page shows a <details> although the document has no faq" if main.at_css("details")
+    end
+
+    # Related projects: the cards are the declared projects of this language, in order.
+    related = main.at_css(".service__related")
+    if doc["related_projects"]
+      if related.nil?
+        errors << "#{file}: the document declares related_projects, the page shows none (.service__related)"
+      else
+        errors << "#{file}: the related projects have no <h2>" if text_of.(related.at_css("h2")).empty?
+        wanted = doc["related_projects"].map do |id|
+          project = projects.find { |entry| entry["page_id"] == id && entry["lang"] == lang }
+          project && prefix + project["permalink"]
+        end
+        shown = related.css("a.pcard").map { |card| card["href"] }
+        errors << "#{file}: the related projects should link to #{wanted.inspect} (the #{lang} projects), the page links to #{shown.inspect}" unless shown == wanted
+        shown.each { |href| errors << "#{file}: the related project #{href} was not built" unless File.size?(File.join(site_dir, href.to_s, "index.html")) }
+      end
+    else
+      errors << "#{file}: the page shows related projects the document does not declare" if related
+    end
+
+    # The call to book: the Soshiki booking page, exactly.
+    book = main.css("section.cta a.btn--solid")
+    errors << "#{file}: the page needs exactly one booking button (section.cta a.btn--solid), found #{book.size}" unless book.size == 1
+    book.each { |link| errors << "#{file}: the booking button goes to #{link["href"].inspect}, the booking page is #{booking}" unless link["href"] == booking }
+
+    # The way back: to the services index of the page's own language, which exists.
+    index_href = lang == "it" ? "/it/servizi/" : "/services/"
+    backs = main.css("a.project__back")
+    errors << "#{file}: no link back to the services index (a.project__back)" if backs.empty?
+    backs.each { |link| errors << "#{file}: a back link goes to #{link["href"].inspect}, the services index is #{index_href}" unless link["href"] == index_href }
+    errors << "#{file}: the services index #{index_href} was not built" unless File.size?(File.join(site_dir, index_href, "index.html"))
+    levels = main.css("h1, h2, h3, h4, h5, h6").map { |node| node.name[1].to_i }
+    levels.each_cons(2) { |above, below| errors << "#{file}: the headings jump from h#{above} to h#{below}" if below - above > 1 }
+    main.css("img").each { |image| errors << "#{file}: an <img> (#{image["src"].inspect}) needs a non-empty alt" if image["alt"].to_s.strip.empty? }
+  end
+
+  if bodies.size == 2
+    english, italian = bodies["en"], bodies["it"]
+    errors << "#{pair["page_id"]}: the Italian text is the English text, word for word: it must be translated" if english[0] == italian[0]
+    errors << "#{pair["page_id"]}: the Italian page has the English section headings #{english[1].inspect}: they must be translated" if english[1] == italian[1]
+    errors << "#{pair["page_id"]}: the English and Italian pages must have the same number of sections" unless english[1].size == italian[1].size
+    errors << "#{pair["page_id"]}: the Italian summary is the English one: it must be translated" if pair["en"]["summary"] == pair["it"]["summary"]
+  end
+end
+
+abort(errors.map { |e| "  - #{e}" }.join("\n")) unless errors.empty?
+RUBY
+}
+check_service_pages || fail "a service detail page does not show what its document says (see the list above)"
+pass "every service detail page shows its title, icon, summary (also its meta description), the text (at least $MIN_SERVICE_BODY_CHARS characters in 2 or more sections, translated in Italian), its FAQ as <details> only when declared, its related projects in its own language, one booking button to the Soshiki URL and a link back to its own index"
+
+# The overview pages: /services/ and /it/servizi/ (services.html and it/servizi.html),
+# tied by page_id, each showing the eight services as a grid of links to their
+# detail pages, in `order`. The grid is the home's (.svc / .svc__cell), through
+# _includes/service-cell.html.
+EN_SERVICES_INDEX="$SITE_DIR/services/index.html"
+IT_SERVICES_INDEX="$SITE_DIR/it/servizi/index.html"
+assert_file "$EN_SERVICES_INDEX" "the English services overview must be built at /services/ (services.html)"
+assert_file "$IT_SERVICES_INDEX" "the Italian services overview must be built at /it/servizi/ (it/servizi.html, permalink /servizi/)"
+assert_contains "$EN_SERVICES_INDEX" '<html lang="en"' "the page must declare its language"
+assert_contains "$IT_SERVICES_INDEX" '<html lang="it"' "the page must declare its language"
+for index in "$EN_SERVICES_INDEX" "$IT_SERVICES_INDEX"; do
+  require_contains "$index" "rel=\"alternate\" hreflang=\"en\" href=\"$SITE_URL/services/\"" "the services overview must advertise its English page (tied by page_id?)"
+  require_contains "$index" "rel=\"alternate\" hreflang=\"it\" href=\"$SITE_URL/it/servizi/\"" "the services overview must advertise its Italian page (tied by page_id?)"
+  require_contains "$index" "rel=\"alternate\" hreflang=\"x-default\" href=\"$SITE_URL/services/\"" "x-default is the English page"
+done
+require_contains "$EN_SERVICES_INDEX" "rel=\"canonical\" href=\"$SITE_URL/services/\"" "the English services overview is its own canonical"
+require_contains "$IT_SERVICES_INDEX" "rel=\"canonical\" href=\"$SITE_URL/it/servizi/\"" "the Italian services overview is its own canonical"
+[[ "$(switch_href "$EN_SERVICES_INDEX" it)" == "/it/servizi/" ]] ||
+  fail "the language switch on /services/ must lead to /it/servizi/, not '$(switch_href "$EN_SERVICES_INDEX" it)'"
+[[ "$(switch_href "$IT_SERVICES_INDEX" en)" == "/services/" ]] ||
+  fail "the language switch on /it/servizi/ must lead to /services/, not '$(switch_href "$IT_SERVICES_INDEX" en)'"
+
+# check_service_index <lang> <built page> <site dir> <canary page?>
+# The cells are exactly the services of the language, in `order`, each a link to a
+# page that was built, with the icon, title and summary of its document. For the
+# real overview: one <h1>, an introduction, no skipped heading level, a title and
+# description of its own. <canary page?> "yes" for the fixture page that prints t,
+# lang and p after the cells (an include shares the page's variables).
+check_service_index() {
+  bundle exec ruby - "$@" <<'RUBY'
+require "json"
+require "nokogiri"
+require "yaml"
+
+lang, file, root, canary_page = ARGV
+prefix = lang == "it" ? "/it" : ""
+text_of = ->(node) { node ? node.text.gsub(/\s+/, " ").strip : "" }
+page = Nokogiri::HTML5(File.read(file, encoding: "utf-8"))
+main = page.at_css("main")
+abort("  - #{file} has no <main>") unless main
+errors = []
+docs = JSON.parse(ENV.fetch("SERVICES_JSON")).map { |pair| pair[lang] }
+
+cells = main.css(".svc a.svc__cell")
+errors << "#{lang}: #{main.css(".svc__cell").size} cells, #{cells.size} of them links, #{docs.size} services expected" unless cells.size == docs.size && main.css(".svc__cell").size == docs.size
+links = cells.map { |cell| cell["href"] }
+expected = docs.map { |doc| prefix + doc["permalink"] }
+errors << "#{lang}: the cells link to #{links.inspect}, the #{lang} services in order are #{expected.inspect}" unless links == expected
+
+if canary_page == "yes"
+  canary = text_of.(page.at_css("#canary"))
+  errors << "#{lang}: the page lost its own variables to the cell include (an include shares them): t, lang and p should read \"keep keep keep\", found #{canary.inspect}" unless canary == "keep keep keep"
+else
+  headline = main.css("h1").map { |node| text_of.(node) }
+  errors << "main must hold exactly one non-empty <h1>, it holds #{headline.inspect}" unless headline.size == 1 && !headline.first.empty?
+  errors << "the introduction under the heading (.lede) is empty" if text_of.(main.at_css(".lede")).empty?
+  levels = main.css("h1, h2, h3, h4, h5, h6").map { |node| node.name[1].to_i }
+  levels.each_cons(2) { |above, below| errors << "the headings jump from h#{above} to h#{below}: a level is skipped" if below - above > 1 }
+  defaults = YAML.load_file("_data/site_meta.yml")[lang]
+  title = text_of.(page.at_css("title"))
+  description = page.at_css('meta[name="description"]')&.[]("content").to_s.strip
+  errors << "the <title> is #{title.inspect}: the overview needs a title of its own" if title.empty? || title == defaults["title"]
+  errors << "the meta description is #{description.inspect}: the overview needs one of its own" if description.empty? || description == defaults["description"]
+end
+
+cells.each do |cell|
+  at = "#{lang} cell #{cell["href"]}"
+  doc = docs.find { |d| prefix + d["permalink"] == cell["href"] }
+  errors << "#{at}: the link leads to a page that was not built" unless File.size?(File.join(root, cell["href"].to_s, "index.html"))
+  next unless doc
+  errors << "#{at}: the title should read #{doc["title"].inspect}" unless text_of.(cell.at_css("h3")) == doc["title"]
+  errors << "#{at}: the text should read the summary #{doc["summary"].inspect}" unless text_of.(cell.at_css("p")) == doc["summary"]
+  icon = cell.at_css(".svc__ic use")
+  errors << "#{at}: the icon should be ##{doc["icon"]}" unless icon && icon["href"] == "##{doc["icon"]}"
+end
+
+abort(errors.map { |e| "  - #{e}" }.join("\n")) unless errors.empty?
+RUBY
+}
+check_service_index en "$EN_SERVICES_INDEX" "$SITE_DIR" no || fail "the English services overview is wrong (see the list above)"
+check_service_index it "$IT_SERVICES_INDEX" "$SITE_DIR" no || fail "the Italian services overview is wrong (see the list above)"
+check_service_index en "$FX/service-cells-test/index.html" "$FX" yes || fail "the English service cells are wrong (see the list above)"
+check_service_index it "$FX/it/service-cells-test/index.html" "$FX" yes || fail "the Italian service cells are wrong (see the list above)"
+pass "services overview (/services/, /it/servizi/): reciprocal hreflang and switch, one <h1>, an introduction, a cell for each of the 8 services in order, each a link to a built page with its icon, title and summary; the cell include leaves the page's t, lang and p alone"
+
+# The cell include, like the card includes, shares the variables of its page: it
+# may not assign t, lang or p (nor capture into one, nor loop with one).
+if grep -nE '\{%-?[[:space:]]*(assign|capture)[[:space:]]+(t|lang|p)[[:space:]]*(=|-?%\})|\{%-?[[:space:]]*for[[:space:]]+(t|lang|p)[[:space:]]+in[[:space:]]' _includes/service-cell.html; then
+  fail "_includes/service-cell.html assigns (or loops with) t, lang or p: give the variable a prefix of its own"
+fi
+pass "the service cell include assigns no t, lang or p"
+
+# The home keeps its services section as it is: eight cells that are not links (the
+# navigation is rewired in a later task, not by the services pages).
+check_home_services_untouched() {
+  bundle exec ruby - "$@" <<'RUBY'
+require "nokogiri"
+
+errors = []
+ARGV.each do |file|
+  cells = Nokogiri::HTML5(File.read(file, encoding: "utf-8")).css("#services .svc__cell")
+  errors << "#{file}: the home services section should have 8 cells, found #{cells.size}" unless cells.size == 8
+  errors << "#{file}: a home services cell became a link: that is the navigation task's change" if cells.any? { |cell| cell.name == "a" || cell.at_css("a") }
+end
+abort(errors.map { |e| "  - #{e}" }.join("\n")) unless errors.empty?
+RUBY
+}
+check_home_services_untouched "$EN_HOME" "$IT_HOME" || fail "the home services section changed (see the list above)"
+pass "the home services section is unchanged: 8 cells, none a link"
+
+# Links stay in the page's language on the service pages and overviews.
+sv_en_pages=("$EN_SERVICES_INDEX")
+sv_it_pages=("$IT_SERVICES_INDEX")
+while IFS='|' read -r _ en_path it_path; do
+  sv_en_pages+=("$SITE_DIR${en_path}index.html")
+  sv_it_pages+=("$SITE_DIR/it${it_path}index.html")
+done <<<"$services_pairs"
+check_link_prefixes en "${sv_en_pages[@]}" ||
+  fail "an English service page has a link into the Italian site (see the list above)"
+check_link_prefixes it "${sv_it_pages[@]}" ||
+  fail "an Italian service page has an internal link that is not under /it/ (see the list above)"
+[[ ! -e "$SITE_DIR/it/services" && ! -e "$SITE_DIR/servizi" ]] ||
+  fail "a services section was built in the wrong language (/it/services/ or /servizi/ without /it/)"
+double_services="$(find "$SITE_DIR" \( -path '*/it/it' -o -path '*/it/it/*' \) -print || true)"
+[[ -z "$double_services" ]] || fail "the build wrote ${double_services%%$'\n'*}: a permalink with the /it/ prefix was prefixed a second time"
+pass "every root-relative link on the ${#sv_en_pages[@]} English and ${#sv_it_pages[@]} Italian service pages stays in the page's language; no /it/it/, no services section in the wrong language"
 
 echo "==> Asserting the UI strings (EN and IT define the same keys, every nav entry is complete)"
 check_ui_strings() {

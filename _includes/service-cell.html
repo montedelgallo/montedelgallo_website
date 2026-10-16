@@ -1,0 +1,22 @@
+{%- comment -%}
+  One service as a cell of the services grid: icon, title, a line and a "learn
+  more" label, the whole cell a link to the service page. Used by the services
+  overview (services.html, it/servizi.html).
+
+    {% raw %}<div class="svc">{% include service-cell.html service=sv %}</div>{% endraw %}
+
+  `service` is a document of the `services` collection; everything shown comes
+  from its front matter (_services/). It is the cell of the home page's services
+  section (_includes/home/services.html) with the same classes (.svc__cell and its
+  children, see _home.scss), so the overview and the home look alike; the home's
+  cells stay plain <div>s, this one is an <a>.
+
+  This include assigns NO variable, and must stay that way: Liquid's `assign` is
+  global, and an include shares the variables of the page that includes it (see
+  _includes/project-card.html, and the canary in script/check-build.sh).
+
+  The link is a plain root-relative path: in the Italian build jekyll-polyglot puts
+  /it/ in front of it. The "Learn more" label is in the language of the document
+  (its `lang`).
+{%- endcomment -%}
+<a class="svc__cell" href="{{ include.service.url | relative_url }}"><div class="svc__ic"><svg class="ico" aria-hidden="true" focusable="false"><use href="#{{ include.service.icon | escape }}"/></svg></div><h3>{{ include.service.title | escape }}</h3><p>{{ include.service.summary | escape }}</p><span class="svc__more">{{ site.data.i18n[include.service.lang].services.view | escape }} <span class="arrow" aria-hidden="true">→</span></span></a>

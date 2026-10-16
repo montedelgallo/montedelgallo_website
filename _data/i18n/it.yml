@@ -157,6 +157,18 @@ case_studies:
   client: "Cliente"
   stack: "Realizzato con"
 
+services:
+  view: "Scopri di più"
+  all: "Tutti i servizi"
+  index_path: "/servizi/"
+  eyebrow: "Servizi · Monte del Gallo"
+  faq: "Domande frequenti"
+  related: "Progetti correlati"
+  cta_eyebrow: "Inizia da qui"
+  cta_title: "Parliamo del tuo progetto."
+  cta_text: "In 30 minuti vediamo di cosa hai bisogno e definiamo un percorso concreto verso un risultato funzionante."
+  book: "Prenota una call di 30 minuti"
+
 footer:
   tagline: "Boutique di sviluppo software. Sistemi su misura, automazione e AI — realizzati a Roma."
   company: "Azienda"

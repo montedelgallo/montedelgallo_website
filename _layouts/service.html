@@ -1,0 +1,80 @@
+---
+layout: default
+---
+{%- comment -%}
+  The page of one service (a document of the `services` collection, see
+  _services/). From top to bottom: the way back to the services overview, icon,
+  eyebrow, title and summary, the text, the FAQ (a <details> per question, when the
+  document has `faq`), the projects that show the service (cards, when the document
+  has `related_projects`), the call to book, the way back again.
+
+  Front matter used here: title, icon (a symbol of _includes/icons.html, the home's
+  icon for the service), summary, and, optional, `related_projects` (a list of
+  project page_ids; the cards are the projects of the language of the page) and
+  `faq` (a list of {q, a}). `order` and `page_id` are read by the overview and by
+  jekyll-polyglot. script/check-build.sh checks all of it.
+
+  The labels (All services, FAQ heading, Related work, the call to book) come from
+  _data/i18n/<lang>.yml in the language of the document. The way back is a
+  root-relative path, which jekyll-polyglot turns into /it/servizi/ in the Italian
+  build: it is the Italian path of the overview (services.index_path). The page
+  shares the project page's classes for what is the same (the way back, the text,
+  see _project-detail.scss) and the home's call to action band (.cta, _home.scss);
+  _service.scss only styles what is new here. The variables are prefixed (sv_): the
+  project cards are an include and share the page's variables.
+{%- endcomment -%}
+{%- assign sv_lang = page.lang | default: site.active_lang -%}
+{%- assign sv_t = site.data.i18n[sv_lang].services -%}
+<article class="project service pad">
+  <div class="wrap">
+    <p class="project__crumb"><a class="project__back" href="{{ sv_t.index_path | relative_url }}"><span class="arrow" aria-hidden="true">←</span> {{ sv_t.all | escape }}</a></p>
+    <header class="service__head">
+      <span class="svc__ic service__icon"><svg class="ico" aria-hidden="true" focusable="false"><use href="#{{ page.icon | escape }}"/></svg></span>
+      <p class="eyebrow">{{ sv_t.eyebrow | escape }}</p>
+      <h1 class="h2">{{ page.title | escape }}</h1>
+      <p class="lede">{{ page.summary | escape }}</p>
+    </header>
+    <div class="project__body service__body">
+      {{ content }}
+    </div>
+    {%- if page.faq %}
+    <section class="service__faq" aria-labelledby="service-faq-title">
+      <h2 class="service__title" id="service-faq-title">{{ sv_t.faq | escape }}</h2>
+      <div class="service__questions">
+        {%- for sv_entry in page.faq %}
+        <details>
+          <summary>{{ sv_entry.q | escape }}</summary>
+          <p class="service__answer">{{ sv_entry.a | escape }}</p>
+        </details>
+        {%- endfor %}
+      </div>
+    </section>
+    {%- endif %}
+    {%- if page.related_projects %}
+    {%- assign sv_projects = site.projects | where: "lang", sv_lang %}
+    <section class="service__related" aria-labelledby="service-related-title">
+      <h2 class="service__title" id="service-related-title">{{ sv_t.related | escape }}</h2>
+      <div class="pgrid">
+        {%- for sv_id in page.related_projects %}
+        {%- assign sv_project = sv_projects | where: "page_id", sv_id | first %}
+        {%- if sv_project %}
+        {% include project-card.html project=sv_project %}
+        {%- endif %}
+        {%- endfor %}
+      </div>
+    </section>
+    {%- endif %}
+    <p class="project__foot"><a class="btn btn--ghost project__back" href="{{ sv_t.index_path | relative_url }}"><span class="arrow" aria-hidden="true">←</span> {{ sv_t.all | escape }}</a></p>
+  </div>
+</article>
+<section class="cta service__cta">
+  <svg class="cta__range" aria-hidden="true" focusable="false"><use href="#mdg-range"/></svg>
+  <div class="wrap">
+    <p class="eyebrow">{{ sv_t.cta_eyebrow | escape }}</p>
+    <h2>{{ sv_t.cta_title | escape }}</h2>
+    <p>{{ sv_t.cta_text | escape }}</p>
+    <div class="cta__btns">
+      <a class="btn btn--solid" href="{{ site.data.site_meta.booking_url }}">{{ sv_t.book | escape }}</a>
+    </div>
+  </div>
+</section>
