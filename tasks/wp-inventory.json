@@ -1,0 +1,2288 @@
+[
+ {
+  "url": "https://montedelgallo.com/",
+  "status": 200,
+  "final": null,
+  "title": "MonteDelGallo | Software boutique in Rome",
+  "desc": "MonteDelGallo builds high-performance websites, custom software, mobile apps and AI integrations for companies that need measurable digital systems.",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [
+   "WebSite"
+  ],
+  "forms": [],
+  "iframes": [],
+  "h1": "Custom software. Visibility without limits.",
+  "words": 949,
+  "imgs": 14,
+  "og_image": null,
+  "og_type": "website",
+  "comments": false,
+  "body_class": "home wp-singular page-template page-template-page-templates page-template-empty page-template-page-templatesempty-php page page-id-1950 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer mdg-performance-home is-using-livecanvas",
+  "sitemap_kinds": [
+   "post"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/welcome-claudio-aiello/",
+  "status": 200,
+  "final": null,
+  "title": "Welcome, Claudio Aiello! - montedelgallo.com",
+  "desc": "Our second hire of the month, Claudio Aiello joins MdG today, bringing to the team his passion for classical music and beautiful software. A professional musician, Claudio is the mastermind behind Dancla, a mobile app fully dedicated to online violin classes. We can't wait to collaborate with Claudio on…",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/welcome-claudio-aiello/",
+  "hreflang": [],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "Welcome, Claudio Aiello!",
+  "words": 350,
+  "imgs": 7,
+  "og_image": "https://montedelgallo.com/wp-content/uploads/2022/10/Claudio-crop-1.jpg",
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular post-template-default single single-post postid-1098 single-format-standard wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "post"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/how-i-started-creating-a-product-a-month-just-for-fun/",
+  "status": 200,
+  "final": null,
+  "title": "How I Started Creating a Product a Month Just For Fun - montedelgallo.com",
+  "desc": "In these last 4 months of 2019 I’ve tried to create a product each month and everything began thanks to Robin Good. He was my first mentor back in the first years of the 2000s. I was younger and hungry to learn, he was willing to teach, that was an…",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/how-i-started-creating-a-product-a-month-just-for-fun/",
+  "hreflang": [],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "How I Started Creating a Product a Month Just For Fun",
+  "words": 754,
+  "imgs": 12,
+  "og_image": "https://montedelgallo.com/wp-content/uploads/2022/09/my_screen.png",
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular post-template-default single single-post postid-578 single-format-standard wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "post"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/software-development-done-right-the-mdg-way/",
+  "status": 200,
+  "final": null,
+  "title": "Software development done right – the MdG way - montedelgallo.com",
+  "desc": "We love working at MdG, because the way we work is the way we think, and feel. Over the years, we shaped our software development process through research and trial and error, trying to maximize the feelings we love, and remove the ones we hate. Among the feelings we love…",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/software-development-done-right-the-mdg-way/",
+  "hreflang": [],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "Software development done right – the MdG way",
+  "words": 1085,
+  "imgs": 7,
+  "og_image": "https://montedelgallo.com/wp-content/uploads/2022/09/codesign.jpeg",
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular post-template-default single single-post postid-576 single-format-standard wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "post"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/welcome-mouaz-el-molkey/",
+  "status": 200,
+  "final": null,
+  "title": "Welcome, Mouaz El Molkey! - montedelgallo.com",
+  "desc": "Summer is gone, fall is upon us, and our pipeline is brimming with excited tech projects to start from scratch, or bring to the next level! That's why we are growing our team of software engineers with a new entry: Mouaz El Molkey. With a background in accounting, Mouaz has…",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/welcome-mouaz-el-molkey/",
+  "hreflang": [],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "Welcome, Mouaz El Molkey!",
+  "words": 457,
+  "imgs": 7,
+  "og_image": "https://montedelgallo.com/wp-content/uploads/2022/10/1636639132749.jpg",
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular post-template-default single single-post postid-1105 single-format-standard wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "post"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/welcome-marco-cherubini/",
+  "status": 200,
+  "final": null,
+  "title": "Welcome, Marco Cherubini! - montedelgallo.com",
+  "desc": "With autumn brimming with exciting new projects, it was about time that the MdG family expanded with a new hire! Today we welcome Marco, who joins us as a junior developer. Marco brings his passion and eagerness to learn, together with a creative background in producing Hip-Hop music. We are…",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/welcome-marco-cherubini/",
+  "hreflang": [],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "Welcome, Marco Cherubini!",
+  "words": 332,
+  "imgs": 7,
+  "og_image": "https://montedelgallo.com/wp-content/uploads/2022/10/msg764955256-2388-1-e1667244745330.png",
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular post-template-default single single-post postid-1224 single-format-standard wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "post"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/meet-consultala-the-legal-tech-start-up-erasing-labor-law-bureaucracy/",
+  "status": 200,
+  "final": null,
+  "title": "Meet ConsultaLa: The Legal Tech start-up erasing labor law bureaucracy - montedelgallo.com",
+  "desc": "MdG is the technology engine behind a few bootstrapped products and start-ups employing technology to solve problems and make life easy. Today we introduce ConsultaLa: a toolkit of software and digital services to boost and streamline the workday of labor law professionals through automation and state-of-the-art technology.   -…",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/meet-consultala-the-legal-tech-start-up-erasing-labor-law-bureaucracy/",
+  "hreflang": [],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "Meet ConsultaLa: The Legal Tech start-up erasing labor law bureaucracy",
+  "words": 593,
+  "imgs": 11,
+  "og_image": null,
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular post-template-default single single-post postid-1106 single-format-standard wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "post"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/design-minimalista-la-semplicita-come-chiave-per-il-successo-digitale-nel-2025/",
+  "status": 200,
+  "final": null,
+  "title": "Design Minimalista: La Semplicità come Chiave per il Successo Digitale nel 2025 - montedelgallo.com",
+  "desc": "Negli ultimi anni, il design minimalista è emerso come una delle tendenze più influenti nel mondo del web design. Con la crescente attenzione verso l’usabilità e le performance, questa filosofia si concentra sull’essenziale, eliminando il superfluo per creare esperienze digitali eleganti e funzionali. Il minimalismo non è solo una scelta…",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/design-minimalista-la-semplicita-come-chiave-per-il-successo-digitale-nel-2025/",
+  "hreflang": [],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "Design Minimalista: La Semplicità come Chiave per il Successo Digitale nel 2025",
+  "words": 944,
+  "imgs": 6,
+  "og_image": "https://montedelgallo.com/wp-content/uploads/2025/01/Screenshot-2025-01-09-at-17.00.29-scaled.png",
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular post-template-default single single-post postid-1682 single-format-standard wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "post"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/saladil-revolutionizing-wordpress-support-one-ticket-at-a-time/",
+  "status": 200,
+  "final": null,
+  "title": "Saladil: Revolutionizing WordPress Support, One Ticket at a Time - montedelgallo.com",
+  "desc": "We've all been there. You're navigating a website, run into a snag, and need assistance. But the moment you click \"Support,\" you're whisked away to some external site or clunky help desk that feels like a different universe. It's jarring. It disrupts the flow. It doesn't have to be this…",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/saladil-revolutionizing-wordpress-support-one-ticket-at-a-time/",
+  "hreflang": [],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "Saladil: Revolutionizing WordPress Support, One Ticket at a Time",
+  "words": 757,
+  "imgs": 4,
+  "og_image": "https://montedelgallo.com/wp-content/uploads/2022/10/saladil-web.png",
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular post-template-default single single-post postid-1613 single-format-standard wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "post"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/get-ready-for-your-next-react-job-interview/",
+  "status": 200,
+  "final": null,
+  "title": "Ace Your React Interview: Comprehensive Guide & Key Concepts - montedelgallo.com",
+  "desc": "In today's competitive tech landscape, a successful interview often hinges not just on your skills, but on your preparation. React, as one of the leading libraries in front-end development, frequently sits at the center of such interviews, and the questions can range from basic to deeply intricate. \"Ace Your React…",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/get-ready-for-your-next-react-job-interview/",
+  "hreflang": [],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "Ace Your React Interview: Comprehensive Guide & Key Concepts",
+  "words": 7385,
+  "imgs": 6,
+  "og_image": "https://montedelgallo.com/wp-content/uploads/2023/08/react-interview-scaled-1.jpeg",
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular post-template-default single single-post postid-1364 single-format-standard wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "post"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/motioforge/",
+  "status": 200,
+  "final": null,
+  "title": "MotioForge Studio — Software for animatronics & show control | MonteDelGallo",
+  "desc": "MotioForge Studio: create and play back animations on servos, lights and audio from one visual timeline. No code required. Download the Windows Beta.",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/motioforge/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/motioforge-2/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/motioforge/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "Bring what you build to life.",
+  "words": 1078,
+  "imgs": 6,
+  "og_image": "https://montedelgallo.com/wp-content/uploads/2026/09/motioforge-timeline-editor.jpg",
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular page-template page-template-page-templates page-template-empty page-template-page-templatesempty-php page page-id-2275 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "page"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/it/motioforge-2/",
+  "status": 200,
+  "final": null,
+  "title": "MotioForge Studio — Software per animatronica e show control | MonteDelGallo",
+  "desc": "MotioForge Studio: crea e riproduci animazioni su servomotori, luci e audio da un'unica timeline visuale. Nessun codice. Scarica la Beta per Windows.",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/it/motioforge-2/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/motioforge-2/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/motioforge/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "Dai vita a ciò che costruisci.",
+  "words": 1104,
+  "imgs": 6,
+  "og_image": "https://montedelgallo.com/wp-content/uploads/2026/09/motioforge-timeline-editor.jpg",
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular page-template page-template-page-templates page-template-empty page-template-page-templatesempty-php page page-id-2276 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "page"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/contact/",
+  "status": 200,
+  "final": null,
+  "title": "Contact Us - montedelgallo.com",
+  "desc": "Don't wait for your future Get in touch First name Last name Email Company Phone Optional How can we help you? Max 500 characters Expected budget Less than $25K $25K – $50K $50K – $100K $100K+ Send message",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/contact/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/contatti/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/contact/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [
+   "<form action=\"/wp-admin/admin-post.php\" method=\"POST\" class=\"mt-4\">"
+  ],
+  "iframes": [],
+  "h1": "Get in touch",
+  "words": 104,
+  "imgs": 3,
+  "og_image": null,
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular page-template page-template-page-templates page-template-empty page-template-page-templatesempty-php page page-id-1554 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer is-using-livecanvas",
+  "sitemap_kinds": [
+   "page"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/startup-studio/",
+  "status": 200,
+  "final": null,
+  "title": "Startup Studio - montedelgallo.com",
+  "desc": "Startup Studio · Roma We grow ideas into working ventures. MonteDelGallo Startup Studio partners with founders who have a real market insight and need product strategy, senior engineering and a launch-ready technical team. Pitch your idea How it works Web platforms Marketing Data systems AI automation Mobile apps E-commerce SEO/GEO…",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/startup-studio/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/studio-startup/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/startup-studio/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "We grow ideas into working ventures.",
+  "words": 462,
+  "imgs": 2,
+  "og_image": null,
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular page-template page-template-page-templates page-template-empty page-template-page-templatesempty-php page page-id-1891 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer is-using-livecanvas",
+  "sitemap_kinds": [
+   "page"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/about/",
+  "status": 200,
+  "final": null,
+  "title": "About - montedelgallo.com",
+  "desc": "About MonteDelGallo A software boutique, not the usual software house. We are a Rome-based startup studio and software development boutique. We build high-performance websites, bespoke software, mobile apps and AI integrations for companies that need practical growth, not unnecessary complexity. Book a 30-minute call See projects FounderFrancescoAdministration & Finance Co-FounderGiovanniSoftware…",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/about/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/chi-siamo/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/about/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "A software boutique, not the usual software house.",
+  "words": 566,
+  "imgs": 28,
+  "og_image": null,
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular page-template page-template-page-templates page-template-empty page-template-page-templatesempty-php page page-id-1878 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer is-using-livecanvas",
+  "sitemap_kinds": [
+   "page"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/our-process/",
+  "status": 200,
+  "final": null,
+  "title": "Our Process - montedelgallo.com",
+  "desc": "Our Process · Lean Delivery · Measurable Work How we turn ideas into reality. Every great product follows a path. Ours has been refined across 50+ projects: four phases designed to minimize risk and maximize value. Explore the phases Book a discovery call delivery_path.mdg 4 phases 50+projects refined I. The…",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/our-process/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/metodo/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/our-process/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "How we turn ideas into reality.",
+  "words": 450,
+  "imgs": 2,
+  "og_image": null,
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular page-template page-template-page-templates page-template-empty page-template-page-templatesempty-php page page-id-1893 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer is-using-livecanvas",
+  "sitemap_kinds": [
+   "page"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/it/storia/",
+  "status": 200,
+  "final": null,
+  "title": "La nostra storia - montedelgallo.com",
+  "desc": "La nostra storia · Roma · Software Boutique Prima la prospettiva. Poi software utile. MonteDelGallo nasce a Roma per aiutare le aziende a trasformare complessità operative in sistemi digitali chiari, proprietari e misurabili. Leggi la storia Leggi il manifesto monte_del_gallo.map Punto di vista 2019nati a Roma I. Origine Uno studio…",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/it/storia/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/storia/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/our-story/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "Prima la prospettiva. Poi software utile.",
+  "words": 574,
+  "imgs": 2,
+  "og_image": null,
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular page-template page-template-page-templates page-template-empty page-template-page-templatesempty-php page page-id-2106 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer is-using-livecanvas",
+  "sitemap_kinds": [
+   "page"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/our-story/",
+  "status": 200,
+  "final": null,
+  "title": "Our Story - montedelgallo.com",
+  "desc": "Our Story · Roma · Software Boutique Perspective first. Then useful software. MonteDelGallo was born in Rome to help companies turn operational complexity into clear, owned and measurable digital systems. Read the story Read the manifesto monte_del_gallo.map Viewpoint 2019started in Rome I. Origin A studio built against digital noise. MonteDelGallo…",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/our-story/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/storia/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/our-story/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "Perspective first. Then useful software.",
+  "words": 555,
+  "imgs": 2,
+  "og_image": null,
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular page-template page-template-page-templates page-template-empty page-template-page-templatesempty-php page page-id-1988 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer is-using-livecanvas",
+  "sitemap_kinds": [
+   "page"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/it/manifesto-monte-del-gallo/",
+  "status": 200,
+  "final": null,
+  "title": "Manifesto | MonteDelGallo",
+  "desc": "Un modo chiaro di costruire software: interfacce semplici, basi solide e risultati misurabili.",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/it/manifesto-monte-del-gallo/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/manifesto-monte-del-gallo/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/manifesto/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "Meno rumore. Più leva.",
+  "words": 164,
+  "imgs": 3,
+  "og_image": null,
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular page-template page-template-page-templates page-template-empty page-template-page-templatesempty-php page page-id-2108 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer is-using-livecanvas",
+  "sitemap_kinds": [
+   "page"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/manifesto/",
+  "status": 200,
+  "final": null,
+  "title": "Manifesto | MonteDelGallo",
+  "desc": "A clear way to build software: simple interfaces, solid foundations and measurable business outcomes.",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/manifesto/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/manifesto-monte-del-gallo/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/manifesto/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "Less noise. More leverage.",
+  "words": 615,
+  "imgs": 3,
+  "og_image": null,
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular page-template page-template-page-templates page-template-empty page-template-page-templatesempty-php page page-id-521 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer is-using-livecanvas",
+  "sitemap_kinds": [
+   "page"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/blog/",
+  "status": 200,
+  "final": null,
+  "title": "Blog - montedelgallo.com",
+  "desc": null,
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/blog/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/articoli/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/blog/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "Insights & ideas from the work.",
+  "words": 374,
+  "imgs": 8,
+  "og_image": null,
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular page-template page-template-page-templates page-template-empty page-template-page-templatesempty-php page page-id-561 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "page"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/it/articoli/",
+  "status": 200,
+  "final": null,
+  "title": "Blog - montedelgallo.com",
+  "desc": null,
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/it/articoli/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/articoli/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/blog/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "Insight e idee dal nostro lavoro.",
+  "words": 379,
+  "imgs": 8,
+  "og_image": null,
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular page-template page-template-page-templates page-template-empty page-template-page-templatesempty-php page page-id-2105 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "page"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/case-study-ecommerce-platform/",
+  "status": 200,
+  "final": null,
+  "title": "E-commerce Platform — Italian Fashion Brand - montedelgallo.com",
+  "desc": "A scalable e-commerce rebuild for an Italian fashion brand, increasing online sales by 150% while improving mobile conversion, speed and operational reliability.",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/case-study-ecommerce-platform/",
+  "hreflang": [],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "E-commerce Platform — Italian Fashion Brand",
+  "words": 464,
+  "imgs": 2,
+  "og_image": null,
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular case_study-template-default single single-case_study postid-2204 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "case_study",
+   "page"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/mobile-development/",
+  "status": 200,
+  "final": null,
+  "title": "Mobile Development - montedelgallo.com",
+  "desc": "Mobile expertise Mobile AppDevelopment Native and cross-platform apps that users love — designed for performance, built for the real world. What we deliver From idea to App Store We turn your vision into polished, production-ready mobile applications. Whether you need a native iOS experience, an Android-first solution, or a cross-platform…",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/mobile-development/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/sviluppo-mobile/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/mobile-development/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "Mobile AppDevelopment",
+  "words": 440,
+  "imgs": 3,
+  "og_image": null,
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular page-template page-template-page-templates page-template-empty page-template-page-templatesempty-php page page-id-477 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer is-using-livecanvas",
+  "sitemap_kinds": [
+   "page"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/projects/frame-desktop-ide-for-ai-coding/",
+  "status": 200,
+  "final": null,
+  "title": "Frame — Desktop IDE for AI Coding - montedelgallo.com",
+  "desc": "A lightweight Electron-based IDE designed for Claude Code workflows with multi-terminal, file explorer, and prompt history.",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/projects/frame-desktop-ide-for-ai-coding/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/progetti/frame-ide-desktop-coding-ai/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/projects/frame-desktop-ide-for-ai-coding/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "Frame — Desktop IDE for AI Coding",
+  "words": 274,
+  "imgs": 3,
+  "og_image": "https://montedelgallo.com/wp-content/uploads/2026/06/frame-desktop-ide-for-ai-coding-featured.jpg",
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular project-template-default single single-project postid-1972 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "page",
+   "project"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/projects/soshiki-multi-tenant-crm-platform/",
+  "status": 200,
+  "final": null,
+  "title": "Soshiki — Multi-Tenant CRM Platform - montedelgallo.com",
+  "desc": "A sophisticated multi-tenant CRM for managing customers, sales pipeline, projects, payments, and expenses with LLM-powered email processing.",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/projects/soshiki-multi-tenant-crm-platform/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/progetti/soshiki-piattaforma-crm-multi-tenant/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/projects/soshiki-multi-tenant-crm-platform/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "Soshiki — Multi-Tenant CRM Platform",
+  "words": 300,
+  "imgs": 3,
+  "og_image": "https://montedelgallo.com/wp-content/uploads/2026/06/soshiki-multi-tenant-crm-platform-featured.jpg",
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular project-template-default single single-project postid-1958 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "page",
+   "project"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/projects/bistroflow-real-time-restaurant-pos/",
+  "status": 200,
+  "final": null,
+  "title": "BistroFlow — Real-Time Restaurant POS - montedelgallo.com",
+  "desc": "A real-time restaurant operating system with table-side ordering, kitchen display, and live status synchronization across all devices.",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/projects/bistroflow-real-time-restaurant-pos/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/progetti/bistroflow-pos-ristorante-tempo-reale/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/projects/bistroflow-real-time-restaurant-pos/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "BistroFlow — Real-Time Restaurant POS",
+  "words": 304,
+  "imgs": 3,
+  "og_image": "https://montedelgallo.com/wp-content/uploads/2026/06/bistroflow-real-time-restaurant-pos-featured.jpg",
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular project-template-default single single-project postid-1959 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "page",
+   "project"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/projects/denunciala-secure-whistleblowing-platform/",
+  "status": 200,
+  "final": null,
+  "title": "DenunciaLa — Secure Whistleblowing Platform - montedelgallo.com",
+  "desc": "A multi-tenant whistleblowing system enabling anonymous and secure submission of reports with encrypted messaging.",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/projects/denunciala-secure-whistleblowing-platform/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/progetti/denunciala-piattaforma-whistleblowing-sicura/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/projects/denunciala-secure-whistleblowing-platform/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "DenunciaLa — Secure Whistleblowing Platform",
+  "words": 242,
+  "imgs": 3,
+  "og_image": "https://montedelgallo.com/wp-content/uploads/2026/06/denunciala-secure-whistleblowing-platform-featured.jpg",
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular project-template-default single single-project postid-1967 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "page",
+   "project"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/projects/fatturala-italian-electronic-invoicing-saas/",
+  "status": 200,
+  "final": null,
+  "title": "FatturaLa — Italian Electronic Invoicing SaaS - montedelgallo.com",
+  "desc": "A comprehensive FatturaPA-compliant invoicing platform for Italian SMEs and freelancers with multi-team collaboration.",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/projects/fatturala-italian-electronic-invoicing-saas/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/progetti/fatturala-saas-fatturazione-elettronica-italiana/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/projects/fatturala-italian-electronic-invoicing-saas/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "FatturaLa — Italian Electronic Invoicing SaaS",
+  "words": 254,
+  "imgs": 3,
+  "og_image": "https://montedelgallo.com/wp-content/uploads/2026/06/fatturala-italian-electronic-invoicing-saas-featured.jpg",
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular project-template-default single single-project postid-1966 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "page",
+   "project"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/projects/gestione-immobili-property-portfolio-manager/",
+  "status": 200,
+  "final": null,
+  "title": "Gestione Immobili — Property Portfolio Manager - montedelgallo.com",
+  "desc": "A comprehensive real estate management platform with financial dashboards, interactive mapping, and tenant tracking.",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/projects/gestione-immobili-property-portfolio-manager/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/progetti/gestione-immobili-portfolio-immobiliare/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/projects/gestione-immobili-property-portfolio-manager/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "Gestione Immobili — Property Portfolio Manager",
+  "words": 257,
+  "imgs": 3,
+  "og_image": "https://montedelgallo.com/wp-content/uploads/2026/06/gestione-immobili-property-portfolio-manager-featured.jpg",
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular project-template-default single single-project postid-1962 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "page",
+   "project"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/projects/chat-rag-ai-document-assistant/",
+  "status": 200,
+  "final": null,
+  "title": "Chat RAG — AI Document Assistant - montedelgallo.com",
+  "desc": "An RAG-powered chatbot that lets users upload documents and have intelligent conversations with AI, complete with source citations.",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/projects/chat-rag-ai-document-assistant/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/progetti/chat-rag-assistente-ai-documenti/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/projects/chat-rag-ai-document-assistant/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "Chat RAG — AI Document Assistant",
+  "words": 258,
+  "imgs": 3,
+  "og_image": "https://montedelgallo.com/wp-content/uploads/2026/06/chat-rag-ai-document-assistant-featured.jpg",
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular project-template-default single single-project postid-1969 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "page",
+   "project"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/portfolio/",
+  "status": 200,
+  "final": "https://montedelgallo.com/case-studies/",
+  "title": "Case Studies - MonteDelGallo",
+  "desc": "Real digital systems, custom software and automation work delivered for business operations and measurable growth.",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/case-studies/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/casi-di-studio/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/case-studies/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "Client results",
+  "words": 169,
+  "imgs": 5,
+  "og_image": null,
+  "og_type": "object",
+  "comments": false,
+  "body_class": "archive post-type-archive post-type-archive-case_study wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "page"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/projects/diet-assistant-ai-powered-health-tracker/",
+  "status": 200,
+  "final": null,
+  "title": "Diet Assistant — AI-Powered Health Tracker - montedelgallo.com",
+  "desc": "A personal health assistant using vision AI for meal analysis, macro tracking, and AI-generated workout plans.",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/projects/diet-assistant-ai-powered-health-tracker/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/progetti/diet-assistant-tracker-salute-ai/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/projects/diet-assistant-ai-powered-health-tracker/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "Diet Assistant — AI-Powered Health Tracker",
+  "words": 262,
+  "imgs": 3,
+  "og_image": "https://montedelgallo.com/wp-content/uploads/2026/06/diet-assistant-ai-powered-health-tracker-featured.jpg",
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular project-template-default single single-project postid-1973 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "page",
+   "project"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/projects/activecanvas-rails-cms-engine/",
+  "status": 200,
+  "final": null,
+  "title": "ActiveCanvas — Rails CMS Engine - montedelgallo.com",
+  "desc": "A mountable Rails engine that turns any Rails app into a full CMS with drag-and-drop editor, AI content generation, and page versioning.",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/projects/activecanvas-rails-cms-engine/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/progetti/activecanvas-cms-engine-rails/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/projects/activecanvas-rails-cms-engine/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "ActiveCanvas — Rails CMS Engine",
+  "words": 287,
+  "imgs": 3,
+  "og_image": "https://montedelgallo.com/wp-content/uploads/2026/06/activecanvas-rails-cms-engine-featured.jpg",
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular project-template-default single single-project postid-1971 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "page",
+   "project"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/projects/photoalbum-retro-photo-sharing-saas/",
+  "status": 200,
+  "final": null,
+  "title": "PhotoAlbum — Retro Photo Sharing SaaS - montedelgallo.com",
+  "desc": "A nostalgic 90s-style photo album app with subscription tiers, video processing, and album sharing.",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/projects/photoalbum-retro-photo-sharing-saas/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/progetti/photoalbum-saas-retro-condivisione-foto/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/projects/photoalbum-retro-photo-sharing-saas/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "PhotoAlbum — Retro Photo Sharing SaaS",
+  "words": 236,
+  "imgs": 3,
+  "og_image": "https://montedelgallo.com/wp-content/uploads/2026/06/photoalbum-retro-photo-sharing-saas-featured.jpg",
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular project-template-default single single-project postid-1975 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "page",
+   "project"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/it/metodo/",
+  "status": 200,
+  "final": null,
+  "title": "Metodo - montedelgallo.com",
+  "desc": "Metodo · Sprint · Misura Trasformiamo idee in sistemi che funzionano. Un processo leggero, visuale e misurabile: capiamo il contesto, validiamo presto, costruiamo in sprint e miglioriamo dopo il lancio. Il ciclo Ogni fase produce una decisione, non solo un documento. Il metodo è pensato per ridurre rischio e rumore.…",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/it/metodo/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/metodo/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/our-process/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "Trasformiamo idee in sistemi che funzionano.",
+  "words": 330,
+  "imgs": 5,
+  "og_image": null,
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular page-template page-template-page-templates page-template-empty page-template-page-templatesempty-php page page-id-2107 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer is-using-livecanvas",
+  "sitemap_kinds": [
+   "page"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/it/servizi/",
+  "status": 200,
+  "final": null,
+  "title": "Servizi - montedelgallo.com",
+  "desc": "ServiziSoftware, visibilita e automazioni per crescere.Progettiamo e sviluppiamo soluzioni digitali ad alte prestazioni: siti web, software su misura, app, SEO/GEO e integrazioni AI.Software su misuraApplicazioni web, gestionali, workflow interni e piattaforme operative costruite attorno ai processi reali.Siti web performantiEsperienze veloci, mobile-first e pensate per convertire traffico qualificato in contatti e…",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/it/servizi/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/servizi/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/services/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "Software, visibilita e automazioni per crescere.",
+  "words": 242,
+  "imgs": 2,
+  "og_image": null,
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular page-template page-template-page-templates page-template-empty page-template-page-templatesempty-php page page-id-2103 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "page"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/services/",
+  "status": 200,
+  "final": null,
+  "title": "Services - montedelgallo.com",
+  "desc": "What we do Services End-to-end software solutions From concept to deployment and beyond — we handle every stage of your project. Software Development Our expert team delivers high-performance and scalable software solutions customized to your business needs. Mobile Development We design and build intuitive Android, iOS, and hybrid applications that…",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/services/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/servizi/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/services/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "Services",
+  "words": 277,
+  "imgs": 2,
+  "og_image": null,
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular page-template page-template-page-templates page-template-empty page-template-page-templatesempty-php page page-id-2019 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "page"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/it/studio-startup/",
+  "status": 200,
+  "final": null,
+  "title": "Startup Studio - montedelgallo.com",
+  "desc": "Startup StudioNon costruiamo solo per startup. Costruiamo startup.Validiamo idee, disegniamo prodotti e sviluppiamo piattaforme con un approccio da founder e da team tecnico senior.StudioDall-ipotesi al prodotto.Affianchiamo founder, aziende e team interni nella costruzione di nuovi prodotti digitali. Portiamo metodo, stack tecnico, design e velocita di esecuzione.Il nostro obiettivo e ridurre…",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/it/studio-startup/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/studio-startup/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/startup-studio/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "Non costruiamo solo per startup. Costruiamo startup.",
+  "words": 150,
+  "imgs": 2,
+  "og_image": null,
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular page-template page-template-page-templates page-template-empty page-template-page-templatesempty-php page page-id-2109 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer is-using-livecanvas",
+  "sitemap_kinds": [
+   "page"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/it/laboratorio-prodotto/",
+  "status": 200,
+  "final": null,
+  "title": "Product & Lab - montedelgallo.com",
+  "desc": "Product & LabEsperimenti che diventano prodotti.Nel laboratorio MonteDelGallo validiamo idee, interfacce e automazioni prima di trasformarle in sistemi completi.LabPrototipare per imparare piu in fretta.Il Product & Lab e il punto in cui testiamo concetti, strumenti interni e prodotti proprietari. Ogni esperimento utile diventa un asset per i clienti e per…",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/it/laboratorio-prodotto/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/laboratorio-prodotto/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/product-lab/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "Esperimenti che diventano prodotti.",
+  "words": 131,
+  "imgs": 2,
+  "og_image": null,
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular page-template page-template-page-templates page-template-empty page-template-page-templatesempty-php page page-id-2111 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "page"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/it/contatti/",
+  "status": 200,
+  "final": null,
+  "title": "Contatti - montedelgallo.com",
+  "desc": "ContattiHai un progetto da costruire?Raccontaci il contesto, il problema e il risultato che vuoi ottenere. Ti aiuteremo a capire il primo passo tecnico e strategico. Contatti Raccontaci cosa vuoi costruire. Scrivici per siti web, software su misura, automazioni, app e integrazioni AI. Ti risponderemo con un primo orientamento concreto. Roma,…",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/it/contatti/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/contatti/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/contact/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "Hai un progetto da costruire?",
+  "words": 158,
+  "imgs": 2,
+  "og_image": null,
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular page-template page-template-page-templates page-template-empty page-template-page-templatesempty-php page page-id-2104 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer is-using-livecanvas",
+  "sitemap_kinds": [
+   "page"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/it/analisi-dati-ai/",
+  "status": 200,
+  "final": null,
+  "title": "Analisi Dati e AI - montedelgallo.com",
+  "desc": "Dati e AITrasformare dati in decisioni.Dashboard, pipeline, modelli AI e automazioni per rendere piu leggibile e utile il patrimonio informativo aziendale.AI operativaDati chiari, azioni concrete.Aiutiamo le aziende a raccogliere, pulire, analizzare e usare dati in processi reali. L-obiettivo non e aggiungere tecnologia, ma ridurre attrito e migliorare decisioni.",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/it/analisi-dati-ai/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/analisi-dati-ai/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/data-analysis/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "Trasformare dati in decisioni.",
+  "words": 127,
+  "imgs": 2,
+  "og_image": null,
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular page-template page-template-page-templates page-template-empty page-template-page-templatesempty-php page page-id-2114 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "page"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/it/tecnologie/",
+  "status": 200,
+  "final": null,
+  "title": "Tecnologie - montedelgallo.com",
+  "desc": "TecnologieStack moderni per prodotti durevoli.Scegliamo tecnologie solide, veloci da iterare e adatte al contesto: Rails, WordPress evoluto, AI, database e frontend moderni.StackTecnologia come scelta di prodotto.Non inseguiamo mode tecniche: scegliamo strumenti che aiutano a costruire, mantenere e scalare. Ruby on Rails, WordPress/LiveCanvas, PostgreSQL, Hotwire, AI e integrazioni cloud sono parte…",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/it/tecnologie/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/tecnologie/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/technologies/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "Stack moderni per prodotti durevoli.",
+  "words": 133,
+  "imgs": 2,
+  "og_image": null,
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular page-template page-template-page-templates page-template-empty page-template-page-templatesempty-php page page-id-2110 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "page"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/it/lavora-con-noi/",
+  "status": 200,
+  "final": null,
+  "title": "Lavora con noi - montedelgallo.com",
+  "desc": "CareersCostruiamo software con persone curiose.Cerchiamo collaboratori capaci di unire qualita tecnica, pensiero di prodotto e attenzione ai dettagli.OpportunitaUn team piccolo, senior e pragmatico.Se ti interessano software, design, automazioni, AI e prodotti digitali, scrivici. Valutiamo collaborazioni su progetti specifici e percorsi di crescita condivisi.Contattaci",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/it/lavora-con-noi/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/lavora-con-noi/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/careers/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "Costruiamo software con persone curiose.",
+  "words": 122,
+  "imgs": 2,
+  "og_image": null,
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular page-template page-template-page-templates page-template-empty page-template-page-templatesempty-php page page-id-2112 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "page"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/it/sviluppo-mobile/",
+  "status": 200,
+  "final": null,
+  "title": "Sviluppo Mobile - montedelgallo.com",
+  "desc": "MobileApp integrate con il tuo business.Progettiamo app mobile che non vivono isolate, ma connesse a backend, dati e processi operativi.MobileEsperienze semplici, sistemi solidi.Realizziamo app iOS, Android e ibride con attenzione a performance, UX, sicurezza e integrazione con sistemi esistenti.",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/it/sviluppo-mobile/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/sviluppo-mobile/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/mobile-development/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "App integrate con il tuo business.",
+  "words": 117,
+  "imgs": 2,
+  "og_image": null,
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular page-template page-template-page-templates page-template-empty page-template-page-templatesempty-php page page-id-2113 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer is-using-livecanvas",
+  "sitemap_kinds": [
+   "page"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/it/chi-siamo/",
+  "status": 200,
+  "final": null,
+  "title": "Chi siamo - montedelgallo.com",
+  "desc": "Chi siamo Una boutique del software, non la solita software house. Siamo uno startup studio e una boutique di sviluppo software con sede a Roma. Progettiamo siti web ad alte prestazioni, software su misura, app mobile e integrazioni AI per aziende che vogliono crescere senza complessita inutile. Prenota una call…",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/it/chi-siamo/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/chi-siamo/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/about/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "Una boutique del software, non la solita software house.",
+  "words": 519,
+  "imgs": 12,
+  "og_image": null,
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular page-template page-template-page-templates page-template-empty page-template-page-templatesempty-php page page-id-2084 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "page"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/projects/",
+  "status": 200,
+  "final": null,
+  "title": "Projects - MonteDelGallo",
+  "desc": "Selected software, internal tools and custom platforms built by MonteDelGallo around real operational workflows.",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/projects/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/progetti/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/projects/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "Projects that create operational leverage.",
+  "words": 541,
+  "imgs": 33,
+  "og_image": null,
+  "og_type": "object",
+  "comments": false,
+  "body_class": "archive post-type-archive post-type-archive-project wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "page",
+   "project"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/technologies/",
+  "status": 200,
+  "final": null,
+  "title": "Technologies - montedelgallo.com",
+  "desc": "const future = await buildWith({ passion: true, precision: true, coffee: Infinity }); deploy(future, { scale: 'global', uptime: '99.99%' }); Our Arsenal The tools behindthe craft We're polyglot engineers. We don't marry frameworks — we choose the right tool for every job. Here's what's in our toolkit. 01 Frontend &User Interfaces…",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/technologies/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/tecnologie/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/technologies/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "The tools behindthe craft",
+  "words": 341,
+  "imgs": 2,
+  "og_image": null,
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular page-template page-template-page-templates page-template-empty page-template-page-templatesempty-php page page-id-1892 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer is-using-livecanvas",
+  "sitemap_kinds": [
+   "page"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/product-lab/",
+  "status": 200,
+  "final": null,
+  "title": "Product & Lab - montedelgallo.com",
+  "desc": "</> Products & Lab We build, we ship, we iterate Beyond client work, we invest in R&D and build our own products. Here's what we've been cooking in the lab. Featured Product ConsultaLa The LawTech platform erasing labor law bureaucracy. ConsultaLa simplifies access to legal services with AI-powered document analysis,…",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/product-lab/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/laboratorio-prodotto/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/product-lab/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "We build, we ship,\r\nwe iterate",
+  "words": 373,
+  "imgs": 5,
+  "og_image": null,
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular page-template page-template-page-templates page-template-empty page-template-page-templatesempty-php page page-id-1986 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "page"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/careers/",
+  "status": 200,
+  "final": null,
+  "title": "Careers - montedelgallo.com",
+  "desc": "Join our team Careers at MonteDelGallo We're always looking for talented people who share our passion for building brilliant software. Our Culture Work with purpose,grow with us At MonteDelGallo, we believe great work happens when talented people have the freedom to do their best. We're a small, tight-knit team where…",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/careers/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/lavora-con-noi/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/careers/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "Careers at MonteDelGallo",
+  "words": 283,
+  "imgs": 3,
+  "og_image": null,
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular page-template page-template-page-templates page-template-empty page-template-page-templatesempty-php page page-id-1880 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer is-using-livecanvas",
+  "sitemap_kinds": [
+   "page"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/data-analysis/",
+  "status": 200,
+  "final": null,
+  "title": "Data Analysis & AI - montedelgallo.com",
+  "desc": "Data intelligence Data Analysis &AI Solutions Turn raw data into actionable insights. We help you collect, analyze, and leverage your data with cutting-edge AI. What we deliver Data-driven decisions, AI-powered growth Every business generates data. Few know how to use it. We bridge that gap — building pipelines, dashboards, and…",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/data-analysis/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/analisi-dati-ai/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/data-analysis/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "Data Analysis &AI Solutions",
+  "words": 416,
+  "imgs": 3,
+  "og_image": null,
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular page-template page-template-page-templates page-template-empty page-template-page-templatesempty-php page page-id-519 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer is-using-livecanvas",
+  "sitemap_kinds": [
+   "page"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/it/progetti/",
+  "status": 200,
+  "final": null,
+  "title": "Progetti - MonteDelGallo",
+  "desc": "Software, strumenti interni e piattaforme su misura realizzati da MonteDelGallo per trasformare processi complessi in lavoro misurabile.",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/it/progetti/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/progetti/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/projects/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "Progetti che generano leva operativa.",
+  "words": 529,
+  "imgs": 29,
+  "og_image": null,
+  "og_type": "object",
+  "comments": false,
+  "body_class": "archive post-type-archive post-type-archive-project wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "project"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/projects/mdg-robotic-lab/",
+  "status": 200,
+  "final": null,
+  "title": "MdG Robotic Lab - montedelgallo.com",
+  "desc": "A desktop studio for authoring and playing back servo-driven robotic motion across animatronics, audio cues, digital outputs and AI-assisted workflows.",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/projects/mdg-robotic-lab/",
+  "hreflang": [],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "MdG Robotic Lab",
+  "words": 752,
+  "imgs": 6,
+  "og_image": "https://montedelgallo.com/wp-content/uploads/2026/06/mdg-robotic-lab-featured-1.jpg",
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular project-template-default single single-project postid-2181 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "project"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/it/progetti/alloggiati-pro-piattaforma-compliance-ospitalita/",
+  "status": 200,
+  "final": null,
+  "title": "Alloggiati.pro – Piattaforma compliance per ospitalità - montedelgallo.com",
+  "desc": "Una piattaforma SaaS per strutture ricettive e operatori immobiliari che automatizza raccolta documenti, invio Alloggiati Web, report ISTAT e check-in multi-proprietà.",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/it/progetti/alloggiati-pro-piattaforma-compliance-ospitalita/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/progetti/alloggiati-pro-piattaforma-compliance-ospitalita/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/projects/alloggiati-pro-guest-compliance-platform/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "Alloggiati.pro – Piattaforma compliance per ospitalità",
+  "words": 407,
+  "imgs": 3,
+  "og_image": "https://montedelgallo.com/wp-content/uploads/2026/06/alloggiati-pro-featured-v3.png",
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular project-template-default single single-project postid-2252 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "project"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/projects/alloggiati-pro-guest-compliance-platform/",
+  "status": 200,
+  "final": null,
+  "title": "Alloggiati.pro — Guest Compliance Platform - montedelgallo.com",
+  "desc": "A compliance SaaS for Italian hospitality operators that automates guest data collection, Alloggiati Web submission, ISTAT reporting and multi-property check-in workflows.",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/projects/alloggiati-pro-guest-compliance-platform/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/progetti/alloggiati-pro-piattaforma-compliance-ospitalita/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/projects/alloggiati-pro-guest-compliance-platform/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "Alloggiati.pro — Guest Compliance Platform",
+  "words": 393,
+  "imgs": 3,
+  "og_image": "https://montedelgallo.com/wp-content/uploads/2026/06/alloggiati-pro-featured-v3.png",
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular project-template-default single single-project postid-2251 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "project"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/it/progetti/soshiki-piattaforma-crm-multi-tenant/",
+  "status": 200,
+  "final": null,
+  "title": "Soshiki - Piattaforma CRM Multi-Tenant - montedelgallo.com",
+  "desc": "Un CRM multi-tenant per clienti, pipeline, progetti, pagamenti e spese con parsing email supportato da LLM.",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/it/progetti/soshiki-piattaforma-crm-multi-tenant/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/progetti/soshiki-piattaforma-crm-multi-tenant/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/projects/soshiki-multi-tenant-crm-platform/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "Soshiki – Piattaforma CRM Multi-Tenant",
+  "words": 152,
+  "imgs": 3,
+  "og_image": "https://montedelgallo.com/wp-content/uploads/2026/06/soshiki-multi-tenant-crm-platform-featured.jpg",
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular project-template-default single single-project postid-2092 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "project"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/it/progetti/bistroflow-pos-ristorante-tempo-reale/",
+  "status": 200,
+  "final": null,
+  "title": "BistroFlow - POS Ristorante in Tempo Reale - montedelgallo.com",
+  "desc": "Un sistema operativo per ristoranti con ordini al tavolo, display cucina e sincronizzazione live tra dispositivi.",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/it/progetti/bistroflow-pos-ristorante-tempo-reale/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/progetti/bistroflow-pos-ristorante-tempo-reale/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/projects/bistroflow-real-time-restaurant-pos/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "BistroFlow – POS Ristorante in Tempo Reale",
+  "words": 161,
+  "imgs": 3,
+  "og_image": "https://montedelgallo.com/wp-content/uploads/2026/06/bistroflow-real-time-restaurant-pos-featured.jpg",
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular project-template-default single single-project postid-2093 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "project"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/it/progetti/denunciala-piattaforma-whistleblowing-sicura/",
+  "status": 200,
+  "final": null,
+  "title": "DenunciaLa - Piattaforma Sicura per Whistleblowing - montedelgallo.com",
+  "desc": "Una piattaforma multi-tenant per segnalazioni anonime e comunicazioni protette tra enti, aziende e segnalanti.",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/it/progetti/denunciala-piattaforma-whistleblowing-sicura/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/progetti/denunciala-piattaforma-whistleblowing-sicura/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/projects/denunciala-secure-whistleblowing-platform/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "DenunciaLa – Piattaforma Sicura per Whistleblowing",
+  "words": 145,
+  "imgs": 3,
+  "og_image": "https://montedelgallo.com/wp-content/uploads/2026/06/denunciala-secure-whistleblowing-platform-featured.jpg",
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular project-template-default single single-project postid-2096 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "project"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/it/progetti/fatturala-saas-fatturazione-elettronica-italiana/",
+  "status": 200,
+  "final": null,
+  "title": "FatturaLa - SaaS per Fatturazione Elettronica Italiana - montedelgallo.com",
+  "desc": "Una piattaforma FatturaPA per PMI e freelance italiani con collaborazione multi-team e flussi operativi completi.",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/it/progetti/fatturala-saas-fatturazione-elettronica-italiana/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/progetti/fatturala-saas-fatturazione-elettronica-italiana/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/projects/fatturala-italian-electronic-invoicing-saas/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "FatturaLa – SaaS per Fatturazione Elettronica Italiana",
+  "words": 151,
+  "imgs": 3,
+  "og_image": "https://montedelgallo.com/wp-content/uploads/2026/06/fatturala-italian-electronic-invoicing-saas-featured.jpg",
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular project-template-default single single-project postid-2095 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "project"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/it/progetti/gestione-immobili-portfolio-immobiliare/",
+  "status": 200,
+  "final": null,
+  "title": "Gestione Immobili - Gestione Portfolio Immobiliare - montedelgallo.com",
+  "desc": "Una piattaforma per real estate con dashboard finanziarie, mappe interattive e gestione di immobili e tenant.",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/it/progetti/gestione-immobili-portfolio-immobiliare/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/progetti/gestione-immobili-portfolio-immobiliare/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/projects/gestione-immobili-property-portfolio-manager/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "Gestione Immobili – Gestione Portfolio Immobiliare",
+  "words": 154,
+  "imgs": 3,
+  "og_image": "https://montedelgallo.com/wp-content/uploads/2026/06/gestione-immobili-property-portfolio-manager-featured.jpg",
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular project-template-default single single-project postid-2094 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "project"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/it/progetti/frame-ide-desktop-coding-ai/",
+  "status": 200,
+  "final": null,
+  "title": "Frame - IDE Desktop per Coding AI - montedelgallo.com",
+  "desc": "Un IDE desktop leggero per workflow con Claude Code, terminali multipli, file explorer e storico prompt.",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/it/progetti/frame-ide-desktop-coding-ai/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/progetti/frame-ide-desktop-coding-ai/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/projects/frame-desktop-ide-for-ai-coding/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "Frame – IDE Desktop per Coding AI",
+  "words": 160,
+  "imgs": 3,
+  "og_image": "https://montedelgallo.com/wp-content/uploads/2026/06/frame-desktop-ide-for-ai-coding-featured.jpg",
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular project-template-default single single-project postid-2099 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "project"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/it/progetti/activecanvas-cms-engine-rails/",
+  "status": 200,
+  "final": null,
+  "title": "ActiveCanvas - CMS Engine per Rails - montedelgallo.com",
+  "desc": "Un engine Rails montabile che trasforma applicazioni esistenti in CMS completi con editor visuale, contenuti AI e versioning.",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/it/progetti/activecanvas-cms-engine-rails/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/progetti/activecanvas-cms-engine-rails/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/projects/activecanvas-rails-cms-engine/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "ActiveCanvas – CMS Engine per Rails",
+  "words": 161,
+  "imgs": 3,
+  "og_image": "https://montedelgallo.com/wp-content/uploads/2026/06/activecanvas-rails-cms-engine-featured.jpg",
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular project-template-default single single-project postid-2098 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "project"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/it/progetti/chat-rag-assistente-ai-documenti/",
+  "status": 200,
+  "final": null,
+  "title": "Chat RAG - Assistente AI per Documenti - montedelgallo.com",
+  "desc": "Un chatbot RAG che consente di caricare documenti, fare domande e ottenere risposte con citazioni delle fonti.",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/it/progetti/chat-rag-assistente-ai-documenti/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/progetti/chat-rag-assistente-ai-documenti/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/projects/chat-rag-ai-document-assistant/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "Chat RAG – Assistente AI per Documenti",
+  "words": 149,
+  "imgs": 3,
+  "og_image": "https://montedelgallo.com/wp-content/uploads/2026/06/chat-rag-ai-document-assistant-featured.jpg",
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular project-template-default single single-project postid-2097 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "project"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/it/progetti/photoalbum-saas-retro-condivisione-foto/",
+  "status": 200,
+  "final": null,
+  "title": "PhotoAlbum - SaaS Retro per Condivisione Foto - montedelgallo.com",
+  "desc": "Un photo album in stile anni 90 con piani subscription, video processing e condivisione album.",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/it/progetti/photoalbum-saas-retro-condivisione-foto/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/progetti/photoalbum-saas-retro-condivisione-foto/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/projects/photoalbum-retro-photo-sharing-saas/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "PhotoAlbum – SaaS Retro per Condivisione Foto",
+  "words": 149,
+  "imgs": 3,
+  "og_image": "https://montedelgallo.com/wp-content/uploads/2026/06/photoalbum-retro-photo-sharing-saas-featured.jpg",
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular project-template-default single single-project postid-2101 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "project"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/it/progetti/diet-assistant-tracker-salute-ai/",
+  "status": 200,
+  "final": null,
+  "title": "Diet Assistant - Tracker Salute con AI - montedelgallo.com",
+  "desc": "Un assistente personale per analisi pasti, tracking dei macro e piani di allenamento generati con AI.",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/it/progetti/diet-assistant-tracker-salute-ai/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/progetti/diet-assistant-tracker-salute-ai/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/projects/diet-assistant-ai-powered-health-tracker/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "Diet Assistant – Tracker Salute con AI",
+  "words": 156,
+  "imgs": 3,
+  "og_image": "https://montedelgallo.com/wp-content/uploads/2026/06/diet-assistant-ai-powered-health-tracker-featured.jpg",
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular project-template-default single single-project postid-2100 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "project"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/it/casi-di-studio/",
+  "status": 200,
+  "final": null,
+  "title": "Casi di Studio - MonteDelGallo",
+  "desc": "Casi di studio su software, automazioni e sistemi digitali progettati da MonteDelGallo per migliorare operazioni e crescita misurabile.",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/it/casi-di-studio/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/casi-di-studio/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/case-studies/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "Risultati dei clienti",
+  "words": 152,
+  "imgs": 4,
+  "og_image": null,
+  "og_type": "object",
+  "comments": false,
+  "body_class": "archive post-type-archive post-type-archive-case_study wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "case_study"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/case-studies/",
+  "status": 200,
+  "final": null,
+  "title": "Case Studies - MonteDelGallo",
+  "desc": "Real digital systems, custom software and automation work delivered for business operations and measurable growth.",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/case-studies/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/casi-di-studio/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/case-studies/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "Client results",
+  "words": 169,
+  "imgs": 5,
+  "og_image": null,
+  "og_type": "object",
+  "comments": false,
+  "body_class": "archive post-type-archive post-type-archive-case_study wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "case_study"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/it/casi-di-studio/case-study-su-un-software-di-gestione-per-ristoranti/",
+  "status": 200,
+  "final": null,
+  "title": "Case Study su un Software di Gestione per Ristoranti - montedelgallo.com",
+  "desc": "La sfida Il nostro cliente, una nota catena di ristoranti di medie dimensioni con 15 sedi in tutta Italia, stava affrontando diverse sfide operative: Costi del personale elevati a causa della necessità di un ampio numero di camerieri Errori frequenti nella presa degli ordini e nella comunicazione tra sala e…",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/it/casi-di-studio/case-study-su-un-software-di-gestione-per-ristoranti/",
+  "hreflang": [],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "Case Study su un Software di Gestione per Ristoranti",
+  "words": 1420,
+  "imgs": 2,
+  "og_image": null,
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular case_study-template-default single single-case_study postid-2179 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "case_study"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/case-studies/restaurant-management-software-case-study/",
+  "status": 200,
+  "final": null,
+  "title": "Restaurant Management Software Case Study - montedelgallo.com",
+  "desc": "The Challenge Our client, a popular mid-sized restaurant chain with 15 locations across Italy, was facing several operational challenges: High labor costs due to the need for a large waitstaff Frequent errors in order taking and communication between front-of-house and kitchen Long wait times for customers, especially during peak hours…",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/case-studies/restaurant-management-software-case-study/",
+  "hreflang": [],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "Restaurant Management Software Case Study",
+  "words": 844,
+  "imgs": 2,
+  "og_image": null,
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular case_study-template-default single single-case_study postid-2178 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "case_study"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/it/casi-di-studio/caso-studio-property-management-turismo-roma/",
+  "status": 200,
+  "final": null,
+  "title": "Piattaforma di Property Management - Turismo a Roma - montedelgallo.com",
+  "desc": "Una piattaforma completa per property management e prenotazioni nel turismo romano, pensata per aumentare prenotazioni dirette, controllo operativo ed efficienza.",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/it/casi-di-studio/caso-studio-property-management-turismo-roma/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/casi-di-studio/caso-studio-property-management-turismo-roma/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/case-study-property-management-tourism-rome/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "Piattaforma di Property Management – Turismo a Roma",
+  "words": 248,
+  "imgs": 2,
+  "og_image": null,
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular case_study-template-default single single-case_study postid-2089 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "case_study"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/case-study-property-management-tourism-rome/",
+  "status": 200,
+  "final": null,
+  "title": "Property Management Platform - Tourism Rome - montedelgallo.com",
+  "desc": "A complete property management and booking platform for tourism operations in Rome, focused on direct bookings, owner workflows, and operational efficiency.",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/case-study-property-management-tourism-rome/",
+  "hreflang": [
+   [
+    "https://montedelgallo.com/it/casi-di-studio/caso-studio-property-management-turismo-roma/",
+    "it"
+   ],
+   [
+    "https://montedelgallo.com/case-study-property-management-tourism-rome/",
+    "en"
+   ]
+  ],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "Property Management Platform – Tourism Rome",
+  "words": 257,
+  "imgs": 2,
+  "og_image": null,
+  "og_type": "article",
+  "comments": false,
+  "body_class": "wp-singular case_study-template-default single single-case_study postid-2053 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "case_study"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/category/frontend/",
+  "status": 200,
+  "final": null,
+  "title": "Frontend  - montedelgallo.com",
+  "desc": null,
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/category/frontend/",
+  "hreflang": [],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "Frontend",
+  "words": 109,
+  "imgs": 3,
+  "og_image": null,
+  "og_type": "object",
+  "comments": false,
+  "body_class": "archive category category-frontend category-2 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "category"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/category/products/",
+  "status": 200,
+  "final": null,
+  "title": "Products  - montedelgallo.com",
+  "desc": null,
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/category/products/",
+  "hreflang": [],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "Products",
+  "words": 152,
+  "imgs": 3,
+  "og_image": null,
+  "og_type": "object",
+  "comments": false,
+  "body_class": "archive category category-products category-4 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "category"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/category/story/",
+  "status": 200,
+  "final": null,
+  "title": "Story  - montedelgallo.com",
+  "desc": "My description goes here",
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/category/story/",
+  "hreflang": [],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "Story",
+  "words": 149,
+  "imgs": 4,
+  "og_image": null,
+  "og_type": "object",
+  "comments": false,
+  "body_class": "archive category category-story category-5 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "category"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/category/team/",
+  "status": 200,
+  "final": null,
+  "title": "Team  - montedelgallo.com",
+  "desc": null,
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/category/team/",
+  "hreflang": [],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "Team",
+  "words": 167,
+  "imgs": 5,
+  "og_image": null,
+  "og_type": "object",
+  "comments": false,
+  "body_class": "archive category category-team category-6 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "category"
+  ]
+ },
+ {
+  "url": "https://montedelgallo.com/category/web-design/",
+  "status": 200,
+  "final": null,
+  "title": "Web Design  - montedelgallo.com",
+  "desc": null,
+  "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  "canonical": "https://montedelgallo.com/category/web-design/",
+  "hreflang": [],
+  "jsonld_types": [],
+  "forms": [],
+  "iframes": [],
+  "h1": "Web Design",
+  "words": 113,
+  "imgs": 3,
+  "og_image": null,
+  "og_type": "object",
+  "comments": false,
+  "body_class": "archive category category-web-design category-8 wp-embed-responsive wp-theme-picostrap5 wp-child-theme-picostrap5-montedelgallo lc-custom-header lc-custom-footer",
+  "sitemap_kinds": [
+   "category"
+  ]
+ }
+]

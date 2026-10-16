@@ -1,0 +1,16 @@
+# Jekyll build
+_site/
+.jekyll-cache/
+.jekyll-metadata
+.sass-cache/
+
+# Ruby dependencies
+vendor/
+.bundle/
+
+# Workspace scratch — never commit
+.superpowers/
+
+# OS / editor
+.DS_Store
+*.swp
