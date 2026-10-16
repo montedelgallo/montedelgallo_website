@@ -228,9 +228,9 @@ contact: # the Contact page and the Soshiki contact form (_includes/contact-form
     telefono: "Phone"
     messaggio: "Message"
     send: "Send"
-    optional: "Optional"
+    optional: "optional"
     required_note: "Fields marked * are required."
-    privacy_pre: "By sending this message you accept our"
+    privacy_pre: "Read our"
     privacy_link: "privacy policy"
 
 footer:

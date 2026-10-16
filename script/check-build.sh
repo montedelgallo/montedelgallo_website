@@ -2988,7 +2988,7 @@ require "yaml"
 
 site_dir, site_url = ARGV
 errors = []
-min_words = { "about" => 900, "startup-studio" => 250, "product-lab" => 250, "careers" => 140, "motioforge" => 600, "contact" => 90, "privacy" => 130, "cookie" => 110 }
+min_words = { "about" => 900, "startup-studio" => 250, "product-lab" => 250, "careers" => 140, "motioforge" => 600, "contact" => 90, "privacy" => 90, "cookie" => 80 }
 rows = ENV.fetch("COMPANY_PAGES").lines.map { |line| line.strip.split("|") }
 rows.each do |page_id, en_src, en_url, it_src, it_url|
   pair = { "en" => [en_src, en_url, en_url], "it" => [it_src, it_url, "/it#{it_url}"] }
@@ -3358,6 +3358,17 @@ if form
   box = form.ancestors.find { |n| n["class"].to_s.split.include?("cform") }
   link = box && box.css("a[href]").find { |a| a["href"] == privacy }
   errors << "#{lang}: the form needs a privacy notice linking #{privacy} (inside .cform, under the form)" unless link
+  notice = box && box.at_css(".cform__note")
+  wanted = "#{strings.dig("form", "privacy_pre")} #{strings.dig("form", "privacy_link")}."
+  errors << "#{lang}: the privacy notice (.cform__note) is missing" unless notice
+  if notice
+    errors << "#{lang}: the privacy notice should read #{wanted.inspect}, it reads #{notice.text.gsub(/\s+/, " ").strip.inspect}" unless notice.text.gsub(/\s+/, " ").strip == wanted
+    literal = lang == "it" ? "Leggi la nostra informativa sulla privacy." : "Read our privacy policy."
+    errors << "#{lang}: the privacy notice should read #{literal.inspect}" unless notice.text.gsub(/\s+/, " ").strip == literal
+    errors << "#{lang}: the privacy notice must not claim consent (accept/accetti): the policy is still a draft" if notice.text =~ /accept|accett/i
+  end
+  errors << "#{lang}: the privacy notice text in _data/i18n/#{lang}.yml must not claim consent (accept/accetti)" if strings["form"].values_at("privacy_pre", "privacy_link").join(" ") =~ /accept|accett/i
+  errors << "#{lang}: the optional marker should be lowercase, it is #{strings.dig("form", "optional").inspect}" unless strings.dig("form", "optional") == strings.dig("form", "optional").downcase
   errors << "#{lang}: the privacy notice must come after the form" if link && form.xpath("following::a").none? { |a| a == link }
 end
 
@@ -3414,6 +3425,23 @@ errors << "#{lang}/#{id}: the banner must be an element with role=\"note\" (clas
 end
 %w[Soshiki].each { |w| errors << "#{lang}/#{id}: the processor #{w} is not listed" unless text.include?(w) }
 errors << "#{lang}/#{id}: the 'to be completed' marker is missing for the processors still unknown" unless main.css(".tbd").size >= 2
+# Every section but the company facts (the first h2) carries a to-be-completed marker.
+body = main.at_css(".project__body")
+sections = []
+body.children.each do |node|
+  if node.element? && node.name == "h2" then sections << [node.text.strip, []]
+  elsif sections.last then sections.last[1] << node
+  end
+end
+errors << "#{lang}/#{id}: the page needs the company facts and at least 2 more sections, it has #{sections.size} h2 section(s)" if sections.size < 3
+sections.drop(1).each do |heading, nodes|
+  errors << "#{lang}/#{id}: the section #{heading.inspect} has no .tbd marker (everything but the company facts is still to be provided)" unless nodes.any? { |n| n.element? && (n["class"].to_s.split.include?("tbd") || n.at_css(".tbd")) }
+end
+facts = sections.first && sections.first[1].map(&:text).join(" ").gsub(/\s+/, " ")
+errors << "#{lang}/#{id}: the first section must list the company facts (name, VAT, address, email)" unless facts && [company["name"], company["vat"], company["email"], "#{company["locality"]} #{company["postal_code"]}"].all? { |f| facts.include?(f) }
+# No legal characterisation: neutral fact lists only.
+characterisation = text.scan(/data controller|controller of|on behalf of|set their own|titolare del trattamento|responsabil[ei] del trattamento|per conto del sito|propri cookie/i)
+errors << "#{lang}/#{id}: legal characterisation #{characterisation.first.inspect} (the placeholder lists facts, it does not qualify anyone legally)" unless characterisation.empty?
 # Nothing invented: no retention period, no legal basis article, no number of days or years.
 invented = text.scan(/\b(\d+\s*(giorni|days|mesi|months|anni|years)|art\.?\s*\d+|GDPR|Reg(olamento)?\.?\s*\(?UE\)?)/i)
 errors << "#{lang}/#{id}: invented legal detail #{invented.flatten.compact.first.inspect}: the placeholder may only state known facts" unless invented.empty?
@@ -3436,7 +3464,7 @@ for sitemap in "$SITE_DIR/sitemap.xml" "$SITE_DIR/it/sitemap.xml"; do
     fi
   done
 done
-pass "privacy + cookie drafts (EN + IT): noindex, bannered, out of the sitemap, controller facts and processors listed with 'to be completed' markers, no invented duration or legal basis; the contact pages are in the sitemap"
+pass "privacy + cookie drafts (EN + IT): noindex, bannered, out of the sitemap, company facts and services listed neutrally, every other section marked 'to be completed', no invented duration or legal basis; the contact pages are in the sitemap"
 
 # The footer's bottom bar links both legal pages, in the language of the page.
 for spec in "en|$EN_HOME|/privacy/|/cookie/" "it|$IT_HOME|/it/privacy/|/it/cookie/" \

@@ -220,9 +220,9 @@ contact: # la pagina Contatti e il modulo di contatto Soshiki (_includes/contact
     telefono: "Telefono"
     messaggio: "Messaggio"
     send: "Invia"
-    optional: "Facoltativo"
+    optional: "facoltativo"
     required_note: "I campi contrassegnati con * sono obbligatori."
-    privacy_pre: "Inviando il messaggio accetti la nostra"
+    privacy_pre: "Leggi la nostra"
     privacy_link: "informativa sulla privacy"
 
 footer:

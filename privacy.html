@@ -9,7 +9,7 @@ noindex: true
 sitemap: false
 ---
 {%- comment -%}
-  DRAFT placeholder, English side. Its Italian side is it/privacy.html (permalink /privacy/, the same page_id). Only known facts are stated here (controller, VAT, address, email, the processors we know of); everything else is marked to be completed. Do NOT write legal text in this file: it comes from Monte del Gallo before launch. noindex + sitemap: false keep the draft out of search until then. Styles: _sass/foundry/_contact.scss.
+  DRAFT placeholder, English side. Its Italian side is it/privacy.html (permalink /privacy/, the same page_id). Only known facts are stated here (company, VAT, address, email, the services we know of); everything else is marked to be completed. Do NOT write legal text in this file: it comes from Monte del Gallo before launch. noindex + sitemap: false keep the draft out of search until then. Styles: _sass/foundry/_contact.scss.
 {%- endcomment -%}
 {%- assign company = site.data.site_meta.company -%}
 <section class="hero hero--page">
@@ -27,16 +27,15 @@ sitemap: false
   <div class="wrap">
     <p class="draft" role="note"><strong>Draft</strong> — legal text to be provided by Monte del Gallo before launch.</p>
     <div class="project__body">
-      <h2>Data controller</h2>
-      <p>The data controller of this website is {{ company.name }}, VAT {{ company.vat }}, {{ company.locality }} {{ company.postal_code }}. Email: <a href="mailto:{{ company.email }}">{{ company.email }}</a>.</p>
+      <h2>Company</h2>
+      <p>{{ company.name }}, VAT {{ company.vat }}, {{ company.locality }} {{ company.postal_code }}. Email: <a href="mailto:{{ company.email }}">{{ company.email }}</a>.</p>
       <h2>Data collected through this website</h2>
-      <p>The contact form asks for your name, your email address, your phone number (optional) and your message.</p>
-      <h2>Services and processors</h2>
-      <p>These providers handle data on behalf of the website. The full list and the details of each one are still to be completed.</p>
+      <p>The contact form asks for your name, your email address, your phone number (optional) and your message. <span class="tbd">Full description to be provided.</span></p>
+      <h2>Services used on this site</h2>
       <ul>
         <li><strong>Soshiki</strong>: booking page and contact form. <span class="tbd">Details to be completed.</span></li>
-        <li><strong>Hosting provider</strong>: <span class="tbd">to be completed.</span></li>
-        <li><strong>Analytics</strong>: <span class="tbd">to be completed.</span></li>
+        <li><strong>Hosting</strong>: <span class="tbd">to be confirmed.</span></li>
+        <li><strong>Analytics</strong>: <span class="tbd">to be confirmed.</span></li>
       </ul>
       <h2>Purposes, legal basis, retention and your rights</h2>
       <p><span class="tbd">To be provided by Monte del Gallo before launch.</span></p>

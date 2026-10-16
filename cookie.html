@@ -9,7 +9,7 @@ noindex: true
 sitemap: false
 ---
 {%- comment -%}
-  DRAFT placeholder, English side. Its Italian side is it/cookie.html (permalink /cookie/, the same page_id). Only known facts are stated here (controller, VAT, address, email, the processors we know of); everything else is marked to be completed. Do NOT write legal text in this file: it comes from Monte del Gallo before launch. noindex + sitemap: false keep the draft out of search until then. Styles: _sass/foundry/_contact.scss.
+  DRAFT placeholder, English side. Its Italian side is it/cookie.html (permalink /cookie/, the same page_id). Only known facts are stated here (company, VAT, address, email, the services we know of); everything else is marked to be completed. Do NOT write legal text in this file: it comes from Monte del Gallo before launch. noindex + sitemap: false keep the draft out of search until then. Styles: _sass/foundry/_contact.scss.
 {%- endcomment -%}
 {%- assign company = site.data.site_meta.company -%}
 <section class="hero hero--page">
@@ -27,15 +27,14 @@ sitemap: false
   <div class="wrap">
     <p class="draft" role="note"><strong>Draft</strong> — legal text to be provided by Monte del Gallo before launch.</p>
     <div class="project__body">
-      <h2>Data controller</h2>
-      <p>The data controller of this website is {{ company.name }}, VAT {{ company.vat }}, {{ company.locality }} {{ company.postal_code }}. Email: <a href="mailto:{{ company.email }}">{{ company.email }}</a>.</p>
+      <h2>Company</h2>
+      <p>{{ company.name }}, VAT {{ company.vat }}, {{ company.locality }} {{ company.postal_code }}. Email: <a href="mailto:{{ company.email }}">{{ company.email }}</a>.</p>
       <h2>Cookies and similar technologies</h2>
       <p>The list of the cookies and similar technologies this website uses, with their purposes and durations, is <span class="tbd">to be completed.</span></p>
-      <h2>Third-party services</h2>
-      <p>These services may set their own cookies. The full list and the details of each one are still to be completed.</p>
+      <h2>Services used on this site</h2>
       <ul>
         <li><strong>Soshiki</strong>: booking page and contact form. <span class="tbd">Details to be completed.</span></li>
-        <li><strong>Analytics</strong>: <span class="tbd">to be completed.</span></li>
+        <li><strong>Analytics</strong>: <span class="tbd">to be confirmed.</span></li>
       </ul>
       <h2>Managing your choices</h2>
       <p><span class="tbd">To be provided by Monte del Gallo before launch.</span></p>

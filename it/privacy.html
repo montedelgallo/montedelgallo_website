@@ -9,7 +9,7 @@ noindex: true
 sitemap: false
 ---
 {%- comment -%}
-  Segnaposto in BOZZA, lato italiano. Il lato inglese è privacy.html (permalink /privacy/, stesso page_id). Qui ci sono solo fatti noti (titolare, P.IVA, indirizzo, email, i fornitori che conosciamo); il resto è segnato da completare. NON scrivere testo legale in questo file: lo fornisce Monte del Gallo prima del lancio. noindex + sitemap: false tengono la bozza fuori dai motori di ricerca fino ad allora. Stili: _sass/foundry/_contact.scss.
+  Segnaposto in BOZZA, lato italiano. Il lato inglese è privacy.html (permalink /privacy/, stesso page_id). Qui ci sono solo fatti noti (azienda, P.IVA, indirizzo, email, i servizi che conosciamo); il resto è segnato da completare. NON scrivere testo legale in questo file: lo fornisce Monte del Gallo prima del lancio. noindex + sitemap: false tengono la bozza fuori dai motori di ricerca fino ad allora. Stili: _sass/foundry/_contact.scss.
 {%- endcomment -%}
 {%- assign company = site.data.site_meta.company -%}
 <section class="hero hero--page">
@@ -27,16 +27,15 @@ sitemap: false
   <div class="wrap">
     <p class="draft" role="note"><strong>Bozza</strong> — il testo legale sarà fornito da Monte del Gallo prima del lancio.</p>
     <div class="project__body">
-      <h2>Titolare del trattamento</h2>
-      <p>Il titolare del trattamento di questo sito è {{ company.name }}, P.IVA {{ company.vat }}, {{ company.locality }} {{ company.postal_code }}. Email: <a href="mailto:{{ company.email }}">{{ company.email }}</a>.</p>
+      <h2>Azienda</h2>
+      <p>{{ company.name }}, P.IVA {{ company.vat }}, {{ company.locality }} {{ company.postal_code }}. Email: <a href="mailto:{{ company.email }}">{{ company.email }}</a>.</p>
       <h2>Dati raccolti attraverso questo sito</h2>
-      <p>Il modulo di contatto richiede il tuo nome, il tuo indirizzo email, il tuo numero di telefono (facoltativo) e il tuo messaggio.</p>
-      <h2>Servizi e responsabili del trattamento</h2>
-      <p>Questi fornitori trattano dati per conto del sito. L’elenco completo e i dettagli di ciascuno sono ancora da completare.</p>
+      <p>Il modulo di contatto richiede il tuo nome, il tuo indirizzo email, il tuo numero di telefono (facoltativo) e il tuo messaggio. <span class="tbd">Descrizione completa da fornire.</span></p>
+      <h2>Servizi usati su questo sito</h2>
       <ul>
         <li><strong>Soshiki</strong>: pagina di prenotazione e modulo di contatto. <span class="tbd">Dettagli da completare.</span></li>
-        <li><strong>Fornitore di hosting</strong>: <span class="tbd">da completare.</span></li>
-        <li><strong>Analytics</strong>: <span class="tbd">da completare.</span></li>
+        <li><strong>Hosting</strong>: <span class="tbd">da confermare.</span></li>
+        <li><strong>Analytics</strong>: <span class="tbd">da confermare.</span></li>
       </ul>
       <h2>Finalità, base giuridica, conservazione e diritti</h2>
       <p><span class="tbd">Da fornire a cura di Monte del Gallo prima del lancio.</span></p>
