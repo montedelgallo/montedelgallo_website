@@ -293,12 +293,22 @@ for spec in "en|$EN_HOME" "it|$IT_HOME"; do
 done
 pass "the navigation shows the localized labels from _data/ in both languages"
 
-# Real facts in the footer: company, VAT number, contact details.
+# Real facts in the footer: company, VAT number, contact details, postal code and
+# the copyright line with the current year. They are looked for INSIDE the
+# <footer>: the phone number is in the utility strip as well, so a search of the
+# whole page would pass with an empty footer.
+footer_of() {
+  sed -n '/<footer/,/<\/footer>/p' "$1"
+}
+YEAR="$(date +%Y)"
 for home in "$EN_HOME" "$IT_HOME"; do
-  assert_contains "$home" 'IT15153051006' "the footer must show the VAT number"
-  assert_contains "$home" 'Monte del Gallo SRLS' "the footer must show the company name"
-  assert_contains "$home" 'info@montedelgallo.com' "the footer must show the contact email"
-  assert_contains "$home" '+39 389 972 2602' "the footer must show the phone number"
+  footer="$(footer_of "$home")"
+  [[ -n "$footer" ]] || fail "$home has no <footer>"
+  for needle in 'IT15153051006' 'Monte del Gallo SRLS' 'info@montedelgallo.com' '+39 389 972 2602' '00100' "© $YEAR"; do
+    grep -qF -- "$needle" <<<"$footer" ||
+      fail "the <footer> of $home does not contain '$needle' (it must show the VAT number, company name, email, phone number, postal code and the © line)"
+  done
+  pass "the <footer> of $home shows the VAT number, company, email, phone, postal code and © $YEAR"
 done
 
 # The booking button is the primary call to action on every page.
@@ -312,6 +322,18 @@ for home in "$EN_HOME" "$IT_HOME"; do
   assert_contains "$home" 'href="#main"' "the skip-to-content link is missing"
   assert_contains "$home" '<main id="main"' "the skip link needs <main id=\"main\"> to land on"
 done
+
+# The inline icon sprite: every symbol the design draws with <use href="#...">
+# (the brand mark, the mountain range, the line icons) must be in the page. A
+# missing one is an empty box, with no error.
+symbols=(mdg-mark mdg-range i-code i-ai i-data i-mobile i-web i-cart i-signage i-seo i-ship)
+for home in "$EN_HOME" "$IT_HOME"; do
+  for symbol in "${symbols[@]}"; do
+    require_contains "$home" "<symbol id=\"$symbol\"" \
+      "the icon sprite (_includes/icons.html) must define the symbol #$symbol"
+  done
+done
+pass "the icon sprite defines all ${#symbols[@]} symbols on both homes"
 
 # The font preloads and the stylesheet must keep their root-level /assets/ URLs
 # on the Italian page too: polyglot prefixes /it/ onto other internal links, and
@@ -328,6 +350,40 @@ if grep -qF '/it/assets/' "$IT_HOME"; then
   fail "$IT_HOME links to /it/assets/...: assets are shared at /assets/ (exclude_from_localization)"
 fi
 pass "the Italian page links assets at /assets/, not /it/assets/"
+
+# Where the root-relative links of a page may point. jekyll-polyglot puts /it/ in
+# front of every internal link of the Italian build, except those inside
+# {% static_href %} (the language switch, canonical, hreflang) and the assets
+# (exclude_from_localization). A link left unprefixed on the Italian page throws
+# the visitor back to English; an /it/ link on the English page does the opposite.
+# The language switch is the one link that has to cross over.
+check_link_prefixes() {
+  bundle exec ruby - "$@" <<'RUBY'
+require "nokogiri"
+
+lang, file = ARGV
+page = Nokogiri::HTML5(File.read(file, encoding: "utf-8"))
+errors = []
+page.css("[href]").each do |node|
+  href = node["href"].to_s
+  next unless href.start_with?("/") && !href.start_with?("//")
+  switch = node.name == "a" && node["class"].to_s.split.include?("langsw__link")
+  if lang == "it"
+    next if switch && node["hreflang"] == "en" # the way back to English
+    errors << "<#{node.name} href=\"#{href}\"> is neither under /it/ nor an asset: the Italian page sends the visitor to the English site" unless href.start_with?("/it/", "/assets/")
+  else
+    next if switch && node["hreflang"] == "it" # the way to Italian
+    errors << "<#{node.name} href=\"#{href}\"> leads into /it/ from the English page" if href == "/it" || href.start_with?("/it/")
+  end
+end
+abort(errors.map { |e| "  - #{e}" }.join("\n")) unless errors.empty?
+RUBY
+}
+check_link_prefixes en "$EN_HOME" ||
+  fail "$EN_HOME has a link into the Italian site (see the list above)"
+check_link_prefixes it "$IT_HOME" ||
+  fail "$IT_HOME has an internal link that is not under /it/ (see the list above)"
+pass "every root-relative link on the Italian home is under /it/ or /assets/ (the way back to English excepted), and none on the English home leads into /it/ (the way to Italian excepted)"
 
 echo "==> Asserting the featured projects (documents, real covers, detail pages)"
 # A project is two Markdown documents in _projects/, one per language, tied

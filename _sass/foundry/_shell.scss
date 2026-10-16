@@ -245,9 +245,11 @@ section{
 }
 
 // Column titles are <h2> for the document outline, drawn as small mono labels.
+// 600 is what the mockup's bold <h4> shows: IBM Plex Mono is loaded in 500 and
+// 600 only, and bold (700) resolves to the nearest one.
 .foot__title{
   font-family:var(--mono);
-  font-weight:500;
+  font-weight:600;
   font-size:.72rem;
   letter-spacing:.14em;
   text-transform:uppercase;
