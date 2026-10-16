@@ -193,7 +193,8 @@ section{
 }
 
 .nav__toggle,
-.nav__langsw{
+.nav__langsw,
+.nav__book{
   display:none;
 }
 
@@ -205,8 +206,19 @@ section{
 // without JavaScript simply gets the links stacked open. The collapse rule is in this
 // media query on purpose: the desktop bar never loses its links.
 @media (max-width:860px){
-  .nav__toggle{
+  // The booking button stays in the bar, one tap away, next to the menu button
+  // (the menu's own copy, in .nav__cta, is not shown on a phone).
+  .nav__book{
+    display:inline-flex;
     margin-left:auto;
+    justify-content:center;
+    min-height:44px;
+    padding:10px 16px;
+    font-size:.9rem;
+    white-space:nowrap;
+  }
+
+  .nav__toggle{
     width:44px;
     height:44px;
     padding:0;
@@ -291,20 +303,14 @@ section{
   }
 
   .nav__cta{
-    margin:6px 0 10px;
-    flex-direction:column;
-    align-items:stretch;
-    gap:12px;
-    border-top:1px solid var(--line);
-    padding-top:12px;
-  }
-
-  .nav__lang{
     display:none;
   }
 
   .nav__langsw{
     display:block;
+    margin-bottom:8px;
+    padding-top:8px;
+    border-top:1px solid var(--line);
   }
 
   .nav__langsw .langsw{
@@ -332,11 +338,6 @@ section{
   .nav__langsw .langsw__current{
     font-weight:700;
     color:var(--ink);
-  }
-
-  .nav__cta .btn{
-    justify-content:center;
-    min-height:48px;
   }
 }
 

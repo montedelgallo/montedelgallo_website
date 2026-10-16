@@ -402,12 +402,28 @@ if (b = buttons.first)
   errors << "the toggle must start with aria-expanded=\"false\", it has #{b["aria-expanded"].inspect}" unless b["aria-expanded"] == "false"
   menu = page.at_css("[id=\"#{b["aria-controls"]}\"]") if b["aria-controls"].to_s != ""
   errors << "aria-controls=#{b["aria-controls"].inspect} must name the element that holds the navigation" unless menu && menu.at_css("nav.nav__links")
-  errors << "the menu must also hold the language switch and the Book-a-call button" unless menu && menu.at_css("nav.langsw") && menu.at_css("a.btn--solid")
-  errors << "the toggle's accessible name must be #{nav["menu_open"].inspect}, it is #{b["aria-label"].inspect}" unless b["aria-label"] == nav["menu_open"]
-  errors << "data-label-open/data-label-close must be #{nav["menu_open"].inspect}/#{nav["menu_close"].inspect}" unless b["data-label-open"] == nav["menu_open"] && b["data-label-close"] == nav["menu_close"]
+  errors << "the menu must also hold the language switch" unless menu && menu.at_css("nav.langsw")
+  # One constant accessible name: the state is carried by aria-expanded alone.
+  errors << "the toggle's accessible name must be the constant #{nav["menu"].inspect}, it is #{b["aria-label"].inspect}" unless b["aria-label"] == nav["menu"]
+  errors << "the toggle must not carry state labels (data-label-open/data-label-close): the name is constant" if b["data-label-open"] || b["data-label-close"]
+  # The primary call to action stays one tap away on a phone: a Book button in the bar itself
+  # (a direct child of the header's wrap, outside the menu), with the short visible label and the
+  # full label as its accessible name, plus the desktop one inside the menu.
+  cta = YAML.load_file("_data/i18n/#{lang}.yml")["cta"]
+  book = page.at_css("header.nav > .wrap > a.nav__book")
+  errors << "the bar needs a direct child a.nav__book (the Book-a-call button of the phone header)" unless book
+  if book
+    errors << "a.nav__book must show the short label #{cta["book_call_short"].inspect}, it shows #{book.text.strip.inspect}" unless book.text.strip == cta["book_call_short"]
+    errors << "a.nav__book needs aria-label=#{cta["book_call"].inspect} (the visible text is shortened), it has #{book["aria-label"].inspect}" unless book["aria-label"] == cta["book_call"]
+    errors << "a.nav__book must lead to the booking page" unless book["href"] == YAML.load_file("_data/site_meta.yml")["booking_url"]
+    errors << "a.nav__book must come before the toggle in the DOM (tab order = visual order)" unless book.next_element && book.next_element == b
+  end
+  errors << "the desktop Book button (.nav__cta a.btn--solid) is missing from the menu wrapper" unless menu && menu.at_css(".nav__cta a.btn--solid")
 end
 js = page.css("script[src]").find { |s| s["src"].to_s.end_with?("/assets/js/nav.js") }
 errors << "nav.js must be loaded with a <script src=\"/assets/js/nav.js\" defer>" unless js && js.has_attribute?("defer")
+# A failed load must give the open (no-JS) layout back: the script tag reverts js -> no-js.
+errors << "the nav.js <script> needs an onerror handler that sets <html> back to class=\"no-js\", it has #{js && js["onerror"].inspect}" unless js && js["onerror"].to_s =~ /className\s*=\s*["']no-js["']/
 errors << "<html> must start as class=\"no-js\" (the fallback until the head script flips it)" unless page.at_css("html")["class"].to_s.split.include?("no-js")
 abort(errors.map { |e| "  - #{e}" }.join("\n")) unless errors.empty?
 RUBY
@@ -430,7 +446,14 @@ query = before.rindex("@media")
 abort("the collapse rule is at depth #{depth}") unless depth == 1 && query && before[query, 40] =~ /max-width: ?860px/
 RUBY
 grep -qF 'document.documentElement.className' "$EN_HOME" || fail "$EN_HOME has no head script that flips no-js to js"
-pass "mobile menu: button with aria-expanded=false + aria-controls + localized label (EN, IT, inner page), deferred nav.js, <=860px CSS, reduced-motion guard, no-JS fallback"
+# nav.js reverts to the no-JS layout when anything throws (a menu that cannot open must not stay collapsed).
+grep -q 'catch' "$SITE_DIR/assets/js/nav.js" && grep -qE "className *= *['\"]no-js['\"]" "$SITE_DIR/assets/js/nav.js" ||
+  fail "$SITE_DIR/assets/js/nav.js must wrap its setup in try/catch and set <html> back to class=\"no-js\" on any error"
+# The phone Book button: hidden on a desktop, shown in the bar below 860px; the menu's own copy goes then.
+grep -qE '\.nav__book(,[^{]*)?\{[^}]*display:none' "$CSS" || fail "$CSS: .nav__book must be hidden by default (the desktop bar has the button in .nav__cta)"
+grep -qE '@media ?\(max-width: ?860px\)\{[^@]*\.nav__book\{[^}]*display:inline-flex' "$CSS" || fail "$CSS: .nav__book must be shown (display:inline-flex) in the (max-width:860px) media query"
+grep -qE '\.no-js \.nav\{position:static' "$CSS" || fail "$CSS: the no-JS open menu must not stay stuck (.no-js .nav{position:static})"
+pass "mobile menu: button (constant Menu label) with aria-expanded=false + aria-controls (EN, IT, inner page), Book in the phone bar, deferred nav.js with onerror + try/catch revert to no-js, <=860px CSS, reduced-motion guard, no-JS fallback"
 
 # No orphan page: every built page (the 404 excepted) is linked from the header, the footer or an
 # index page of its own language. The index pages are the ones the headers and footers lead to
@@ -442,20 +465,25 @@ require "nokogiri"
 require "set"
 
 site_dir = ARGV[0]
-pages = Dir.glob(File.join(site_dir, "**/index.html")).map { |f| "/" + f.sub(%r{\A#{Regexp.escape(site_dir)}/}, "").sub(/index\.html\z/, "") }
-pages.map! { |p| p == "/index.html" ? "/" : p }
-pages -= ["/404/"]
+# Every built HTML page: dir/index.html is served at /dir/, any other foo.html at /foo.html.
+url_of = lambda do |f|
+  rel = "/" + f.sub(%r{\A#{Regexp.escape(site_dir)}/}, "")
+  rel.end_with?("/index.html") ? rel.sub(/index\.html\z/, "") : rel
+end
+file_of = ->(url) { File.join(site_dir, url.end_with?("/") ? "#{url}index.html" : url) }
+pages = Dir.glob(File.join(site_dir, "**/*.html")).reject { |f| f.start_with?(File.join(site_dir, "assets") + "/") }.map(&url_of)
+pages -= ["/404/", "/404.html"]
 errors = []
 %w[en it].each do |lang|
   prefix = lang == "it" ? "/it/" : "/"
   mine = pages.select { |p| lang == "it" ? p.start_with?("/it/") : !p.start_with?("/it/") }
   links_of = lambda do |url|
-    file = File.join(site_dir, url, "index.html")
+    file = file_of.(url)
     return [] unless File.file?(file)
     Nokogiri::HTML5(File.read(file, encoding: "utf-8")).css("a[href]").map { |a| a["href"].sub(/[?#].*\z/, "") }.select { |h| h.start_with?("/") }
   end
   chrome = lambda do |url|
-    Nokogiri::HTML5(File.read(File.join(site_dir, url, "index.html"), encoding: "utf-8")).css("header.nav a[href], footer.foot a[href]").map { |a| a["href"].sub(/[?#].*\z/, "") }.select { |h| h.start_with?("/") }
+    Nokogiri::HTML5(File.read(file_of.(url), encoding: "utf-8")).css("header.nav a[href], footer.foot a[href]").map { |a| a["href"].sub(/[?#].*\z/, "") }.select { |h| h.start_with?("/") }
   end
   reached = Set.new
   indexes = Set.new([prefix])

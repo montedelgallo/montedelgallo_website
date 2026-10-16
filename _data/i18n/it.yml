@@ -21,11 +21,11 @@ nav:
   about: "Chi siamo"
   blog: "Blog"
   contact: "Contatti"
-  menu_open: "Apri il menu"
-  menu_close: "Chiudi il menu"
+  menu: "Menu" # the toggle's constant accessible name; the state is aria-expanded
 
 cta:
   book_call: "Prenota una call"
+  book_call_short: "Prenota" # the phone header button (the full label is its aria-label)
 
 # Home page. Bozza italiana, da rivedere (il testo inglese è in en.yml).
 home:

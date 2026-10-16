@@ -6,8 +6,12 @@
   On a phone (below 860px) the links, the language switch and the booking button
   live in #site-menu, which the button .nav__toggle opens and closes (assets/js/nav.js,
   styles in _sass/foundry/_shell.scss). The menu is collapsed only when the page has
-  <html class="js">; without JavaScript it is simply open. The language switch is in the
-  utility strip on a desktop and in the menu on a phone.
+  <html class="js">; without JavaScript (or when nav.js fails to load or throws, which
+  both put the class back to no-js) it is simply open. The language switch is in the
+  utility strip on a desktop and in the menu on a phone. The booking button exists twice
+  so that it stays one tap away on a phone: .nav__book in the bar (phone only, short
+  label) and the one in .nav__cta (desktop only); only one is displayed at a time, so
+  there is never a double tab stop.
 
   The links are plain root-relative paths on purpose: in the Italian build
   jekyll-polyglot puts /it/ in front of them.
@@ -25,16 +29,17 @@
 <header class="nav">
   <div class="wrap">
     <a class="brand" href="{{ '/' | relative_url }}"><svg aria-hidden="true" focusable="false"><use href="#mdg-mark"/></svg>{{ site.title | escape }}</a>
-    <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="site-menu" aria-label="{{ t.nav.menu_open | escape }}" data-label-open="{{ t.nav.menu_open | escape }}" data-label-close="{{ t.nav.menu_close | escape }}"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path class="nav__bars" d="M4 7h16M4 12h16M4 17h16"/><path class="nav__x" d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <a class="btn btn--solid nav__book" href="{{ site.data.site_meta.booking_url }}" aria-label="{{ t.cta.book_call | escape }}">{{ t.cta.book_call_short | escape }}</a>
+    <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="site-menu" aria-label="{{ t.nav.menu | escape }}"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path class="nav__bars" d="M4 7h16M4 12h16M4 17h16"/><path class="nav__x" d="M6 6l12 12M18 6L6 18"/></svg></button>
     <div class="nav__menu" id="site-menu">
       <nav class="nav__links" aria-label="{{ t.a11y.main_nav | escape }}">
         {%- for item in site.data.nav.main -%}
         <a href="{{ item[lang] | relative_url }}">{{ t.nav[item.key] | escape }}</a>
         {%- endfor -%}
       </nav>
+      <div class="nav__langsw">{% include lang-switch.html %}</div>
       <div class="nav__cta">
         <span class="nav__lang" aria-hidden="true">{{ lang | upcase }}</span>
-        <div class="nav__langsw">{% include lang-switch.html %}</div>
         <a class="btn btn--solid" href="{{ site.data.site_meta.booking_url }}">{{ t.cta.book_call | escape }}</a>
       </div>
     </div>

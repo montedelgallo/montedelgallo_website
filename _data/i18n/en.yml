@@ -30,11 +30,11 @@ nav:
   about: "About"
   blog: "Blog"
   contact: "Contact"
-  menu_open: "Open menu"
-  menu_close: "Close menu"
+  menu: "Menu" # the toggle's constant accessible name; the state is aria-expanded
 
 cta:
   book_call: "Book a call"
+  book_call_short: "Book" # the phone header button (the full label is its aria-label)
 
 home:
   hero:
