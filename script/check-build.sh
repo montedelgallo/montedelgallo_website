@@ -293,6 +293,33 @@ for spec in "en|$EN_HOME" "it|$IT_HOME"; do
 done
 pass "the navigation shows the localized labels from _data/ in both languages"
 
+# The check above compares the page with _data/nav.yml, so it stays green when an
+# entry is dropped from nav.yml. The design spec (section 5) fixes the primary
+# navigation as Services, Work, About, Blog, Contact: pin the last one. Contact
+# is the label of the page's language, it leads to the final call to action of
+# the home (#contact, under /it/ on the Italian page) and that section is on the
+# page, or the link goes nowhere.
+check_nav_contact() {
+  bundle exec ruby - "$@" <<'RUBY'
+require "nokogiri"
+require "yaml"
+
+lang, file = ARGV
+page = Nokogiri::HTML5(File.read(file, encoding: "utf-8"))
+label = YAML.load_file("_data/i18n/#{lang}.yml").dig("nav", "contact").to_s
+href = lang == "it" ? "/it/#contact" : "/#contact"
+last = page.css("nav.nav__links a").last
+found = last ? "#{last.text.strip.inspect} -> #{last["href"]}" : "no link"
+errors = []
+errors << "the last link of the navigation must be #{label.inspect} -> #{href} (design spec section 5: Services, Work, About, Blog, Contact), it is #{found}" unless last && last.text.strip == label && last["href"] == href
+errors << "no element has id=\"contact\": the Contact link has nothing to land on" unless page.at_css("#contact")
+abort(errors.map { |e| "  - #{e}" }.join("\n")) unless errors.empty?
+RUBY
+}
+check_nav_contact en "$EN_HOME" || fail "the English navigation does not end with the Contact link (see the list above)"
+check_nav_contact it "$IT_HOME" || fail "the Italian navigation does not end with the Contact link (see the list above)"
+pass "the navigation ends with Contact in both languages, leading to the #contact section of the home"
+
 # Real facts in the footer: company, VAT number, contact details, postal code and
 # the copyright line with the current year. They are looked for INSIDE the
 # <footer>: the phone number is in the utility strip as well, so a search of the

@@ -25,6 +25,9 @@ main:
   - key: blog # no blog yet
     en: "/"
     it: "/"
+  - key: contact # the final call to action of the home, until Contact gets its own page
+    en: "/#contact"
+    it: "/#contact"
 
 footer_company:
   - key: services
