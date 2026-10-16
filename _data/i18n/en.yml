@@ -30,6 +30,8 @@ nav:
   about: "About"
   blog: "Blog"
   contact: "Contact"
+  menu_open: "Open menu"
+  menu_close: "Close menu"
 
 cta:
   book_call: "Book a call"
@@ -248,8 +250,13 @@ footer:
     case_studies: "Case studies"
     about: "About"
     blog: "Blog"
+    startup_studio: "Startup Studio"
+    product_lab: "Product Lab"
+    careers: "Careers"
+    motioforge: "MotioForge"
   service_links: # the Services column, in the order of nav.yml footer_services
     software: "Software"
-    ai_data: "AI & data"
+    ai_automation: "AI & automation"
+    data_systems: "Data systems"
     websites: "Websites"
     mobile: "Mobile apps"

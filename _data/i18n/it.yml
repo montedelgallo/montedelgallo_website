@@ -21,6 +21,8 @@ nav:
   about: "Chi siamo"
   blog: "Blog"
   contact: "Contatti"
+  menu_open: "Apri il menu"
+  menu_close: "Chiudi il menu"
 
 cta:
   book_call: "Prenota una call"
@@ -240,8 +242,13 @@ footer:
     case_studies: "Casi di studio"
     about: "Chi siamo"
     blog: "Blog"
+    startup_studio: "Studio startup"
+    product_lab: "Laboratorio prodotto"
+    careers: "Lavora con noi"
+    motioforge: "MotioForge"
   service_links:
     software: "Software"
-    ai_data: "AI e dati"
+    ai_automation: "AI e automazione"
+    data_systems: "Sistemi di dati"
     websites: "Siti web"
     mobile: "App mobile"

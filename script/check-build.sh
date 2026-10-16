@@ -296,30 +296,179 @@ pass "the navigation shows the localized labels from _data/ in both languages"
 
 # The check above compares the page with _data/nav.yml, so it stays green when an
 # entry is dropped from nav.yml. The design spec (section 5) fixes the primary
-# navigation as Services, Work, About, Blog, Contact: pin the last one. Contact
-# is the label of the page's language, it leads to the final call to action of
-# the home (#contact, under /it/ on the Italian page) and that section is on the
-# page, or the link goes nowhere.
-check_nav_contact() {
+# navigation as Services, Work, About, Blog, Contact, and each one now leads to its
+# own page: pin the real targets, per language (polyglot puts /it/ in front of the
+# Italian ones). The Book-a-call button stays the Soshiki link.
+check_nav_targets() {
   bundle exec ruby - "$@" <<'RUBY'
 require "nokogiri"
 require "yaml"
 
 lang, file = ARGV
 page = Nokogiri::HTML5(File.read(file, encoding: "utf-8"))
-label = YAML.load_file("_data/i18n/#{lang}.yml").dig("nav", "contact").to_s
-href = lang == "it" ? "/it/#contact" : "/#contact"
-last = page.css("nav.nav__links a").last
-found = last ? "#{last.text.strip.inspect} -> #{last["href"]}" : "no link"
+strings = YAML.load_file("_data/i18n/#{lang}.yml")
+want = {
+  "en" => [["nav.services", "/services/"], ["nav.work", "/projects/"], ["nav.about", "/about/"], ["nav.blog", "/blog/"], ["nav.contact", "/contact/"]],
+  "it" => [["nav.services", "/it/servizi/"], ["nav.work", "/it/progetti/"], ["nav.about", "/it/chi-siamo/"], ["nav.blog", "/it/articoli/"], ["nav.contact", "/it/contatti/"]]
+}.fetch(lang).map { |key, href| [strings.dig(*key.split(".")).to_s, href] }
+got = page.css("nav.nav__links a").map { |a| [a.text.strip, a["href"]] }
 errors = []
-errors << "the last link of the navigation must be #{label.inspect} -> #{href} (design spec section 5: Services, Work, About, Blog, Contact), it is #{found}" unless last && last.text.strip == label && last["href"] == href
-errors << "no element has id=\"contact\": the Contact link has nothing to land on" unless page.at_css("#contact")
+errors << "the main navigation must be #{want.inspect} (design spec section 5: Services, Work, About, Blog, Contact, each on its own page), it is #{got.inspect}" unless got == want
+cta = page.at_css("header.nav a.btn--solid")
+errors << "the header's Book-a-call button must stay the Soshiki link, it is #{cta && cta["href"].inspect}" unless cta && cta["href"] == YAML.load_file("_data/site_meta.yml")["booking_url"]
 abort(errors.map { |e| "  - #{e}" }.join("\n")) unless errors.empty?
 RUBY
 }
-check_nav_contact en "$EN_HOME" || fail "the English navigation does not end with the Contact link (see the list above)"
-check_nav_contact it "$IT_HOME" || fail "the Italian navigation does not end with the Contact link (see the list above)"
-pass "the navigation ends with Contact in both languages, leading to the #contact section of the home"
+check_nav_targets en "$EN_HOME" || fail "the English navigation does not lead to the real pages (see the list above)"
+check_nav_targets it "$IT_HOME" || fail "the Italian navigation does not lead to the real pages (see the list above)"
+pass "the navigation leads to Services, Work, About, Blog and Contact pages in both languages (no home anchor left)"
+
+# Every link of the header and the footer, on both homes: resolves to a page built in the SAME
+# language (the Italian ones under /it/), and none is a home anchor (/#...) or the bare home
+# (the brand link is the one way to the home). The language switch is the link that crosses over.
+check_chrome_links() {
+  bundle exec ruby - "$@" <<'RUBY'
+require "nokogiri"
+
+lang, file, site_dir = ARGV
+page = Nokogiri::HTML5(File.read(file, encoding: "utf-8"))
+home = lang == "it" ? "/it/" : "/"
+errors = []
+links = page.css("header.nav a[href], footer.foot a[href]").reject { |a| a["class"].to_s.split.include?("langsw__link") }
+errors << "found only #{links.size} header/footer links" if links.size < 20
+links.each do |a|
+  href = a["href"].to_s
+  label = a.text.strip.gsub(/\s+/, " ")
+  next if href.start_with?("mailto:", "tel:") || href =~ %r{\Ahttps?://}
+  next if a["class"].to_s.split.include?("brand") && href == home
+  where = "<a href=#{href.inspect}> #{label.inspect}"
+  errors << "#{where} points at a home anchor or the home itself" if href == "/" || href == "/it/" || href.include?("#")
+  prefixed = lang == "it" ? href.start_with?("/it/") : !href.start_with?("/it/") && href.start_with?("/")
+  errors << "#{where} is not in the #{lang} site" unless prefixed
+  path = href.sub(/[?#].*\z/, "")
+  path += "index.html" if path.end_with?("/")
+  errors << "#{where} leads to no built page" unless File.file?(File.join(site_dir, path))
+end
+abort(errors.uniq.map { |e| "  - #{e}" }.join("\n")) unless errors.empty?
+RUBY
+}
+check_chrome_links en "$EN_HOME" "$SITE_DIR" || fail "the English header/footer has a link that is wrong (see the list above)"
+check_chrome_links it "$IT_HOME" "$SITE_DIR" || fail "the Italian header/footer has a link that is wrong (see the list above)"
+pass "every header and footer link of both homes leads to a built page of its own language, none to a home anchor or the bare home"
+
+# The footer columns: the Company column links the company pages in order, the Services column
+# the real service pages.
+check_footer_columns() {
+  bundle exec ruby - "$@" <<'RUBY'
+require "nokogiri"
+require "yaml"
+
+lang, file = ARGV
+page = Nokogiri::HTML5(File.read(file, encoding: "utf-8"))
+pre = lang == "it" ? "/it" : ""
+slug = lang == "it" ? { "company" => %w[servizi casi-di-studio chi-siamo articoli studio-startup laboratorio-prodotto lavora-con-noi motioforge], "services" => %w[software-su-misura ai-e-automazione sistemi-di-dati siti-web app-mobile], "root" => "servizi" } :
+                      { "company" => %w[services case-studies about blog startup-studio product-lab careers motioforge], "services" => %w[custom-software ai-automation data-systems websites mobile-apps], "root" => "services" }
+want_company = slug["company"].map { |s| "#{pre}/#{s}/" }
+want_services = slug["services"].map { |s| "#{pre}/#{slug["root"]}/#{s}/" }
+cols = page.css("footer.foot > .wrap > div").to_h { |d| [d.at_css(".foot__title")&.text.to_s, d.css("ul a").map { |a| a["href"] }] }
+strings = YAML.load_file("_data/i18n/#{lang}.yml")["footer"]
+errors = []
+errors << "the Company column must link #{want_company.inspect}, it links #{cols[strings["company"]].inspect}" unless cols[strings["company"]] == want_company
+errors << "the Services column must link #{want_services.inspect}, it links #{cols[strings["services"]].inspect}" unless cols[strings["services"]] == want_services
+abort(errors.map { |e| "  - #{e}" }.join("\n")) unless errors.empty?
+RUBY
+}
+check_footer_columns en "$EN_HOME" || fail "the English footer columns are wrong (see the list above)"
+check_footer_columns it "$IT_HOME" || fail "the Italian footer columns are wrong (see the list above)"
+pass "the footer lists the eight company pages and the real service pages, in both languages"
+
+# The mobile menu (below 860px the links used to be hidden, so a phone had no navigation): a
+# button that controls the menu, collapsed by default, with a label in the page's language; the
+# script is deferred; the CSS has the narrow-screen rules, the reduced-motion guard and the
+# no-JS fallback (the menu is open unless the page says <html class="js">).
+check_mobile_menu() {
+  bundle exec ruby - "$@" <<'RUBY'
+require "nokogiri"
+require "yaml"
+
+lang, file = ARGV
+page = Nokogiri::HTML5(File.read(file, encoding: "utf-8"))
+nav = YAML.load_file("_data/i18n/#{lang}.yml")["nav"]
+errors = []
+buttons = page.css("header.nav button.nav__toggle")
+errors << "header.nav must hold exactly one button.nav__toggle, it holds #{buttons.size}" unless buttons.size == 1
+if (b = buttons.first)
+  errors << "the toggle must be type=\"button\"" unless b["type"] == "button"
+  errors << "the toggle must start with aria-expanded=\"false\", it has #{b["aria-expanded"].inspect}" unless b["aria-expanded"] == "false"
+  menu = page.at_css("[id=\"#{b["aria-controls"]}\"]") if b["aria-controls"].to_s != ""
+  errors << "aria-controls=#{b["aria-controls"].inspect} must name the element that holds the navigation" unless menu && menu.at_css("nav.nav__links")
+  errors << "the menu must also hold the language switch and the Book-a-call button" unless menu && menu.at_css("nav.langsw") && menu.at_css("a.btn--solid")
+  errors << "the toggle's accessible name must be #{nav["menu_open"].inspect}, it is #{b["aria-label"].inspect}" unless b["aria-label"] == nav["menu_open"]
+  errors << "data-label-open/data-label-close must be #{nav["menu_open"].inspect}/#{nav["menu_close"].inspect}" unless b["data-label-open"] == nav["menu_open"] && b["data-label-close"] == nav["menu_close"]
+end
+js = page.css("script[src]").find { |s| s["src"].to_s.end_with?("/assets/js/nav.js") }
+errors << "nav.js must be loaded with a <script src=\"/assets/js/nav.js\" defer>" unless js && js.has_attribute?("defer")
+errors << "<html> must start as class=\"no-js\" (the fallback until the head script flips it)" unless page.at_css("html")["class"].to_s.split.include?("no-js")
+abort(errors.map { |e| "  - #{e}" }.join("\n")) unless errors.empty?
+RUBY
+}
+check_mobile_menu en "$EN_HOME" || fail "the English mobile menu markup is wrong (see the list above)"
+check_mobile_menu it "$IT_HOME" || fail "the Italian mobile menu markup is wrong (see the list above)"
+check_mobile_menu en "$SITE_DIR/contact/index.html" || fail "the mobile menu is missing on an inner page (see the list above)"
+assert_file "$SITE_DIR/assets/js/nav.js" "the menu script"
+grep -qE '@media ?\(max-width: ?860px\)\{[^@]*\.nav__toggle' "$CSS" || fail "$CSS has no (max-width:860px) rule for .nav__toggle"
+grep -qE '@media ?\(prefers-reduced-motion: ?reduce\)\{[^@]*\.nav__menu' "$CSS" || fail "$CSS has no prefers-reduced-motion guard for .nav__menu"
+grep -qE '\.js \.nav__menu:not\(\.is-open\)\{display:none' "$CSS" || fail "$CSS must collapse the menu only under .js (.js .nav__menu:not(.is-open){display:none}): without JavaScript the links must stay reachable"
+grep -qE '\.nav__toggle(,[^{]*)?\{[^}]*display:none' "$CSS" || fail "$CSS: the toggle must be hidden by default (no JavaScript, desktop)"
+# The menu is only collapsed INSIDE the narrow-screen media query: the desktop bar is untouched.
+bundle exec ruby - "$CSS" <<'RUBY' || fail "$CSS collapses the menu outside the (max-width:860px) media query: the desktop header would lose its links"
+css = File.read(ARGV[0])
+at = css.index(".js .nav__menu:not(.is-open)") or abort("no collapse rule")
+before = css[0...at]
+depth = before.count("{") - before.count("}")
+query = before.rindex("@media")
+abort("the collapse rule is at depth #{depth}") unless depth == 1 && query && before[query, 40] =~ /max-width: ?860px/
+RUBY
+grep -qF 'document.documentElement.className' "$EN_HOME" || fail "$EN_HOME has no head script that flips no-js to js"
+pass "mobile menu: button with aria-expanded=false + aria-controls + localized label (EN, IT, inner page), deferred nav.js, <=860px CSS, reduced-motion guard, no-JS fallback"
+
+# No orphan page: every built page (the 404 excepted) is linked from the header, the footer or an
+# index page of its own language. The index pages are the ones the headers and footers lead to
+# (and the home); the walk goes one level in: header/footer links of the home, plus the links on
+# those pages that lead to a built page.
+check_orphans() {
+  bundle exec ruby - "$@" <<'RUBY'
+require "nokogiri"
+require "set"
+
+site_dir = ARGV[0]
+pages = Dir.glob(File.join(site_dir, "**/index.html")).map { |f| "/" + f.sub(%r{\A#{Regexp.escape(site_dir)}/}, "").sub(/index\.html\z/, "") }
+pages.map! { |p| p == "/index.html" ? "/" : p }
+pages -= ["/404/"]
+errors = []
+%w[en it].each do |lang|
+  prefix = lang == "it" ? "/it/" : "/"
+  mine = pages.select { |p| lang == "it" ? p.start_with?("/it/") : !p.start_with?("/it/") }
+  links_of = lambda do |url|
+    file = File.join(site_dir, url, "index.html")
+    return [] unless File.file?(file)
+    Nokogiri::HTML5(File.read(file, encoding: "utf-8")).css("a[href]").map { |a| a["href"].sub(/[?#].*\z/, "") }.select { |h| h.start_with?("/") }
+  end
+  chrome = lambda do |url|
+    Nokogiri::HTML5(File.read(File.join(site_dir, url, "index.html"), encoding: "utf-8")).css("header.nav a[href], footer.foot a[href]").map { |a| a["href"].sub(/[?#].*\z/, "") }.select { |h| h.start_with?("/") }
+  end
+  reached = Set.new
+  indexes = Set.new([prefix])
+  chrome.(prefix).each { |h| reached << h; indexes << h if mine.include?(h) }
+  # An index page links its children (the projects, the case studies, the articles, the services).
+  indexes.dup.each { |i| links_of.(i).each { |h| reached << h if mine.include?(h) } }
+  mine.each { |p| errors << "#{lang}: #{p} is linked from no header, footer or index page" unless reached.include?(p) || p == prefix }
+end
+abort(errors.map { |e| "  - #{e}" }.join("\n")) unless errors.empty?
+RUBY
+}
+check_orphans "$SITE_DIR" || fail "there are orphan pages (see the list above)"
+pass "no orphan page: every built page of both languages is reached from the header, the footer or an index page"
 
 # Real facts in the footer: company, VAT number, contact details, postal code and
 # the copyright line with the current year. They are looked for INSIDE the
