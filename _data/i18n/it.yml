@@ -169,6 +169,31 @@ services:
   cta_text: "In 30 minuti vediamo di cosa hai bisogno e definiamo un percorso concreto verso un risultato funzionante."
   book: "Prenota una call di 30 minuti"
 
+blog: # la card di un articolo, la pagina dell'articolo e l'indice del blog
+  eyebrow: "Articoli · Monte del Gallo" # sopra il titolo dell'indice
+  title: "Gli articoli del team."
+  lede: "Appunti su come costruiamo software, i prodotti che proviamo nel tempo libero e le persone che entrano nel team."
+  view: "Leggi l'articolo"
+  all: "Tutti gli articoli" # il ritorno all'indice del blog, nella pagina di un articolo
+  index_path: "/articoli/" # dove si trova l'indice del blog, scritto senza il prefisso /it/ (come nav.yml)
+  by: "Di" # "Di Giovanni Panasiti"
+  topics: "Argomenti" # l'elenco delle categorie nell'indice
+  count_one: "articolo"
+  count_other: "articoli"
+  date_format: "{day} {month} {year}" # {month} {day}, {year}, composto da _includes/post-date.html
+  months: ["gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno", "luglio", "agosto", "settembre", "ottobre", "novembre", "dicembre"]
+  categories: # l'etichetta di ogni slug di categoria usato negli articoli (front matter `categories`)
+    frontend: "Frontend"
+    products: "Prodotti"
+    story: "Storie"
+    team: "Team"
+    web-design: "Web design"
+  other: # una nota nell'indice sugli articoli scritti nell'altra lingua
+    note: "Gli altri articoli del blog sono scritti in inglese."
+    cta: "Leggili nel blog inglese"
+    path: "/blog/" # l'indice dell'altra lingua, senza prefisso /it/: il link non deve essere riscritto
+  feed: "Feed degli articoli" # il titolo del link al feed Atom nell'<head>
+
 footer:
   tagline: "Boutique di sviluppo software. Sistemi su misura, automazione e AI — realizzati a Roma."
   company: "Azienda"

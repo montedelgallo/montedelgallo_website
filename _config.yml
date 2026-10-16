@@ -47,6 +47,14 @@ collections:
   services:
     output: true
 
+# Blog: the articles are the built-in `posts` collection, in _posts/ (YYYY-MM-DD-<slug>.md).
+# One document per article, in ONE language: an English article sets `lang: en` and
+# `lang-exclusive: [en]`, so nothing is built under /it/ for it; an Italian one sets
+# `lang: it`, `lang-exclusive: [it]` and is built under /it/ only. Each sets its own bare
+# `permalink`: /blog/<slug>/ in English, /articoli/<slug>/ in Italian (polyglot adds /it/).
+# The index pages are blog.html and it/articoli.html, and the Atom feed is feed.xml (one per
+# language, written here instead of by jekyll-feed, see the comment in feed.xml).
+
 defaults:
   - scope:
       path: ""
@@ -63,6 +71,11 @@ defaults:
       type: services
     values:
       layout: service
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: post
 
 # --- Styles ------------------------------------------------------------------
 sass:

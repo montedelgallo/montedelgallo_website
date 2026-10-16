@@ -1,0 +1,46 @@
+---
+layout: default
+title: Articoli
+lang: it
+page_id: blog-index
+permalink: /articoli/
+description: "Gli articoli del team di Monte del Gallo: come costruiamo software, i prodotti che proviamo nel tempo libero e le persone che entrano nel team."
+---
+{%- comment -%}
+  L'indice del blog, lato italiano. È lo stesso template di blog.html (permalink
+  /blog/, stesso page_id): gli articoli della lingua attiva, dal più recente, e le parole
+  della pagina da _data/i18n/it.yml (blog:). Il permalink non porta il prefisso /it/: lo
+  aggiunge jekyll-polyglot (vedi README). Gli articoli sono quasi tutti in inglese, e la
+  nota in fondo rimanda al blog inglese (blog.other).
+{%- endcomment -%}
+{%- assign bx_t = site.data.i18n[site.active_lang].blog -%}
+{%- assign bx_all = site.posts | where: "lang", site.active_lang | sort: "date" | reverse -%}
+<section class="pindex blog pad">
+  <div class="wrap">
+    <div class="pindex__head">
+      <div class="sec-head">
+        <p class="eyebrow">{{ bx_t.eyebrow | escape }}</p>
+        <h1 class="h2">{{ bx_t.title | escape }}</h1>
+        <p class="lede">{{ bx_t.lede | escape }}</p>
+      </div>
+      <h2 class="pindex__count"><b>{{ bx_all.size }}</b> {% if bx_all.size == 1 %}{{ bx_t.count_one | escape }}{% else %}{{ bx_t.count_other | escape }}{% endif %}</h2>
+    </div>
+    <div class="blog__topics">
+      <h2 class="blog__topics-title">{{ bx_t.topics | escape }}</h2>
+      <ul class="blog__topic-list">
+        {%- for bx_cat in bx_t.categories %}
+        {%- assign bx_in = bx_all | where_exp: "bx_post", "bx_post.categories contains bx_cat[0]" -%}
+        {%- if bx_in.size > 0 %}
+        <li data-category="{{ bx_cat[0] | escape }}">{{ bx_cat[1] | escape }} <b>{{ bx_in.size }}</b></li>
+        {%- endif %}
+        {%- endfor %}
+      </ul>
+    </div>
+    <div class="pgrid">
+      {%- for bx_post in bx_all %}
+      {% include post-card.html post=bx_post %}
+      {%- endfor %}
+    </div>
+    <p class="blog__other">{{ bx_t.other.note | escape }} <a class="xlang" {% static_href %}href="{{ bx_t.other.path }}"{% endstatic_href %} hreflang="en" lang="en">{{ bx_t.other.cta | escape }} <span class="arrow" aria-hidden="true">→</span></a></p>
+  </div>
+</section>

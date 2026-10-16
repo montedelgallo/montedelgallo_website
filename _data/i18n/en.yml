@@ -177,6 +177,31 @@ services: # the service cell, page and overview
   cta_text: "In 30 minutes we look at what you need and define a practical path to a working result."
   book: "Book a 30-min call" # leads to the booking page
 
+blog: # the article card, the article page and the blog index
+  eyebrow: "Blog · Monte del Gallo" # above the title of the index
+  title: "Articles from the team."
+  lede: "Notes on how we build software, the products we try on the side and the people who join us."
+  view: "Read the article"
+  all: "All articles" # the way back to the blog index, on an article page
+  index_path: "/blog/" # where the blog index is, written without the /it/ prefix (like nav.yml)
+  by: "By" # "By Giovanni Panasiti"
+  topics: "Topics" # the list of categories on the index
+  count_one: "article"
+  count_other: "articles"
+  date_format: "{month} {day}, {year}" # {day} {month} {year}, filled in by _includes/post-date.html
+  months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+  categories: # the label of each category slug used in the posts (front matter `categories`)
+    frontend: "Frontend"
+    products: "Products"
+    story: "Story"
+    team: "Team"
+    web-design: "Web design"
+  other: # a note on the index about the articles written in the other language
+    note: "We also write some articles in Italian."
+    cta: "Read them in the Italian blog"
+    path: "/it/articoli/" # the other language's index, with its prefix: the link must not be rewritten
+  feed: "Articles feed" # the title of the Atom feed link in the <head>
+
 footer:
   tagline: "Software development boutique. Custom systems, automation and AI — built in Roma."
   company: "Company"

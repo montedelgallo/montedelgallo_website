@@ -1,0 +1,53 @@
+---
+layout: default
+title: Blog
+lang: en
+page_id: blog-index
+permalink: /blog/
+description: "Articles from the Monte del Gallo team: how we build software, the products we try on the side, and the people who join us."
+---
+{%- comment -%}
+  The blog index, English side: every article of the language as a card
+  (_includes/post-card.html), the newest first. Its Italian side is it/articoli.html
+  (permalink /articoli/, the same page_id); the two are one pair for jekyll-polyglot,
+  like the English and the Italian document of a project. The words of the page come
+  from _data/i18n/<lang>.yml (blog:), so both sides are one template.
+
+  There are no category pages in this first version: the categories are labels on the
+  cards and on the article, and the "Topics" line counts them.
+
+  The variables are prefixed (bx_): the card include shares the page's variables, and
+  a page that left t, lang or p in them would break the cards (see the rule in
+  index.html).
+{%- endcomment -%}
+{%- assign bx_t = site.data.i18n[site.active_lang].blog -%}
+{%- assign bx_all = site.posts | where: "lang", site.active_lang | sort: "date" | reverse -%}
+<section class="pindex blog pad">
+  <div class="wrap">
+    <div class="pindex__head">
+      <div class="sec-head">
+        <p class="eyebrow">{{ bx_t.eyebrow | escape }}</p>
+        <h1 class="h2">{{ bx_t.title | escape }}</h1>
+        <p class="lede">{{ bx_t.lede | escape }}</p>
+      </div>
+      <h2 class="pindex__count"><b>{{ bx_all.size }}</b> {% if bx_all.size == 1 %}{{ bx_t.count_one | escape }}{% else %}{{ bx_t.count_other | escape }}{% endif %}</h2>
+    </div>
+    <div class="blog__topics">
+      <h2 class="blog__topics-title">{{ bx_t.topics | escape }}</h2>
+      <ul class="blog__topic-list">
+        {%- for bx_cat in bx_t.categories %}
+        {%- assign bx_in = bx_all | where_exp: "bx_post", "bx_post.categories contains bx_cat[0]" -%}
+        {%- if bx_in.size > 0 %}
+        <li data-category="{{ bx_cat[0] | escape }}">{{ bx_cat[1] | escape }} <b>{{ bx_in.size }}</b></li>
+        {%- endif %}
+        {%- endfor %}
+      </ul>
+    </div>
+    <div class="pgrid">
+      {%- for bx_post in bx_all %}
+      {% include post-card.html post=bx_post %}
+      {%- endfor %}
+    </div>
+    <p class="blog__other">{{ bx_t.other.note | escape }} <a class="xlang" {% static_href %}href="{{ bx_t.other.path }}"{% endstatic_href %} hreflang="it" lang="it">{{ bx_t.other.cta | escape }} <span class="arrow" aria-hidden="true">→</span></a></p>
+  </div>
+</section>

@@ -1,0 +1,50 @@
+---
+layout: null
+sitemap: false
+---
+{%- comment -%}
+  The Atom feed of the blog, one per language: /feed.xml lists the English articles and
+  /it/feed.xml the Italian ones. It is a single-source page (no `lang:`), rendered once
+  per language by jekyll-polyglot, like the home page. jekyll-feed is not given a say
+  here: it writes /feed.xml only when no such file exists in the source, and its own
+  template lists every post of every language with no filter, so under polyglot it
+  would put English articles in the Italian feed (and /it/ links to pages that were not
+  built). This file takes its place and keeps its format.
+
+  Links are written out in full, with the language prefix added by hand: jekyll-polyglot
+  rewrites only href="..." attributes, not the text of <id> and <uri> elements. The
+  pictures of an article are made absolute, because a feed reader has no site to
+  resolve /assets/ against. The variables are prefixed (fd_).
+{%- endcomment -%}
+{%- assign fd_lang = site.active_lang -%}
+{%- assign fd_origin = site.url | append: site.baseurl -%}
+{%- if fd_lang == site.default_lang -%}{%- assign fd_root = fd_origin -%}{%- else -%}{%- assign fd_root = fd_origin | append: "/" | append: fd_lang -%}{%- endif -%}
+{%- assign fd_assets_src = 'src="' | append: fd_origin | append: '/assets/' -%}
+{%- assign fd_posts = site.posts | where: "lang", fd_lang | sort: "date" | reverse -%}
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="{{ fd_lang }}">
+  <generator uri="https://jekyllrb.com/" version="{{ jekyll.version }}">Jekyll</generator>
+  <link href="{{ fd_root }}/feed.xml" rel="self" type="application/atom+xml" />
+  <link href="{{ fd_root }}{{ site.data.i18n[fd_lang].blog.index_path }}" rel="alternate" type="text/html" hreflang="{{ fd_lang }}" />
+  <updated>{{ site.time | date_to_xmlschema }}</updated>
+  <id>{{ fd_root }}/feed.xml</id>
+  <title type="html">{{ site.title | append: " · " | append: site.data.i18n[fd_lang].blog.title | xml_escape }}</title>
+  <subtitle>{{ site.data.i18n[fd_lang].blog.lede | xml_escape }}</subtitle>
+  {%- for fd_post in fd_posts %}
+  <entry xml:lang="{{ fd_post.lang }}">
+    <title type="html">{{ fd_post.title | smartify | strip_html | normalize_whitespace | xml_escape }}</title>
+    <link href="{{ fd_root }}{{ fd_post.url }}" rel="alternate" type="text/html" title="{{ fd_post.title | smartify | strip_html | normalize_whitespace | xml_escape }}" />
+    <published>{{ fd_post.date | date_to_xmlschema }}</published>
+    <updated>{{ fd_post.last_modified_at | default: fd_post.date | date_to_xmlschema }}</updated>
+    <id>{{ fd_root }}{{ fd_post.url }}</id>
+    <author>
+      <name>{{ fd_post.author | xml_escape }}</name>
+    </author>
+    {%- for fd_cat in fd_post.categories %}
+    <category term="{{ fd_cat | xml_escape }}" />
+    {%- endfor %}
+    <summary type="html">{{ fd_post.excerpt | strip_html | normalize_whitespace | xml_escape }}</summary>
+    <content type="html" xml:base="{{ fd_root }}{{ fd_post.url }}"><![CDATA[{{ fd_post.content | replace: 'src="/assets/', fd_assets_src | replace: "]]>", "]]]]><![CDATA[>" }}]]></content>
+  </entry>
+  {%- endfor %}
+</feed>

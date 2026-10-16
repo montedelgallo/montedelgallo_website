@@ -100,10 +100,12 @@
 }
 
 // ---------- the text ----------
-// The text itself is styled by .project__body. A case study adds quotes (a client's
+// The text itself is styled by .project__body (an article's quotes and nested lists, see
+// _blog.scss, use these rules too). A case study adds quotes (a client's
 // words) and, in its lists, items that carry a nested list (the phases of the
 // approach).
-.case__body blockquote{
+.case__body blockquote,
+.post__body blockquote{
   margin:0 0 1.2em;
   padding:2px 0 2px 20px;
   border-left:3px solid var(--emerald);
@@ -111,11 +113,14 @@
   font-weight:500;
 }
 
-.case__body blockquote p{
+.case__body blockquote p,
+.post__body blockquote p{
   margin:0;
 }
 
-.case__body li > ul{
+.case__body li > ul,
+.post__body li > ul,
+.post__body li > ol{
   margin:.65em 0 0;
 }
 

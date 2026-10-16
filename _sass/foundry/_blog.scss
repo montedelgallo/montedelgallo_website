@@ -1,0 +1,188 @@
+// The blog: the article page (_layouts/post.html), the article card
+// (_includes/post-card.html) and the blog index (blog.html, it/articoli.html).
+//
+// The page shares the project page's rules for what it has in common: the way back,
+// the cover and the text (_project-detail.scss, through the same class names), and an
+// article's quotes and nested lists use the case study's rules (_case-study.scss). The
+// card is the project card (.pgrid, .pcard, _projects.scss) and the index heading is the
+// project index's (.pindex). This file adds only what is new: the reading column, the
+// date line, the pictures, the code and the headings inside an article, the card's
+// excerpt and date, and the "Topics" line of the index.
+
+// ---------- the article page ----------
+// One reading column, a little wider than the text itself so that the cover and the
+// pictures have room.
+.post__col{
+  max-width:820px;
+}
+
+.post__meta{
+  font-family:var(--mono);
+  font-size:.8rem;
+  letter-spacing:.04em;
+  color:var(--muted);
+  margin:14px 0 0;
+}
+
+.post__author{
+  color:var(--ink-2);
+}
+
+// The cover keeps its own proportions: a portrait stays a portrait and a small picture is
+// not stretched (the width and height attributes reserve its space). It is capped in
+// height, so that a tall one does not push the text off the first screen.
+.post__cover{
+  width:auto;
+  max-width:100%;
+  height:auto;
+  max-height:560px;
+}
+
+// ---------- inside the text ----------
+// Section headings of the text are h2 (styled by .project__body); an article goes one
+// and two levels deeper.
+.post__body h3{
+  font-family:var(--display);
+  font-weight:800;
+  font-size:clamp(1.05rem,1.6vw,1.2rem);
+  letter-spacing:-.015em;
+  line-height:1.2;
+  color:var(--ink);
+  margin:1.8em 0 .5em;
+  text-wrap:balance;
+}
+
+.post__body h4{
+  font-family:var(--mono);
+  font-weight:600;
+  font-size:.78rem;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:var(--emerald);
+  margin:1.6em 0 .5em;
+}
+
+// A picture of the text, with the hairline the covers have. It never grows beyond its
+// own size and never past the column.
+.post__fig{
+  margin:1.6em 0;
+}
+
+.post__fig img{
+  display:block;
+  max-width:100%;
+  height:auto;
+  border:1px solid var(--line);
+  border-radius:8px;
+}
+
+// Code: a block that scrolls sideways inside itself, so that a long line never makes
+// the page scroll. The inline code style (.project__body code) is switched off inside it.
+.post__body pre{
+  margin:0 0 1.4em;
+  padding:16px 18px;
+  overflow-x:auto;
+  background:var(--surface-2);
+  border:1px solid var(--line);
+  border-radius:8px;
+  font-family:var(--mono);
+  font-size:.8rem;
+  line-height:1.6;
+  color:var(--ink);
+  tab-size:2;
+}
+
+.post__body pre code{
+  font-size:inherit;
+  background:none;
+  border:0;
+  padding:0;
+}
+
+// A code block that sits in a list item lines up with the item's text.
+.post__body li > pre{
+  margin-top:.8em;
+}
+
+// ---------- the card ----------
+// The cover is cropped to 16:9 so that the cards of a row line up, whatever the shape of
+// the original (a portrait keeps its face: the crop sits in the top third).
+.bcard__thumb{
+  aspect-ratio:16 / 9;
+  object-fit:cover;
+  object-position:center 28%;
+}
+
+.bcard__excerpt{
+  margin:0;
+  color:var(--ink-2);
+  font-size:.92rem;
+  line-height:1.5;
+}
+
+// The date sits at the bottom of the card, above the label, so cards of different
+// height line up.
+.bcard__date{
+  margin-top:auto;
+  font-family:var(--mono);
+  font-size:.72rem;
+  letter-spacing:.04em;
+  color:var(--muted);
+}
+
+// ---------- the index ----------
+// "Topics": the categories in use, with how many articles each has. They are labels, not
+// links (this version has no category pages).
+.blog__topics{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:10px 16px;
+  margin-bottom:clamp(20px,3vw,32px);
+}
+
+.blog__topics-title{
+  font-family:var(--mono);
+  font-weight:500;
+  font-size:.68rem;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin:0;
+}
+
+.blog__topic-list{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  list-style:none;
+  margin:0;
+  padding:0;
+}
+
+.blog__topic-list li{
+  font-family:var(--mono);
+  font-size:.76rem;
+  color:var(--ink-2);
+  border:1px solid var(--line-2);
+  border-radius:5px;
+  padding:4px 10px;
+}
+
+.blog__topic-list b{
+  font-weight:600;
+  color:var(--emerald);
+  margin-left:4px;
+}
+
+// The note about the other language, under the cards.
+.blog__other{
+  margin:clamp(28px,4vw,40px) 0 0;
+  color:var(--ink-2);
+}
+
+.blog__other a{
+  color:var(--emerald);
+  text-decoration:underline;
+  text-underline-offset:2px;
+}

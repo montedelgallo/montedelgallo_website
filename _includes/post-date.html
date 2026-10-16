@@ -1,0 +1,23 @@
+{%- comment -%}
+  The date of an article, written the way the language writes it: "January 9, 2025"
+  in English, "9 gennaio 2025" in Italian. The month names and the order of the
+  parts come from _data/i18n/<lang>.yml (blog.months, blog.date_format), so one
+  source renders both languages. It prints a <time> element, for machines and for
+  the person reading.
+
+    {% raw %}{% include post-date.html date=post.date lang=post.lang %}{% endraw %}
+
+  `date` is the date of the post and `lang` the language to write it in (the post's
+  own `lang`).
+
+  The variables are prefixed (pd_): Liquid's `assign` is global, and an include
+  shares the variables of the page that includes it, so an `assign t`, `lang` or `p`
+  here would replace the page's own (see _includes/project-card.html and the canary
+  in script/check-build.sh).
+{%- endcomment -%}
+{%- assign pd_blog = site.data.i18n[include.lang].blog -%}
+{%- assign pd_month = include.date | date: "%-m" | minus: 1 -%}
+{%- assign pd_day = include.date | date: "%-d" -%}
+{%- assign pd_year = include.date | date: "%Y" -%}
+{%- assign pd_text = pd_blog.date_format | replace: "{day}", pd_day | replace: "{month}", pd_blog.months[pd_month] | replace: "{year}", pd_year -%}
+<time datetime="{{ include.date | date: '%Y-%m-%d' }}">{{ pd_text | escape }}</time>

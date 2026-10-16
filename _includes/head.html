@@ -30,7 +30,8 @@
 {%- else -%}
   {%- assign seo_title = meta.title -%}
 {%- endif -%}
-{%- assign seo_description = page.description | default: page.summary | default: meta.description -%}
+{%- comment -%} An article (a post) has an `excerpt` in its front matter and no `description` or `summary`. {%- endcomment -%}
+{%- assign seo_description = page.description | default: page.summary | default: page.excerpt | default: meta.description | strip_html | normalize_whitespace -%}
 {%- assign seo_image = page.image | default: site.data.site_meta.share_image -%}
 
 {%- comment -%} The canonical URL is the page's own, in its own language: for a fallback copy that is the original, not the copy. {%- endcomment -%}
@@ -84,3 +85,4 @@
 <link rel="preload" href="{{ '/assets/fonts/archivo-latin-wght-normal.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="{{ '/assets/fonts/hanken-grotesk-latin-wght-normal.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
+<link rel="alternate" type="application/atom+xml" href="{{ '/feed.xml' | relative_url }}" title="{{ site.data.i18n[lang].blog.feed | escape }}">

@@ -1,0 +1,33 @@
+{%- comment -%}
+  One article as a card: the cover when it has one, the category labels, the title,
+  the excerpt, the date and a link to the article. Used by the blog index (blog.html,
+  it/articoli.html).
+
+    {% raw %}{% include post-card.html post=p %}{% endraw %}
+
+  `post` is a document of the posts (_posts/); everything shown comes from its front
+  matter. Put the cards in <div class="pgrid">. The title is an <h3>, for a card that
+  sits under a section's <h2>. It reuses the project card's classes (pcard__*); .bcard
+  is only the hook for what differs (the excerpt, the date, a cover cropped to 16:9).
+
+  This include assigns NO variable the page could own (t, lang, p): Liquid's `assign`
+  is global and an include shares the variables of the page that includes it (see
+  _includes/project-card.html and the canary in script/check-build.sh). It reads
+  include.post directly; the one variable it needs is prefixed (bc_).
+
+  The cover is lazy-loaded (cards are below the fold) and carries its own size.
+  The link is a plain root-relative path: in the Italian build jekyll-polyglot puts
+  /it/ in front of it. The labels are in the language of the post (its `lang`).
+{%- endcomment -%}
+<a class="pcard bcard" href="{{ include.post.url | relative_url }}">
+  {%- if include.post.cover %}
+  <img class="pcard__thumb bcard__thumb" src="{{ include.post.cover | relative_url }}" alt="{{ include.post.cover_alt | default: include.post.title | escape }}" width="{{ include.post.cover_width }}" height="{{ include.post.cover_height }}" loading="lazy" decoding="async">
+  {%- endif %}
+  <div class="pcard__body">
+    <span class="pcard__sector">{% for bc_cat in include.post.categories %}{{ site.data.i18n[include.post.lang].blog.categories[bc_cat] | default: bc_cat | escape }}{% unless forloop.last %} · {% endunless %}{% endfor %}</span>
+    <h3 class="pcard__title">{{ include.post.title | escape }}</h3>
+    <p class="bcard__excerpt">{{ include.post.excerpt | strip_html | strip | escape }}</p>
+    <span class="bcard__date">{% include post-date.html date=include.post.date lang=include.post.lang %}</span>
+    <span class="pcard__more">{{ site.data.i18n[include.post.lang].blog.view | escape }} <span class="arrow" aria-hidden="true">→</span></span>
+  </div>
+</a>

@@ -1,0 +1,46 @@
+---
+layout: default
+---
+{%- comment -%}
+  The page of one article (a post, see _posts/). From top to bottom: the way back to
+  the blog index, the category labels, title, date and author, the cover when there
+  is one, the text, and the way back again.
+
+  Front matter used here: title, date, author, categories (slugs, labelled by
+  _data/i18n/<lang>.yml blog.categories), and, optional, `cover` + `cover_alt` +
+  `cover_width` + `cover_height` (the ConsultaLa article has no cover picture).
+  `excerpt` is the card text and the meta description (see head.html).
+  script/check-build.sh checks all of it.
+
+  The page shares the project page's classes for what is the same (the way back, the
+  cover, the text and its styling, see _project-detail.scss); _blog.scss only adds
+  what is new here (the reading column, the date line, pictures and code in the text).
+
+  The labels come from _data/i18n/<lang>.yml in the language of the post. The way
+  back is a root-relative path, which jekyll-polyglot turns into /it/articoli/ in the
+  Italian build: it is the Italian path of the index (blog.index_path). The variables
+  are prefixed (bp_): the layout is not an include, but the habit keeps t, lang and p
+  out of the way of anything rendered with it.
+{%- endcomment -%}
+{%- assign bp_lang = page.lang | default: site.active_lang -%}
+{%- assign bp_t = site.data.i18n[bp_lang].blog -%}
+<article class="project post pad">
+  <div class="wrap">
+    <div class="post__col">
+      <p class="project__crumb"><a class="project__back" href="{{ bp_t.index_path | relative_url }}"><span class="arrow" aria-hidden="true">←</span> {{ bp_t.all | escape }}</a></p>
+      <header>
+        <p class="eyebrow">{% for bp_cat in page.categories %}{{ bp_t.categories[bp_cat] | default: bp_cat | escape }}{% unless forloop.last %} · {% endunless %}{% endfor %}</p>
+        <h1 class="h2">{{ page.title | escape }}</h1>
+        <p class="post__meta">{% include post-date.html date=page.date lang=bp_lang %} <span aria-hidden="true">·</span> {{ bp_t.by | escape }} <span class="post__author">{{ page.author | escape }}</span></p>
+      </header>
+      {%- if page.cover %}
+      {%- comment %} The cover is the largest image above the fold, so it is not lazy-loaded. {% endcomment %}
+      <img class="project__cover post__cover" src="{{ page.cover | relative_url }}" alt="{{ page.cover_alt | default: page.title | escape }}" width="{{ page.cover_width }}" height="{{ page.cover_height }}" decoding="async" fetchpriority="high">
+      {%- endif %}
+      <div class="project__body post__body">
+        {{ content }}
+      </div>
+      <p class="project__foot"><a class="btn btn--ghost project__back" href="{{ bp_t.index_path | relative_url }}"><span class="arrow" aria-hidden="true">←</span> {{ bp_t.all | escape }}</a></p>
+    </div>
+  </div>
+</article>

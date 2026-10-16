@@ -36,3 +36,26 @@
   to: /it/servizi/app-mobile/
 - from: /it/tecnologie/
   to: /it/servizi/software-su-misura/
+
+# Blog. Every article lived at the root of the old site (/<slug>/). The eight English ones
+# now sit under /blog/; the Italian one (an article written in Italian that the old site
+# served at an English root URL) sits under /it/articoli/. The old category and author
+# archives are not kept: this version has no category pages.
+- from: /welcome-claudio-aiello/
+  to: /blog/welcome-claudio-aiello/
+- from: /how-i-started-creating-a-product-a-month-just-for-fun/
+  to: /blog/how-i-started-creating-a-product-a-month-just-for-fun/
+- from: /software-development-done-right-the-mdg-way/
+  to: /blog/software-development-done-right-the-mdg-way/
+- from: /welcome-mouaz-el-molkey/
+  to: /blog/welcome-mouaz-el-molkey/
+- from: /welcome-marco-cherubini/
+  to: /blog/welcome-marco-cherubini/
+- from: /meet-consultala-the-legal-tech-start-up-erasing-labor-law-bureaucracy/
+  to: /blog/meet-consultala-the-legal-tech-start-up-erasing-labor-law-bureaucracy/
+- from: /design-minimalista-la-semplicita-come-chiave-per-il-successo-digitale-nel-2025/
+  to: /it/articoli/design-minimalista-la-semplicita-come-chiave-per-il-successo-digitale-nel-2025/
+- from: /saladil-revolutionizing-wordpress-support-one-ticket-at-a-time/
+  to: /blog/saladil-revolutionizing-wordpress-support-one-ticket-at-a-time/
+- from: /get-ready-for-your-next-react-job-interview/
+  to: /blog/get-ready-for-your-next-react-job-interview/
