@@ -1,0 +1,293 @@
+// The project page (_layouts/project.html): the way back, the cover, the facts
+// (headline metric, year, stack, links out), the text of the project and, for a
+// project that has one, the gallery. The card and the project index are in
+// _projects.scss.
+//
+// The text is Markdown written in _projects/*.md, so what it contains is styled by
+// element (h2, p, ul, ol, strong, a, code), under .project__body.
+
+// ---------- the way back ----------
+.project__crumb{
+  margin:0 0 clamp(18px,2.4vw,28px);
+}
+
+.project__crumb a{
+  font-family:var(--mono);
+  font-size:.76rem;
+  letter-spacing:.06em;
+  color:var(--emerald);
+}
+
+.project__crumb a:hover{
+  text-decoration:underline;
+  text-underline-offset:3px;
+}
+
+// ---------- cover ----------
+.project__cover{
+  display:block;
+  width:100%;
+  height:auto;
+  margin-top:clamp(24px,3vw,36px);
+  border:1px solid var(--line);
+  border-radius:10px;
+}
+
+// ---------- facts and text ----------
+// One column on a phone, the facts first. From 900px the text takes the left
+// column and the facts a narrow right one, which stays in view while the text
+// scrolls (6.5rem clears the sticky navigation, see scroll-padding-top in
+// _shell.scss). The facts come first in the markup, so the placement is explicit.
+.project__layout{
+  display:grid;
+  grid-template-columns:minmax(0,1fr);
+  gap:clamp(28px,4vw,40px);
+  margin-top:clamp(28px,4vw,44px);
+}
+
+@media (min-width:900px){
+  .project__layout{
+    grid-template-columns:minmax(0,1fr) 300px;
+    gap:clamp(40px,5vw,72px);
+    align-items:start;
+  }
+
+  .project__body{
+    grid-column:1;
+    grid-row:1;
+  }
+
+  .project__meta{
+    grid-column:2;
+    grid-row:1;
+    position:sticky;
+    top:6.5rem;
+    padding:0 0 0 28px;
+    border-bottom:0;
+    border-left:1px solid var(--line);
+  }
+}
+
+.project__meta{
+  display:flex;
+  flex-direction:column;
+  gap:24px;
+  padding-bottom:28px;
+  border-bottom:1px solid var(--line);
+}
+
+// The headline metric: the figure in emerald, its label next to it.
+.project__metric{
+  font-family:var(--display);
+  font-weight:800;
+  font-size:clamp(1.6rem,3vw,2.2rem);
+  letter-spacing:-.02em;
+  line-height:1.05;
+  margin:0;
+  // When it takes two lines, break between the figure and its label.
+  text-wrap:balance;
+}
+
+.project__metric em{
+  font-style:normal;
+  color:var(--emerald);
+}
+
+.project__facts{
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+  margin:0;
+}
+
+.project__facts dt{
+  font-family:var(--mono);
+  font-size:.68rem;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin:0 0 6px;
+}
+
+.project__facts dd{
+  margin:0;
+}
+
+.project__stack{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  list-style:none;
+  margin:0;
+  padding:0;
+}
+
+.project__stack li{
+  font-family:var(--mono);
+  font-size:.76rem;
+  color:var(--ink-2);
+  border:1px solid var(--line-2);
+  border-radius:5px;
+  padding:4px 10px;
+}
+
+// Links out (the project's website, its repository, a demo video).
+.project__links{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  list-style:none;
+  margin:0;
+  padding:0;
+}
+
+.project__links .btn{
+  padding:10px 16px;
+  font-size:.9rem;
+}
+
+// ---------- the text ----------
+.project__body{
+  max-width:68ch;
+  color:var(--ink-2);
+}
+
+.project__body > :first-child{
+  margin-top:0;
+}
+
+// A section heading of the text: smaller than the page title (the <h1>, .h2).
+.project__body h2{
+  font-family:var(--display);
+  font-weight:800;
+  font-size:clamp(1.25rem,2vw,1.55rem);
+  letter-spacing:-.02em;
+  line-height:1.15;
+  color:var(--ink);
+  margin:2em 0 .6em;
+  text-wrap:balance;
+}
+
+.project__body p{
+  margin:0 0 1em;
+}
+
+.project__body strong{
+  font-weight:700;
+  color:var(--ink);
+}
+
+.project__body a{
+  color:var(--emerald);
+  text-decoration:underline;
+  text-underline-offset:2px;
+}
+
+.project__body ul,
+.project__body ol{
+  margin:0 0 1.2em;
+  padding:0;
+}
+
+.project__body ul{
+  list-style:none;
+}
+
+.project__body ol{
+  padding-left:1.5em;
+}
+
+.project__body li{
+  margin:0 0 .65em;
+}
+
+// A small emerald square marks each item of a bulleted list.
+.project__body ul > li{
+  position:relative;
+  padding-left:1.35em;
+}
+
+.project__body ul > li::before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:.62em;
+  width:7px;
+  height:7px;
+  border-radius:1px;
+  background:var(--emerald);
+}
+
+.project__body ol > li::marker{
+  font-family:var(--mono);
+  font-weight:600;
+  color:var(--emerald);
+}
+
+.project__body code{
+  font-family:var(--mono);
+  font-size:.88em;
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:4px;
+  padding:.1em .35em;
+}
+
+// ---------- gallery ----------
+// Pictures under the text, side by side as far as the width allows. Each keeps its
+// own proportions (the width and height attributes reserve its space), and its
+// caption sits under it. The section drops the hairline every <section> has (see
+// _shell.scss): it is part of the article, not a band of the page.
+.project__gallery{
+  margin-top:clamp(36px,5vw,56px);
+  border-bottom:0;
+}
+
+.project__gallery-title{
+  font-family:var(--display);
+  font-weight:800;
+  font-size:clamp(1.25rem,2vw,1.55rem);
+  letter-spacing:-.02em;
+  line-height:1.15;
+  margin:0 0 18px;
+}
+
+.project__shots{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));
+  gap:18px;
+  align-items:start;
+  list-style:none;
+  margin:0;
+  padding:0;
+}
+
+.project__shots figure{
+  margin:0;
+  overflow:hidden;
+  background:var(--surface-2);
+  border:1px solid var(--line);
+  border-radius:10px;
+}
+
+.project__shots img{
+  display:block;
+  width:100%;
+  height:auto;
+}
+
+.project__shots figcaption{
+  font-family:var(--mono);
+  font-size:.72rem;
+  letter-spacing:.04em;
+  color:var(--muted);
+  padding:12px 14px 14px;
+  border-top:1px solid var(--line);
+}
+
+// ---------- the way back, again, under the text ----------
+.project__foot{
+  margin:clamp(36px,5vw,56px) 0 0;
+  padding-top:24px;
+  border-top:1px solid var(--line);
+}

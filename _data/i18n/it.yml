@@ -143,6 +143,9 @@ projects:
   view: "Vedi il progetto"
   year: "Anno"
   stack: "Realizzato con"
+  all: "Tutti i progetti"
+  index_path: "/progetti/"
+  gallery: "Galleria"
 
 footer:
   tagline: "Boutique di sviluppo software. Sistemi su misura, automazione e AI — realizzati a Roma."

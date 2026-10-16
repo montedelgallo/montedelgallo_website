@@ -3,18 +3,29 @@ layout: default
 ---
 {%- comment -%}
   The page of one project (a document of the `projects` collection, see
-  _projects/). Deliberately minimal: title, cover, summary, headline metric,
-  stack and the document body. The card on the home page
+  _projects/). From top to bottom: the way back to the project index, sector,
+  title and summary, the cover, then two columns: the facts (headline metric, year,
+  stack, links out) and the migrated text of the project, and last the gallery
+  when the document has one. The card on the home page and on the project index
   (_includes/project-card.html) reads the same front matter.
 
-  The labels (Year, Built with) come from _data/i18n/<lang>.yml in the language
-  of the document, which is the language being built, except on a fallback copy
-  of another language's document (see lang-url.html).
+  Front matter used here: title, sector, summary, cover, cover_alt, metric, year,
+  stack; and, optional, `links` (a list of {label, url}: the project's website, its
+  repository, a demo video) and `gallery` (a list of {src, alt, caption, width,
+  height}, pictures that sit under the text). script/check-build.sh checks all of it.
+
+  The labels (Year, Built with, All projects, Gallery) come from
+  _data/i18n/<lang>.yml in the language of the document, which is the language
+  being built, except on a fallback copy of another language's document (see
+  lang-url.html). The way back is a root-relative path, which jekyll-polyglot turns
+  into /it/progetti/ in the Italian build: it is the Italian path of the index
+  (projects.index_path), not the English one with a prefix.
 {%- endcomment -%}
 {%- assign lang = page.lang | default: site.active_lang -%}
 {%- assign t = site.data.i18n[lang].projects -%}
-<article class="pad">
+<article class="project pad">
   <div class="wrap">
+    <p class="project__crumb"><a class="project__back" href="{{ t.index_path | relative_url }}"><span class="arrow" aria-hidden="true">←</span> {{ t.all | escape }}</a></p>
     <header>
       <p class="eyebrow">{{ page.sector | escape }}</p>
       <h1 class="h2">{{ page.title | escape }}</h1>
@@ -22,27 +33,55 @@ layout: default
     </header>
     {%- comment %} The cover is the largest image above the fold, so it is not lazy-loaded. 1200x675 is the size of every cover. {% endcomment %}
     <img class="project__cover" src="{{ page.cover | relative_url }}" alt="{{ page.cover_alt | default: page.title | escape }}" width="1200" height="675" decoding="async" fetchpriority="high">
-    <div class="project__meta">
-      <p class="project__metric"><em>{{ page.metric.value | escape }}</em> {{ page.metric.label | escape }}</p>
-      <dl class="project__facts">
-        <div>
-          <dt>{{ t.year | escape }}</dt>
-          <dd>{{ page.year }}</dd>
-        </div>
-        <div>
-          <dt>{{ t.stack | escape }}</dt>
-          <dd>
-            <ul class="project__stack">
-              {%- for item in page.stack %}
-              <li>{{ item | escape }}</li>
-              {%- endfor %}
-            </ul>
-          </dd>
-        </div>
-      </dl>
+    <div class="project__layout">
+      {%- comment %} The facts come first in the page and sit beside the text from 900px up (see _project-detail.scss). {% endcomment %}
+      <div class="project__meta">
+        <p class="project__metric"><em>{{ page.metric.value | escape }}</em> {{ page.metric.label | escape }}</p>
+        <dl class="project__facts">
+          <div>
+            <dt>{{ t.year | escape }}</dt>
+            <dd>{{ page.year }}</dd>
+          </div>
+          <div>
+            <dt>{{ t.stack | escape }}</dt>
+            <dd>
+              <ul class="project__stack">
+                {%- for item in page.stack %}
+                <li>{{ item | escape }}</li>
+                {%- endfor %}
+              </ul>
+            </dd>
+          </div>
+        </dl>
+        {%- if page.links %}
+        <ul class="project__links">
+          {%- for link in page.links %}
+          <li><a class="btn btn--ghost" href="{{ link.url | escape }}" rel="noopener">{{ link.label | escape }} <span class="arrow" aria-hidden="true">↗</span></a></li>
+          {%- endfor %}
+        </ul>
+        {%- endif %}
+      </div>
+      <div class="project__body">
+        {{ content }}
+      </div>
     </div>
-    <div class="project__body">
-      {{ content }}
-    </div>
+    {%- if page.gallery %}
+    <section class="project__gallery" aria-labelledby="project-gallery-title">
+      <h2 class="project__gallery-title" id="project-gallery-title">{{ t.gallery | escape }}</h2>
+      <ul class="project__shots">
+        {%- for shot in page.gallery %}
+        <li>
+          <figure>
+            <img src="{{ shot.src | relative_url }}" alt="{{ shot.alt | escape }}" width="{{ shot.width }}" height="{{ shot.height }}" loading="lazy" decoding="async">
+            {%- if shot.caption %}
+            <figcaption>{{ shot.caption | escape }}</figcaption>
+            {%- endif %}
+          </figure>
+        </li>
+        {%- endfor %}
+      </ul>
+    </section>
+    {%- endif %}
+    <p class="project__foot"><a class="btn btn--ghost project__back" href="{{ t.index_path | relative_url }}"><span class="arrow" aria-hidden="true">←</span> {{ t.all | escape }}</a></p>
   </div>
 </article>

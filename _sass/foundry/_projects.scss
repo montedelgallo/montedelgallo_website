@@ -1,7 +1,8 @@
 // Projects: the card (_includes/project-card.html), shown on the home page and
-// on the project index, and the project page (_layouts/project.html). The card
-// is a port of the mockup's work card (design/home-foundry-mockup.html), with
-// its own class names so that it does not depend on the section around it.
+// on the project index (projects.html, it/progetti.html), and the heading of that
+// index. The project page itself (_layouts/project.html) is in _project-detail.scss.
+// The card is a port of the mockup's work card (design/home-foundry-mockup.html),
+// with its own class names so that it does not depend on the section around it.
 
 // ---------- card grid ----------
 // Three across; one column on a phone. minmax(0,1fr) lets a column shrink below
@@ -89,83 +90,31 @@
   color:var(--emerald);
 }
 
-// ---------- project page ----------
-.project__cover{
-  display:block;
-  width:100%;
-  height:auto;
-  margin-top:clamp(24px,3vw,36px);
-  border:1px solid var(--line);
-  border-radius:10px;
-}
-
-// The headline metric on the left, the facts (year, stack) next to it.
-.project__meta{
+// ---------- project index ----------
+// The heading block (eyebrow, title, introduction) with the count of projects at
+// its right end; on a narrow screen the count drops under the introduction.
+.pindex__head{
   display:flex;
   flex-wrap:wrap;
   align-items:flex-end;
-  gap:20px 48px;
-  margin-top:clamp(24px,3vw,36px);
+  justify-content:space-between;
+  gap:20px 40px;
+  margin-bottom:clamp(28px,4vw,44px);
 }
 
-.project__metric{
-  font-family:var(--display);
-  font-weight:800;
-  font-size:clamp(1.6rem,3vw,2.2rem);
-  letter-spacing:-.02em;
-  line-height:1.05;
-  margin:0;
-}
-
-.project__metric em{
-  font-style:normal;
-  color:var(--emerald);
-}
-
-.project__facts{
-  display:flex;
-  flex-wrap:wrap;
-  gap:16px 40px;
-  margin:0;
-}
-
-.project__facts dt{
+// The count is the <h2> of the list of cards (the cards are <h3>), drawn as a
+// small mono label.
+.pindex__count{
   font-family:var(--mono);
-  font-size:.68rem;
+  font-weight:500;
+  font-size:.78rem;
   letter-spacing:.1em;
   text-transform:uppercase;
   color:var(--muted);
-  margin:0 0 6px;
-}
-
-.project__facts dd{
   margin:0;
 }
 
-.project__stack{
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
-  list-style:none;
-  margin:0;
-  padding:0;
-}
-
-.project__stack li{
-  font-family:var(--mono);
-  font-size:.76rem;
-  color:var(--ink-2);
-  border:1px solid var(--line-2);
-  border-radius:5px;
-  padding:4px 10px;
-}
-
-.project__body{
-  max-width:62ch;
-  margin-top:clamp(24px,3vw,36px);
-  color:var(--ink-2);
-}
-
-.project__body p{
-  margin:0 0 1em;
+.pindex__count b{
+  font-weight:600;
+  color:var(--emerald);
 }

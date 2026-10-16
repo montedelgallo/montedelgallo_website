@@ -1,0 +1,42 @@
+---
+layout: default
+title: Projects
+lang: en
+page_id: projects-index
+permalink: /projects/
+description: "Selected software, internal tools and custom platforms built by Monte del Gallo around real operational workflows."
+---
+{%- comment -%}
+  The project index, English side: every project of the language as a card
+  (_includes/project-card.html), the featured ones first. Its Italian side is
+  it/progetti.html (permalink /progetti/, the same page_id); the two are one pair
+  for jekyll-polyglot, like the English and the Italian document of a project.
+  The words of the page are written here, once per language, not in _data/i18n.
+
+  This page assigns idx_all, idx_lead, idx_rest and loops with idx_proj, all with
+  a prefix: the card include shares the page's variables, and a page that left
+  t, lang or p in them would break the cards (see the rule in index.html).
+{%- endcomment -%}
+{%- assign idx_all = site.projects | where: "lang", site.active_lang -%}
+{%- assign idx_lead = idx_all | where: "featured", true -%}
+{%- assign idx_rest = idx_all | where: "featured", false -%}
+<section class="pindex pad">
+  <div class="wrap">
+    <div class="pindex__head">
+      <div class="sec-head">
+        <p class="eyebrow">Projects · Software Boutique · Roma</p>
+        <h1 class="h2">Projects that create operational leverage.</h1>
+        <p class="lede">Custom software, internal tools and platforms built to turn complex workflows into measurable work.</p>
+      </div>
+      <h2 class="pindex__count"><b>{{ idx_all.size }}</b> projects</h2>
+    </div>
+    <div class="pgrid">
+      {%- for idx_proj in idx_lead %}
+      {% include project-card.html project=idx_proj %}
+      {%- endfor %}
+      {%- for idx_proj in idx_rest %}
+      {% include project-card.html project=idx_proj %}
+      {%- endfor %}
+    </div>
+  </div>
+</section>

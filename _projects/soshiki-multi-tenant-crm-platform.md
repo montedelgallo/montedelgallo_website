@@ -14,4 +14,19 @@ cover: /assets/img/projects/soshiki-cover.webp
 cover_alt: "Soshiki logo on a dark green background"
 featured: true
 ---
+## The Project
+
 Soshiki is an enterprise-grade CRM platform built for businesses managing multiple companies from a single interface. It features a full sales pipeline with Kanban drag-and-drop, financial tracking with revenue and margin analytics, and an AI-powered email processing system that automatically categorizes and routes communications.
+
+## Key Features
+
+- **Multi-tenant architecture** with subdomain routing — each organization gets isolated data with shared infrastructure
+- **CRM pipeline** with Kanban boards, weighted deal probability, and automated stage transitions
+- **Financial dashboard** tracking revenue, collections, margins, and expenses with profitability analysis
+- **LLM-powered email processing** — AI reads incoming emails, extracts intent, and routes to the right contact/deal
+- **Rich collaboration** via Lexxy editor for notes, document attachments, and full interaction timelines
+- **Bank statement import** — parse spreadsheets to reconcile payments automatically
+
+## Technical Highlights
+
+Built on Rails 8 with acts_as_tenant for shared-schema multi-tenancy. The frontend uses Hotwire (Turbo Streams + Stimulus) for real-time updates without page reloads. Background jobs via Solid Queue handle email processing, PDF generation (Prawn), and spreadsheet imports (Roo). The AI layer uses ruby_llm to connect to OpenAI GPT models for intelligent email categorization.

@@ -151,6 +151,9 @@ projects: # the project card and the project page
   view: "View project"
   year: "Year"
   stack: "Built with"
+  all: "All projects" # the way back to the project index, on a project page
+  index_path: "/projects/" # where the project index is, written without the /it/ prefix (like nav.yml)
+  gallery: "Gallery" # the heading of the pictures under a project's text
 
 footer:
   tagline: "Software development boutique. Custom systems, automation and AI — built in Roma."

@@ -384,23 +384,28 @@ pass "the Italian page links assets at /assets/, not /it/assets/"
 # (exclude_from_localization). A link left unprefixed on the Italian page throws
 # the visitor back to English; an /it/ link on the English page does the opposite.
 # The language switch is the one link that has to cross over.
+# check_link_prefixes <lang> <built page>...
 check_link_prefixes() {
   bundle exec ruby - "$@" <<'RUBY'
 require "nokogiri"
 
-lang, file = ARGV
-page = Nokogiri::HTML5(File.read(file, encoding: "utf-8"))
+lang, *files = ARGV
 errors = []
-page.css("[href]").each do |node|
-  href = node["href"].to_s
-  next unless href.start_with?("/") && !href.start_with?("//")
-  switch = node.name == "a" && node["class"].to_s.split.include?("langsw__link")
-  if lang == "it"
-    next if switch && node["hreflang"] == "en" # the way back to English
-    errors << "<#{node.name} href=\"#{href}\"> is neither under /it/ nor an asset: the Italian page sends the visitor to the English site" unless href.start_with?("/it/", "/assets/")
-  else
-    next if switch && node["hreflang"] == "it" # the way to Italian
-    errors << "<#{node.name} href=\"#{href}\"> leads into /it/ from the English page" if href == "/it" || href.start_with?("/it/")
+files.each do |file|
+  # With several pages, say which one a link is on.
+  where = files.size > 1 ? "#{file}: " : ""
+  page = Nokogiri::HTML5(File.read(file, encoding: "utf-8"))
+  page.css("[href]").each do |node|
+    href = node["href"].to_s
+    next unless href.start_with?("/") && !href.start_with?("//")
+    switch = node.name == "a" && node["class"].to_s.split.include?("langsw__link")
+    if lang == "it"
+      next if switch && node["hreflang"] == "en" # the way back to English
+      errors << "#{where}<#{node.name} href=\"#{href}\"> is neither under /it/ nor an asset: the Italian page sends the visitor to the English site" unless href.start_with?("/it/", "/assets/")
+    else
+      next if switch && node["hreflang"] == "it" # the way to Italian
+      errors << "#{where}<#{node.name} href=\"#{href}\"> leads into /it/ from the English page" if href == "/it" || href.start_with?("/it/")
+    end
   end
 end
 abort(errors.map { |e| "  - #{e}" }.join("\n")) unless errors.empty?
@@ -412,7 +417,7 @@ check_link_prefixes it "$IT_HOME" ||
   fail "$IT_HOME has an internal link that is not under /it/ (see the list above)"
 pass "every root-relative link on the Italian home is under /it/ or /assets/ (the way back to English excepted), and none on the English home leads into /it/ (the way to Italian excepted)"
 
-echo "==> Asserting the featured projects (documents, real covers, detail pages)"
+echo "==> Asserting the projects (documents, real covers, detail pages)"
 # A project is two Markdown documents in _projects/, one per language, tied
 # together by a shared page_id (jekyll-polyglot pairs translations by page_id and
 # ignores a `ref`). Permalinks are written WITHOUT the /it/ prefix, because
@@ -462,6 +467,38 @@ docs.each do |doc|
     errors << "#{at}: cover must be a path under /assets/img/projects/"
   end
 
+  # Optional: links out of the page (the project's own website, its repository, a
+  # demo video), shown as buttons next to the facts.
+  if doc.key?("links")
+    links = doc["links"]
+    unless links.is_a?(Array) && !links.empty? && links.all? { |entry| entry.is_a?(Hash) && text.(entry["label"]) && text.(entry["url"]) && entry["url"].start_with?("https://") }
+      errors << "#{at}: links must be a non-empty list of {label, url} maps, each url starting with https://"
+    end
+  end
+
+  # Optional: a gallery of pictures under the text. Each one carries its size (it
+  # reserves the space before the picture arrives) and an alt text; the caption is
+  # optional.
+  if doc.key?("gallery")
+    gallery = doc["gallery"]
+    if gallery.is_a?(Array) && !gallery.empty?
+      gallery.each_with_index do |shot, index|
+        shot_at = "#{at}: gallery item #{index + 1}"
+        (errors << "#{shot_at} must be a map with src, alt, width and height"; next) unless shot.is_a?(Hash)
+        errors << "#{shot_at}: alt must be a non-empty string" unless text.(shot["alt"])
+        errors << "#{shot_at}: caption must be a non-empty string when there is one" if shot.key?("caption") && !text.(shot["caption"])
+        errors << "#{shot_at}: width and height must be numbers" unless shot["width"].is_a?(Integer) && shot["height"].is_a?(Integer)
+        if text.(shot["src"]) && shot["src"].start_with?("/assets/img/projects/")
+          errors << "#{shot_at}: #{shot["src"]} is not a file in the repository" unless File.file?(shot["src"].delete_prefix("/"))
+        else
+          errors << "#{shot_at}: src must be a path under /assets/img/projects/"
+        end
+      end
+    else
+      errors << "#{at}: gallery must be a non-empty list"
+    end
+  end
+
   link = doc["permalink"].to_s
   if link.start_with?("/it/")
     errors << "#{at}: permalink #{link} starts with /it/, but jekyll-polyglot adds that prefix itself (the page would be built at /it#{link})"
@@ -505,24 +542,52 @@ projects_pairs() {
 pairs="$(projects_pairs)"
 pass "$(wc -l <<<"$pairs" | tr -d ' ') projects, each an English and an Italian document tied by page_id, permalinks without the /it/ prefix, at least 3 featured"
 
-# The covers are real, complete image files. A file with the right name and the
-# wrong content (an HTML error page saved by a failed download, an empty file) is
-# a broken picture on the page, so look at the first bytes of what the build
-# ships. A file that was cut short (an interrupted download or copy) keeps those
-# first bytes, so look at how it ends as well: each format says where it stops.
-covers="$(cut -d'|' -f4,5 <<<"$pairs" | tr '|' '\n' | sort -u)"
-while IFS= read -r cover; do
-  file="$SITE_DIR$cover"
-  [[ -s "$file" ]] || fail "$file is missing or empty: the build did not publish the project cover $cover"
+# The whole portfolio is there, in both languages. The live site lists 12
+# projects (tasks/wp-inventory.json), so a language with fewer has lost one in the
+# migration. And only three of them are `featured`: the home's work section is one
+# row of three. The documents of the other projects start as copies of a featured
+# one, so a stray `featured: true` would put a fourth card on the home, and nothing
+# else would notice, because the home lists whatever is featured.
+MIN_PROJECTS=12
+FEATURED_PROJECTS=3
+check_project_counts() {
+  bundle exec ruby - "$MIN_PROJECTS" "$FEATURED_PROJECTS" <<'RUBY'
+require "json"
+
+minimum, featured_count = ARGV.map(&:to_i)
+pairs = JSON.parse(ENV.fetch("PROJECTS_JSON"))
+errors = []
+%w[en it].each do |lang|
+  count = pairs.count { |pair| pair[lang] }
+  errors << "only #{count} #{lang} project(s): the live site has #{minimum}, none may be left behind in the migration" if count < minimum
+end
+featured = pairs.select { |pair| pair["en"]["featured"] }.map { |pair| pair["page_id"] }
+errors << "#{featured.size} projects are featured (#{featured.join(", ")}): exactly #{featured_count} belong on the home, the rest must be `featured: false`" unless featured.size == featured_count
+abort(errors.map { |e| "  - #{e}" }.join("\n")) unless errors.empty?
+RUBY
+}
+check_project_counts || fail "the projects collection is incomplete (see the list above)"
+pass "$(wc -l <<<"$pairs" | tr -d ' ') projects in each language (at least $MIN_PROJECTS), exactly $FEATURED_PROJECTS of them featured"
+
+# assert_real_image <path of the image in the site> <what it is>
+# The image is a real, complete file. A file with the right name and the wrong
+# content (an HTML error page saved by a failed download, an empty file) is a
+# broken picture on the page, so look at the first bytes of what the build ships.
+# A file that was cut short (an interrupted download or copy) keeps those first
+# bytes, so look at how it ends as well: each format says where it stops.
+assert_real_image() {
+  local path="$1" what="$2" file signature kind size b0 b1 b2 b3 declared
+  file="$SITE_DIR$path"
+  [[ -s "$file" ]] || fail "$file is missing or empty: the build did not publish $what"
   signature="$(od -An -tx1 -N12 "$file" | tr -d ' \n')"
   case "$signature" in
     ffd8ff*) kind="JPEG" ;;
     89504e470d0a1a0a*) kind="PNG" ;;
     52494646????????57454250) kind="WEBP" ;; # "RIFF", a 4-byte size, "WEBP"
-    *) fail "$file is not a JPEG, PNG or WEBP image (it starts with the bytes $signature): a project cover is a real image, not an HTML error page or a stub" ;;
+    *) fail "$file is not a JPEG, PNG or WEBP image (it starts with the bytes $signature): $what is a real image, not an HTML error page or a stub" ;;
   esac
   size="$(wc -c <"$file" | tr -d ' ')"
-  [[ "$size" -ge 4096 ]] || fail "$file is only $size bytes: too small to be a real cover"
+  [[ "$size" -ge 4096 ]] || fail "$file is only $size bytes: too small to be a real image ($what)"
   case "$kind" in
     WEBP) # Bytes 4-7 hold the size of everything after them, little-endian (read
       # byte by byte, so the result does not depend on the machine's byte order).
@@ -537,10 +602,29 @@ while IFS= read -r cover; do
       [[ "$(tail -c 12 "$file" | od -An -tx1 | tr -d ' \n')" == "0000000049454e44ae426082" ]] ||
         fail "$file is a damaged PNG: it does not end with the IEND chunk, so it was cut short" ;;
   esac
-  [[ ! -e "$SITE_DIR/it$cover" ]] ||
-    fail "the cover $cover was also written under /it/: images are shared at /assets/ (exclude_from_localization)"
+  [[ ! -e "$SITE_DIR/it$path" ]] ||
+    fail "the image $path was also written under /it/: images are shared at /assets/ (exclude_from_localization)"
   pass "$file is a complete $kind image ($size bytes), published once"
+}
+
+# The covers, and the gallery pictures of the projects that have a gallery.
+covers="$(cut -d'|' -f4,5 <<<"$pairs" | tr '|' '\n' | sort -u)"
+while IFS= read -r cover; do
+  assert_real_image "$cover" "the project cover $cover"
 done <<<"$covers"
+gallery_images() {
+  bundle exec ruby -rjson -e '
+    JSON.parse(ENV.fetch("PROJECTS_JSON")).each do |pair|
+      %w[en it].each { |lang| (pair[lang]["gallery"] || []).each { |shot| puts shot["src"] } }
+    end
+  '
+}
+gallery="$(gallery_images | sort -u)"
+if [[ -n "$gallery" ]]; then
+  while IFS= read -r shot; do
+    assert_real_image "$shot" "the gallery picture $shot"
+  done <<<"$gallery"
+fi
 
 # The detail pages, in both languages, at the permalinks the documents ask for.
 while IFS='|' read -r page_id en_path it_path _ _; do
@@ -578,17 +662,28 @@ pass "the project pages are built at the bare permalinks (no /it/it/, no English
 
 # What a detail page shows must be what its document says: the title, the cover
 # with a non-empty alt, the summary (also the meta description, so the page does
-# not repeat the home page's), the headline metric and the stack.
+# not repeat the home page's), the headline metric and the stack. And it is a
+# whole page: the migrated text (not a stub), a way back to the index of its own
+# language, the links out and the gallery when the document has them. The Italian
+# text must be a translation, not the English text pasted under an Italian title.
 check_project_pages() {
-  bundle exec ruby - "$SITE_DIR" <<'RUBY'
+  bundle exec ruby - "$SITE_DIR" "$MIN_BODY_CHARS" <<'RUBY'
 require "json"
 require "nokogiri"
 
 site_dir = ARGV.fetch(0)
+min_body = ARGV.fetch(1).to_i
 text_of = ->(node) { node ? node.text.gsub(/\s+/, " ").strip : "" }
+# The text of a button without its arrow, which is only decoration.
+label_of = lambda do |node|
+  copy = node.dup
+  copy.css(".arrow").each(&:remove)
+  text_of.(copy)
+end
 errors = []
 
 JSON.parse(ENV.fetch("PROJECTS_JSON")).each do |pair|
+  bodies = {}
   %w[en it].each do |lang|
     doc = pair[lang]
     file = File.join(site_dir, lang == "it" ? "it" : "", doc["permalink"], "index.html")
@@ -611,14 +706,160 @@ JSON.parse(ENV.fetch("PROJECTS_JSON")).each do |pair|
     metric = "#{doc["metric"]["value"]} #{doc["metric"]["label"]}"
     errors << "#{file}: the headline metric should read #{metric.inspect}" unless text_of.(page.at_css("main .project__metric")) == metric
     errors << "#{file}: the stack should list #{doc["stack"].inspect}" unless page.css("main .project__stack li").map { |node| text_of.(node) } == doc["stack"]
+    errors << "#{file}: the year should read #{doc["year"]}" unless text_of.(page.at_css("main .project__facts dd")) == doc["year"].to_s # the first fact
+
+    # The migrated text: sections (h2) and enough of it to be the real page, not
+    # the one-paragraph stub the page was before the migration.
+    body = page.at_css("main .project__body")
+    if body.nil?
+      errors << "#{file}: the project text (.project__body) is missing"
+    else
+      body_text = text_of.(body)
+      sections = body.css("h2").map { |node| text_of.(node) }
+      errors << "#{file}: the project text is only #{body_text.size} characters, a migrated project has at least #{min_body}" if body_text.size < min_body
+      errors << "#{file}: the project text has #{sections.size} section heading(s) (h2), at least 2 are expected" if sections.size < 2
+      bodies[lang] = [body_text, sections]
+    end
+
+    # The way back: to the project index of the page's own language, which exists.
+    index_href = lang == "it" ? "/it/progetti/" : "/projects/"
+    backs = page.css("main a.project__back")
+    errors << "#{file}: no link back to the project index (a.project__back)" if backs.empty?
+    backs.each { |link| errors << "#{file}: a back link goes to #{link["href"].inspect}, the project index is #{index_href}" unless link["href"] == index_href }
+    errors << "#{file}: the project index #{index_href} was not built" unless File.size?(File.join(site_dir, index_href, "index.html"))
+
+    # Links out (the project's website, its repository, a demo video): exactly the
+    # ones the document lists, and none when it lists none.
+    wanted_links = (doc["links"] || []).map { |link| [link["label"], link["url"]] }
+    shown_links = page.css("main .project__links a").map { |node| [label_of.(node), node["href"]] }
+    errors << "#{file}: the links out should be #{wanted_links.inspect}, the page shows #{shown_links.inspect}" unless shown_links == wanted_links
+
+    # The gallery: exactly the pictures the document lists, each with its alt text,
+    # its size, lazy loading, and a file in the built site; no gallery otherwise.
+    wanted_shots = doc["gallery"] || []
+    figures = page.css("main .project__gallery figure")
+    if figures.size != wanted_shots.size
+      errors << "#{file}: the gallery shows #{figures.size} picture(s), the document lists #{wanted_shots.size}"
+    else
+      figures.zip(wanted_shots).each do |figure, shot|
+        image = figure.at_css("img")
+        (errors << "#{file}: a gallery figure has no <img>"; next) unless image
+        errors << "#{file}: the gallery picture is #{image["src"].inspect}, the document lists #{shot["src"]}" unless image["src"] == shot["src"]
+        errors << "#{file}: the gallery picture #{shot["src"]} needs a non-empty alt" if image["alt"].to_s.strip.empty?
+        errors << "#{file}: the gallery picture #{shot["src"]} needs width and height, which reserve its space before it loads" unless image["width"] && image["height"]
+        errors << "#{file}: the gallery picture #{shot["src"]} must be loading=lazy (it is below the fold)" unless image["loading"] == "lazy"
+        errors << "#{file}: the gallery picture #{shot["src"]} is not in the built site" unless File.size?(File.join(site_dir, image["src"].to_s))
+        errors << "#{file}: the caption of #{shot["src"]} should read #{shot["caption"].inspect}" if shot["caption"] && text_of.(figure.at_css("figcaption")) != shot["caption"]
+      end
+    end
+  end
+
+  if bodies.size == 2
+    english, italian = bodies["en"], bodies["it"]
+    errors << "#{pair["page_id"]}: the Italian text is the English text, word for word: it must be translated" if english[0] == italian[0]
+    errors << "#{pair["page_id"]}: the Italian page has the English section headings #{english[1].inspect}: they must be translated" if english[1] == italian[1]
   end
 end
 
 abort(errors.map { |e| "  - #{e}" }.join("\n")) unless errors.empty?
 RUBY
 }
+MIN_BODY_CHARS=500
 check_project_pages || fail "a project detail page does not show what its document says (see the list above)"
-pass "every project detail page shows its title, cover with alt text, summary (also its meta description), metric and stack"
+pass "every project detail page shows its title, cover with alt text, summary (also its meta description), metric, year and stack, the migrated text (at least $MIN_BODY_CHARS characters in 2 or more sections, translated in Italian), a link back to the index, and its links and gallery when it has them"
+
+echo "==> Asserting the project index pages (every project of the language, both languages)"
+# /projects/ and /it/progetti/ are two documents tied by page_id (projects.html and
+# it/progetti.html), like a project: each lists ALL the projects of its language
+# as cards, the featured ones first, through _includes/project-card.html.
+EN_INDEX="$SITE_DIR/projects/index.html"
+IT_INDEX="$SITE_DIR/it/progetti/index.html"
+assert_file "$EN_INDEX" \
+  "the English project index must be built at /projects/ (projects.html)"
+assert_file "$IT_INDEX" \
+  "the Italian project index must be built at /it/progetti/ (it/progetti.html, permalink /progetti/: polyglot adds the /it/ prefix itself)"
+assert_contains "$EN_INDEX" '<html lang="en"' "the page must declare its language"
+assert_contains "$IT_INDEX" '<html lang="it"' "the page must declare its language"
+for index in "$EN_INDEX" "$IT_INDEX"; do
+  require_contains "$index" "rel=\"alternate\" hreflang=\"en\" href=\"$SITE_URL/projects/\"" \
+    "the project index must advertise its English page (are projects.html and it/progetti.html tied by page_id?)"
+  require_contains "$index" "rel=\"alternate\" hreflang=\"it\" href=\"$SITE_URL/it/progetti/\"" \
+    "the project index must advertise its Italian page (are projects.html and it/progetti.html tied by page_id?)"
+  require_contains "$index" "rel=\"alternate\" hreflang=\"x-default\" href=\"$SITE_URL/projects/\"" \
+    "x-default is the English page"
+done
+require_contains "$EN_INDEX" "rel=\"canonical\" href=\"$SITE_URL/projects/\"" "the English project index is its own canonical"
+require_contains "$IT_INDEX" "rel=\"canonical\" href=\"$SITE_URL/it/progetti/\"" "the Italian project index is its own canonical"
+[[ "$(switch_href "$EN_INDEX" it)" == "/it/progetti/" ]] ||
+  fail "the language switch on /projects/ must lead to /it/progetti/, not '$(switch_href "$EN_INDEX" it)'"
+[[ "$(switch_href "$IT_INDEX" en)" == "/projects/" ]] ||
+  fail "the language switch on /it/progetti/ must lead to /projects/, not '$(switch_href "$IT_INDEX" en)'"
+pass "the project index is built in both languages (/projects/ and /it/progetti/), each its own canonical, with reciprocal hreflang (en, it, x-default) and language switch"
+
+# What an index page holds besides the cards: one <h1>, an introduction, a count
+# that is the number of cards, headings that do not skip a level (the cards are
+# <h3>, so the count is the <h2> above them), and a title and meta description of
+# its own, not the home page's.
+check_project_index() {
+  bundle exec ruby - "$@" <<'RUBY'
+require "nokogiri"
+require "yaml"
+
+lang, file = ARGV
+text_of = ->(node) { node ? node.text.gsub(/\s+/, " ").strip : "" }
+page = Nokogiri::HTML5(File.read(file, encoding: "utf-8"))
+main = page.at_css("main")
+abort("  - #{file} has no <main>") unless main
+errors = []
+
+headline = main.css("h1").map { |node| text_of.(node) }
+errors << "main must hold exactly one non-empty <h1>, it holds #{headline.inspect}" unless headline.size == 1 && !headline.first.empty?
+errors << "the introduction under the heading (.lede) is empty" if text_of.(main.at_css(".lede")).empty?
+
+cards = main.css("a.pcard")
+count = main.at_css(".pindex__count b")
+errors << "the count of projects (.pindex__count b) reads #{text_of.(count).inspect}, the page lists #{cards.size} cards" unless count && text_of.(count) == cards.size.to_s
+
+levels = main.css("h1, h2, h3, h4, h5, h6").map { |node| node.name[1].to_i }
+levels.each_cons(2) { |above, below| errors << "the headings jump from h#{above} to h#{below}: a level is skipped" if below - above > 1 }
+
+defaults = YAML.load_file("_data/site_meta.yml")[lang]
+title = text_of.(page.at_css("title"))
+description = page.at_css('meta[name="description"]')&.[]("content").to_s.strip
+errors << "the <title> is #{title.inspect}: the index needs a title of its own, not the home page's" if title.empty? || title == defaults["title"]
+errors << "the meta description is #{description.inspect}: the index needs a description of its own, not the home page's" if description.empty? || description == defaults["description"]
+
+abort(errors.map { |e| "  - #{e}" }.join("\n")) unless errors.empty?
+RUBY
+}
+check_project_index en "$EN_INDEX" || fail "the English project index is wrong (see the list above)"
+check_project_index it "$IT_INDEX" || fail "the Italian project index is wrong (see the list above)"
+pass "both indexes: one <h1>, an introduction, a count that matches the cards, no skipped heading level, a title and description of their own (their cards are checked with the card include, below)"
+
+# Every link on the index and on the project pages stays in the page's language.
+# (A back link written /projects/ on an Italian page would be turned into
+# /it/projects/, a page that does not exist.)
+en_pages=("$EN_INDEX")
+it_pages=("$IT_INDEX")
+while IFS='|' read -r _ en_path it_path _ _; do
+  en_pages+=("$SITE_DIR${en_path}index.html")
+  it_pages+=("$SITE_DIR/it${it_path}index.html")
+done <<<"$pairs"
+check_link_prefixes en "${en_pages[@]}" ||
+  fail "an English project page has a link into the Italian site (see the list above)"
+check_link_prefixes it "${it_pages[@]}" ||
+  fail "an Italian project page has an internal link that is not under /it/ (see the list above)"
+pass "every root-relative link on the ${#en_pages[@]} English and ${#it_pages[@]} Italian project pages stays in the page's language"
+
+# No double prefix anywhere in the output: neither a file nor a link. polyglot adds
+# /it/ itself, so a permalink or a link written with it ends up as /it/it/....
+double_path="$(find "$SITE_DIR" \( -path '*/it/it' -o -path '*/it/it/*' \) -print || true)"
+[[ -z "$double_path" ]] ||
+  fail "the build wrote ${double_path%%$'\n'*}: a permalink with the /it/ prefix was prefixed a second time"
+double_link="$(grep -rIlF '/it/it/' "$SITE_DIR" || true)"
+[[ -z "$double_link" ]] ||
+  fail "${double_link%%$'\n'*} mentions /it/it/: a link or URL was written with the /it/ prefix and prefixed a second time"
+pass "no /it/it/ anywhere in the build (no such path, no link to one)"
 
 echo "==> Asserting the language switch (no dangling link, ever)"
 # The home page is one source rendered once per language. Its switch must lead to
@@ -852,29 +1093,41 @@ echo "==> Asserting the project cards (the include the home page and the project
 # alt, and a link to a page that exists; and the include must leave the
 # variables of the page that includes it alone (the canary).
 #
-# check_project_cards <lang> <built page> <site dir> <scope> <canary page?>
+# check_project_cards <lang> <built page> <site dir> <scope> <canary page?> [which] [minimum]
 # <scope> is the CSS selector of the element that holds the cards ("" for the
 # whole page); <canary page?> is "yes" for cards-test, which prints its own
 # variables after the cards. The real home page is checked with the same function
-# (scope "#work", no canary) under "Asserting the home page" below.
+# (scope "#work", no canary) under "Asserting the home page" below. <which> is
+# "featured" (the default: the cards must be the featured projects, at least 3) or
+# "all" (the project index: every project of the language, the featured ones
+# first, at least <minimum> of them).
 check_project_cards() {
   bundle exec ruby - "$@" <<'RUBY'
 require "json"
 require "nokogiri"
 
-lang, page_file, root, scope, canary_page = ARGV
+lang, page_file, root, scope, canary_page, which, minimum = ARGV
+which ||= "featured"
+minimum = (minimum || 3).to_i
 prefix = lang == "it" ? "/it" : ""
 where = scope.to_s.empty? ? "the #{lang} cards page" : "the #{lang} #{scope} section"
 text_of = ->(node) { node ? node.text.gsub(/\s+/, " ").strip : "" }
-featured = JSON.parse(ENV.fetch("PROJECTS_JSON")).map { |pair| pair[lang] }.select { |doc| doc["featured"] }
-expected = featured.map { |doc| prefix + doc["permalink"] }.sort
+docs = JSON.parse(ENV.fetch("PROJECTS_JSON")).map { |pair| pair[lang] }
+featured = docs.select { |doc| doc["featured"] }
+shown = which == "all" ? docs : featured
+expected = shown.map { |doc| prefix + doc["permalink"] }.sort
 
 page = Nokogiri::HTML5(File.read(page_file, encoding: "utf-8"))
 cards = page.css(scope.to_s.empty? ? "a.pcard" : "#{scope} a.pcard")
 errors = []
-errors << "#{where} has #{cards.size} project card(s), at least 3 are needed" if cards.size < 3
+errors << "#{where} has #{cards.size} project card(s), at least #{minimum} are needed" if cards.size < minimum
 links = cards.map { |card| card["href"] }.sort
-errors << "#{where} links to #{links.inspect}, but the featured #{lang} projects are #{expected.inspect}" unless links == expected
+errors << "#{where} links to #{links.inspect}, but the #{which == "all" ? "" : "featured "}#{lang} projects are #{expected.inspect}" unless links == expected
+if which == "all"
+  # The featured projects lead, so the index opens on the best work.
+  lead = cards.first(featured.size).map { |card| card["href"] }.sort
+  errors << "#{where} must open with the featured projects #{featured.map { |doc| prefix + doc["permalink"] }.sort.inspect}, it opens with #{lead.inspect}" unless lead == featured.map { |doc| prefix + doc["permalink"] }.sort
+end
 
 if canary_page == "yes"
   canary = text_of.(page.at_css("#canary"))
@@ -908,6 +1161,14 @@ check_project_cards en "$FX/cards-test/index.html" "$FX" "" yes ||
 check_project_cards it "$FX/it/cards-test/index.html" "$FX" "" yes ||
   fail "the Italian project cards are wrong (see the list above)"
 pass "project cards: exactly the featured projects in each language, each with a real lazy-loaded image, non-empty alt, sector, title, metric and a link to a built page; the include leaves the page's own t, lang and p alone"
+
+# The same include on the real project indexes (/projects/, /it/progetti/): there
+# the cards are ALL the projects of the language, the featured ones first.
+check_project_cards en "$EN_INDEX" "$SITE_DIR" "main" no all "$MIN_PROJECTS" ||
+  fail "the project cards on the English index are wrong (see the list above)"
+check_project_cards it "$IT_INDEX" "$SITE_DIR" "main" no all "$MIN_PROJECTS" ||
+  fail "the project cards on the Italian index are wrong (see the list above)"
+pass "project index: a card for every project of the language (at least $MIN_PROJECTS), the featured ones first, each with a real lazy-loaded image, non-empty alt, sector, title, metric and a link to a built page"
 
 echo "==> Asserting the UI strings (EN and IT define the same keys, every nav entry is complete)"
 check_ui_strings() {
