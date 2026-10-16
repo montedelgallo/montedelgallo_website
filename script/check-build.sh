@@ -640,7 +640,9 @@ done
 # site with six throw-away pages and check what the switch, the canonical URL
 # and the hreflang tags do when (a) a page has no translation and (b) the two
 # translations have different slugs. (The sixth page lists the project cards;
-# see "Asserting the project cards" below.) The real source tree is not touched.
+# see "Asserting the project cards" below.) The copy also holds one project that
+# is not featured, in each language (see the end of "Asserting the home page").
+# The real source tree is not touched.
 FIXTURE="$(mktemp -d "${TMPDIR:-/tmp}/mdg-check.XXXXXX")"
 trap 'rm -rf -- "$FIXTURE"' EXIT
 COPYFILE_DISABLE=1 tar -cf - --exclude=_site --exclude=.git --exclude=.jekyll-cache \
@@ -720,9 +722,53 @@ permalink: /cards-test/
 </div>
 <p id="canary">{{ t }} {{ lang }} {{ p }}</p>
 PAGE
+# A project with `featured: false`, as an English and an Italian document tied by
+# page_id, like the real ones. Every real project is featured, so without this
+# pair nothing ever gives the featured filter of the home something to drop. The
+# fixture's home must not list it (checked at the end of "Asserting the home
+# page"); the project still has pages of its own.
+mkdir -p "$FIXTURE/_projects/it"
+cat >"$FIXTURE/_projects/fixture-hidden.md" <<'PAGE'
+---
+title: "Hidden fixture project"
+lang: en
+page_id: project-fixture-hidden
+permalink: /projects/fixture-hidden/
+sector: "Fixture"
+year: 2025
+stack: ["Jekyll"]
+summary: "A project with featured: false, which the home must not list."
+metric:
+  value: "0"
+  label: "cards on the home"
+cover: /assets/img/projects/soshiki-cover.webp
+cover_alt: "A cover that the home never shows"
+featured: false
+---
+Not featured: it has a page of its own and no card on the home.
+PAGE
+cat >"$FIXTURE/_projects/it/fixture-nascosto.md" <<'PAGE'
+---
+title: "Progetto fixture nascosto"
+lang: it
+page_id: project-fixture-hidden
+permalink: /progetti/fixture-nascosto/
+sector: "Fixture"
+year: 2025
+stack: ["Jekyll"]
+summary: "Un progetto con featured: false, che la home non deve mostrare."
+metric:
+  value: "0"
+  label: "card nella home"
+cover: /assets/img/projects/soshiki-cover.webp
+cover_alt: "Una copertina che la home non mostra mai"
+featured: false
+---
+Non in evidenza: ha una pagina propria e nessuna card nella home.
+PAGE
 
 (cd "$FIXTURE" && BUNDLE_GEMFILE="$ROOT_DIR/Gemfile" bundle exec jekyll build --quiet) ||
-  fail "the fixture build (home + six test pages) failed"
+  fail "the fixture build (home + six test pages + a project that is not featured) failed"
 FX="$FIXTURE/_site"
 
 # polyglot turns a static_href link into ferh="..." and back into href="..." only
@@ -1105,6 +1151,44 @@ check_project_cards en "$EN_HOME" "$SITE_DIR" "#work" no ||
 check_project_cards it "$IT_HOME" "$SITE_DIR" "#work" no ||
   fail "the project cards on the Italian home are wrong (see the list above)"
 pass "both homes: one h1, the eight sections in order (ids services, work, about), every string of the home: tree on the page, the icons and counts the data asks for, booking and WhatsApp links, and the featured projects with their real covers in the work section"
+
+# The featured filter, on both sides. Every real project is `featured: true`, so
+# the real homes only prove that the work section KEEPS the featured projects: a
+# filter taken out of _includes/home/work.html would still pass. The fixture holds
+# one project with `featured: false` in each language (see where it is built), and
+# its home is rendered from the same index.html and _includes/home/. Its work
+# section must show exactly the cards of the real home and not that project, which
+# does have pages of its own (else its absence from the home would prove nothing).
+#
+# check_featured_filter <lang> <real home> <fixture home> <hidden href> <hidden title>
+check_featured_filter() {
+  bundle exec ruby - "$@" <<'RUBY'
+require "nokogiri"
+
+lang, real_file, fixture_file, hidden_href, hidden_title = ARGV
+cards_of = ->(file) { Nokogiri::HTML5(File.read(file, encoding: "utf-8")).css("#work a.pcard") }
+real = cards_of.(real_file).map { |card| card["href"] }.sort
+shown = cards_of.(fixture_file)
+links = shown.map { |card| card["href"] }.sort
+errors = []
+errors << "the work section of the #{lang} fixture home shows no project card" if links.empty?
+if links.include?(hidden_href) || shown.any? { |card| card.text.include?(hidden_title) }
+  errors << "the work section of the #{lang} fixture home shows #{hidden_title.inspect} (#{hidden_href}), a project with featured: false: _includes/home/work.html must keep the featured projects only"
+end
+errors << "the work section of the #{lang} fixture home links to #{links.inspect}, the real home to #{real.inspect}: a project that is not featured must change nothing" unless links == real
+abort(errors.map { |e| "  - #{e}" }.join("\n")) unless errors.empty?
+RUBY
+}
+while IFS='|' read -r lang real_home fixture_home hidden_href hidden_title hidden_page; do
+  [[ -s "$hidden_page" ]] ||
+    fail "$hidden_page is missing: the fixture's project with featured: false was not built, so its absence from the home would prove nothing"
+  check_featured_filter "$lang" "$real_home" "$fixture_home" "$hidden_href" "$hidden_title" ||
+    fail "the $lang fixture home lists a project that is not featured, or not the featured ones (see the list above)"
+done <<EOF
+en|$EN_HOME|$FX/index.html|/projects/fixture-hidden/|Hidden fixture project|$FX/projects/fixture-hidden/index.html
+it|$IT_HOME|$FX/it/index.html|/it/progetti/fixture-nascosto/|Progetto fixture nascosto|$FX/it/progetti/fixture-nascosto/index.html
+EOF
+pass "the featured filter drops a project that is not featured: the work section of the fixture homes (EN and IT) lists the same cards as the real homes, and not the project with featured: false, which has pages of its own"
 
 echo "==> Validating links, images and scripts in the built site (html-proofer, internal only)"
 # Only internal checks: external URLs (the booking page, hreflang and canonical
