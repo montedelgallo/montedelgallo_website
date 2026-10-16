@@ -11,6 +11,10 @@ baseurl: ""
 # --- Internationalization (jekyll-polyglot) ----------------------------------
 languages: ["en", "it"]
 default_lang: "en"
+# Build the default language first, in the parent process, and fork only the
+# others. Otherwise the EN and IT forks both wipe and rewrite .jekyll-cache at
+# the same time, and about 1 build in 40 crashes with Errno::ENOENT.
+serial_default_lang: true
 # Emitted once at the site root; not duplicated under /it/, and links to them
 # are not language-prefixed.
 exclude_from_localization: ["assets"]
