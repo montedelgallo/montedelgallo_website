@@ -14,6 +14,11 @@
   stock picture, no generated face). Optional parameter `members`: a list of the
   same shape, instead of the data file (the build check uses it to prove the tile).
 
+  A portrait is never shown wider than its own pixel width: the <img> carries
+  style="max-width:<photo_w>px" (the stylesheet draws every tile at most 140px, the
+  width of the smallest real portrait, so the tiles are all the same size and none is
+  stretched; script/check-build.sh asserts both).
+
   The initials are the first letter of the first and of the last word of the name
   ("Ada Lovelace" is AL, "Grace" is G).
 
@@ -28,7 +33,7 @@
   {%- for tg_member in tg_members %}
   <li class="team__member">
     {%- if tg_member.photo %}
-    <img class="team__photo" src="{{ tg_member.photo | relative_url }}" alt="{{ site.data.team.portrait[tg_lang] | escape }} {{ tg_member.name | escape }}" width="{{ tg_member.photo_w }}" height="{{ tg_member.photo_h }}" loading="lazy" decoding="async">
+    <img class="team__photo" src="{{ tg_member.photo | relative_url }}" alt="{{ site.data.team.portrait[tg_lang] | escape }} {{ tg_member.name | escape }}" width="{{ tg_member.photo_w }}" height="{{ tg_member.photo_h }}" style="max-width:{{ tg_member.photo_w }}px" loading="lazy" decoding="async">
     {%- else %}
     {%- assign tg_words = tg_member.name | split: " " %}
     <span class="team__ph" aria-hidden="true">{{ tg_words.first | slice: 0 }}{% if tg_words.size > 1 %}{{ tg_words.last | slice: 0 }}{% endif %}</span>

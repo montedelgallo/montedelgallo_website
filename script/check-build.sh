@@ -2335,6 +2335,8 @@ if team
     errors << "team member #{name.inspect}: the portrait has no alt text naming the person" unless img["alt"].to_s.include?(name) && !name.empty?
     errors << "team member #{name.inspect}: the portrait has no width and height" if img["width"].to_s.empty? || img["height"].to_s.empty?
     errors << "team member #{name.inspect}: the portrait must be lazy-loaded (the section is below the fold)" unless img["loading"] == "lazy"
+    cap = img["style"].to_s[/max-width:\s*(\d+)px/, 1].to_i
+    errors << "team member #{name.inspect}: the portrait needs style=\"max-width:<its pixel width>px\" so it is never shown larger than its pixel size (width=#{img["width"]}, style=#{img["style"].inspect})" unless cap.positive? && cap <= img["width"].to_i
   end
   about_href = lang == "it" ? "/it/chi-siamo/#team" : "/about/#team"
   errors << "the Team section must link to the About hub's team section (#{about_href}), it links to #{team.css("a").map { |a| a["href"] }.inspect}" unless team.css("a").any? { |a| a["href"] == about_href }
@@ -2358,12 +2360,34 @@ if rl
   errors << "the Robotic Lab section should print the project's summary" unless norm.(rl.text).include?(norm.(front["summary"]))
   facts = rl.css(".rlab__fact")
   errors << "the Robotic Lab section should show 2 to 4 facts, it shows #{facts.size}" unless (2..4).cover?(facts.size)
+  # Each figure must be in the project's text, specifically: a figure is matched as a whole
+  # word (the "4" of an unrelated numbered list item does not count), and a bare count
+  # ("4 element types") must be the number of items under the project's heading about it
+  # ("Four element types" / "Quattro tipi di elemento").
+  raw = source.sub(/\A---\n.*?\n---\n/m, "")
+  count_heading = lang == "it" ? /^##\s+Quattro tipi di elemento\b[^\n]*$/i : /^##\s+Four element types\b[^\n]*$/i
   facts.each do |fact|
     value = norm.(fact.at_css("b")&.text)
-    errors << "Robotic Lab fact #{value.inspect} is not in #{project_file} (a fact must come from the project text)" unless value.empty? || body.include?(value) || norm.(front.dig("metric", "value")) == value
+    label = norm.(fact.at_css("span")&.text)
+    if value.empty?
+      errors << "a Robotic Lab fact has no figure"
+    elsif value.match?(/\A\d+\z/)
+      section = raw[/#{count_heading.source}\n(.*?)(?=^## |\z)/mi, 1] if raw.match?(count_heading)
+      if section.nil?
+        errors << "Robotic Lab fact #{value.inspect} (#{label.inspect}) is a count, so #{project_file} must have the heading it counts (#{lang == "it" ? "Quattro tipi di elemento" : "Four element types"})"
+      elsif section.lines.count { |line| line.start_with?("- ") } != value.to_i
+        errors << "Robotic Lab fact #{value.inspect} (#{label.inspect}) but the heading of #{project_file} lists #{section.lines.count { |line| line.start_with?("- ") }} item(s)"
+      end
+    else
+      errors << "Robotic Lab fact #{value.inspect} is not in #{project_file} (a fact must come from the project text)" unless body.match?(/(?<![\w.])#{Regexp.escape(value)}(?![\w])/)
+    end
   end
   pics = rl.css("img")
   errors << "the Robotic Lab section shows no real image" if pics.empty?
+  # Which pictures, exactly, in this order: a reordered gallery must not swap them silently.
+  shown = pics.map { |img| File.basename(img["src"].to_s) }
+  wanted = %w[mdg-robotic-lab-reference.webp timeline-editor.webp mdg-robotic-lab-face.webp]
+  errors << "the Robotic Lab section should show #{wanted.inspect} in this order, it shows #{shown.inspect}" unless shown == wanted
   pics.each do |img|
     src = img["src"].to_s
     errors << "Robotic Lab image #{src.inspect} is not one of /assets/img/projects/mdg-robotic-lab-* or /assets/img/motioforge/*" unless src.match?(%r{\A/assets/img/(projects/mdg-robotic-lab-|motioforge/)[\w-]+\.webp\z})
@@ -3118,6 +3142,7 @@ if mode == "fixture"
     errors << "#{lang}: a member with a portrait shows it as an <img> with alt text" unless img && !img["alt"].to_s.strip.empty?
     errors << "#{lang}: no initials tile on a member that has a portrait" if second.at_css(".team__ph")
     errors << "#{lang}: the badge should be #{lang == "it" ? "Ammiraglia" : "Admiral"}" unless text_of.(second.at_css(".team__badge")) == (lang == "it" ? "Ammiraglia" : "Admiral")
+    errors << "#{lang}: the fixture portrait (480 px) must carry style=\"max-width:480px\", it has #{img && img["style"].inspect}" unless img && img["style"].to_s.match?(/max-width:\s*480px/)
     msg = img && real_image.(img["src"]) and errors << "#{lang}: #{msg}"
   end
 else
@@ -3138,6 +3163,8 @@ else
       errors << "#{lang}: #{member["name"]}: the portrait has no alt text" if img["alt"].to_s.strip.empty?
       errors << "#{lang}: #{member["name"]}: the portrait alt text should name the person" unless img["alt"].to_s.include?(member["name"])
       errors << "#{lang}: #{member["name"]}: the portrait has no width and height" if img["width"].to_s.empty? || img["height"].to_s.empty?
+      cap = img["style"].to_s[/max-width:\s*(\d+)px/, 1].to_i
+      errors << "#{lang}: #{member["name"]}: the portrait must carry style=\"max-width:#{member["photo_w"]}px\" (never wider than its pixel size, so the small portraits do not blur), it has #{img["style"].inspect}" unless cap.positive? && cap <= member["photo_w"].to_i
       msg = real_image.(img["src"]) and errors << "#{lang}: #{member["name"]}: #{msg}"
     else
       errors << "#{lang}: #{member["name"]}: neither a portrait nor the initials tile" unless node.at_css(".team__ph")
@@ -3158,6 +3185,20 @@ if grep -nE '\{%-?[[:space:]]*(assign|capture)[[:space:]]+(t|lang|p)[[:space:]]*
   fail "_includes/team-grid.html assigns (or loops with) t, lang or p (see the rule in index.html): give the variable a prefix of its own"
 fi
 pass "the team grid include assigns no t, lang or p"
+
+# The grid on a phone and the size of a portrait, read from the compiled CSS: at least two
+# columns before any media query (a single column is ~4,500px of scroll for ten tiles),
+# five from the tablet width up (ten members, two full rows), and a portrait drawn at most 140px wide, the pixel width of the smallest real portrait, so that every tile is the same size
+# and none is stretched.
+grep -qE '\.team\{[^}]*grid-template-columns:repeat\(2,' "$CSS" ||
+  fail "the .team rule in $CSS must start with two columns (grid-template-columns:repeat(2,...)): one column on a phone is too long"
+grep -qE '@media ?\(min-width: ?[0-9]+px\)\{\.team\{[^}]*grid-template-columns:repeat\(5,' "$CSS" ||
+  fail "$CSS has no media query that gives .team five columns (ten members, two full rows) at the wider widths"
+grep -qE '\.team__photo[^{]*\{[^}]*width:min\(100%, ?140px\)' "$CSS" ||
+  fail "the .team__photo rule in $CSS must size a portrait width:min(100%,140px) (the smallest real portrait is 140px wide)"
+smallest="$(bundle exec ruby -ryaml -e 'puts YAML.load_file("_data/team.yml")["members"].filter_map { |m| m["photo_w"] }.min')"
+[[ "$smallest" -ge 140 ]] || fail "a portrait of _data/team.yml is only ${smallest}px wide, below the 140px cap of .team__photo: it would be stretched"
+pass "the team grid has two columns on a phone and five from the tablet width up, and a portrait is drawn at most 140px wide (the smallest real one is ${smallest}px)"
 
 # MotioForge: the download links point at the files that are already live on the old
 # server, as absolute external URLs (the 214 MB archive and the PDFs must not be copied

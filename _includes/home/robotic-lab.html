@@ -3,6 +3,7 @@
   title, its summary and two of its pictures are the Robotic Lab project's own
   (the document of _projects/ with page_id project-mdg-robotic-lab, in the
   language being built: _projects/mdg-robotic-lab.md, _projects/it/mdg-robotic-lab.md),
+  the two photos picked by file name (reference, face), not by position,
   so they cannot drift from the project page. The figures, the note about
   MotioForge and the button labels are t.home.robotic_lab; script/check-build.sh
   proves every figure is printed in the project's text. The third picture is the
@@ -34,8 +35,8 @@
       </div>
     </div>
     <ul class="rlab__shots">
-      {%- assign rl_ref = rl_project.gallery[0] -%}
-      {%- assign rl_face = rl_project.gallery[2] %}
+      {%- assign rl_ref = rl_project.gallery | where_exp: "rl_g", "rl_g.src contains 'mdg-robotic-lab-reference'" | first -%}
+      {%- assign rl_face = rl_project.gallery | where_exp: "rl_g", "rl_g.src contains 'mdg-robotic-lab-face'" | first %}
       <li><img src="{{ rl_ref.src | relative_url }}" alt="{{ rl_ref.alt | escape }}" width="{{ rl_ref.width }}" height="{{ rl_ref.height }}" loading="lazy" decoding="async"></li>
       <li><img src="{{ '/assets/img/motioforge/timeline-editor.webp' | relative_url }}" alt="{{ t.home.robotic_lab.shots.timeline_alt | escape }}" width="1920" height="1039" loading="lazy" decoding="async"></li>
       <li><img src="{{ rl_face.src | relative_url }}" alt="{{ rl_face.alt | escape }}" width="{{ rl_face.width }}" height="{{ rl_face.height }}" loading="lazy" decoding="async"></li>

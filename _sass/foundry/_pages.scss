@@ -404,13 +404,24 @@
 // ---------- the team ----------
 // A square portrait per member. Where there is no portrait the tile carries the
 // initials on the blueprint grid of the hero.
+// Two columns on a phone (one column is ~4,500px of scroll for ten members), five from
+// the tablet width up: ten members make two full rows. Every tile is drawn at most 140px
+// wide, the width of the smallest real portrait (Giovanni's and Davide's), so no portrait
+// is stretched and all the tiles line up; the <img> also carries max-width:<its own pixel
+// width> (_includes/team-grid.html). script/check-build.sh asserts all of it.
 .team{
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(min(100%,176px),1fr));
-  gap:clamp(18px,2.4vw,28px);
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:clamp(22px,3vw,32px) clamp(14px,2.4vw,28px);
   list-style:none;
   margin:clamp(28px,4vw,44px) 0 0;
   padding:0;
+}
+
+@media (min-width:760px){
+  .team{
+    grid-template-columns:repeat(5,minmax(0,1fr));
+  }
 }
 
 .team__member{
@@ -423,7 +434,7 @@
 .team__photo,
 .team__ph{
   display:block;
-  width:100%;
+  width:min(100%,140px);
   aspect-ratio:1 / 1;
   border:1px solid var(--line);
   border-radius:10px;
