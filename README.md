@@ -35,7 +35,7 @@ named areas (for example `home nav`).
 
 - `script/checks/run.rb` lists the areas in the order they run. Each area is one file,
   `script/checks/<area>.rb`, that defines `check_<area>(ctx)`: `build`, `styles`, `shell`, `nav`, `projects`,
-  `language_switch`, `case_studies`, `redirects`, `redirects_emit`, `services`, `i18n`, `home`, `blog`, `company`, `contact`, `sitemap`, `jsonld`, `seo_meta`.
+  `language_switch`, `case_studies`, `redirects`, `redirects_emit`, `services`, `i18n`, `home`, `blog`, `company`, `contact`, `sitemap`, `jsonld`, `seo_meta`, `share_404`, `analytics`, `perf`, `csp`.
 - The build folder is one setting, `Checks::SITE_DIR` in `script/checks/lib/site.rb`: `check-build.sh` reads it for
   `jekyll build --destination` and html-proofer, and the checks read it as `ctx.site_dir`. The cache folder,
   `Checks::CACHE_DIR`, is repeated in `script/checks/check-config.yml` (the `build` area asserts they agree).
@@ -140,6 +140,29 @@ that is not in the repo goes in (no street address, geo, hours, rating, review, 
 objects are built with the `ld_object` filter (`_plugins/jsonld_object.rb`: alternating keys and values become a
 Hash) and serialized with `jsonify`. `script/checks/jsonld.rb` derives what each page must carry from the sources
 and holds every node to a per-type property allow-list.
+
+## Performance, accessibility and security headers
+
+- **Responsive images.** Every picture is a webp master with variants next to it: `<name>-480.webp`, `-800.webp` (covers,
+  gallery and article pictures; the master is the 1200w, or the 1920w of the MotioForge editor) and `<name>-260.webp`, `-520.webp`
+  (team portraits). `ruby script/make-image-variants.rb` writes them and `_data/image_variants.yml` (size + variants of every
+  picture; needs `cwebp` and `identify`; no image tooling runs in CI). Run it and commit the files when you add or replace a picture.
+  Pages use `_includes/picture.html` (`src`, `alt`, `sizes` preset, `eager`/`priority`); the raw `<img>` of an article body carries
+  its `srcset` and `sizes` by hand (the check prints the exact `srcset` to paste when one is missing). The first row of an index
+  page and every detail cover load eagerly, everything else lazily.
+- **Navigation.** The link of the section a page belongs to carries `aria-current="page"` (`also:` in `_data/nav.yml` lists the
+  other pages of a section); on the home it is the brand link.
+- **Content-Security-Policy and headers.** `headers` (an extensionless page, like `redirects`) is built to `/_headers` for
+  Cloudflare Pages; `deploy/nginx/headers.conf` is the nginx fallback. The policy allows only the site itself, the analytics host
+  and `soshiki.io` (the contact form), no `unsafe-inline`. The one inline script (the no-js to js switch in `_includes/head.html`)
+  is allowed by its SHA-256: when you edit it, `script/checks/csp.rb` fails and prints the new hash to paste into `headers` and
+  `headers.conf`. A new analytics host, a new form target or an inline style needs a deliberate change of the policy. Look at the
+  site under its policy: `python3 script/serve-built-site.py .check-site 8124` (it applies `_headers`), and open
+  `http://127.0.0.1:8124/`.
+- **Lighthouse.** CI runs `npx @lhci/cli autorun` (`.lighthouserc.json`) against the built site, served with its headers, desktop
+  and mobile, on the home, a project, an article and the contact page: performance, accessibility and SEO at least 95, best
+  practices at least 90.
+- `deploy/` (the nginx files and notes) is excluded from the build: it is not published.
 
 ## Brand images and 404 pages
 

@@ -78,6 +78,7 @@ AREAS = %w[
   share_404
   analytics
   perf
+  csp
 ].freeze
 
 AREAS.each { |area| require_relative area }

@@ -138,9 +138,16 @@ def nav_mobile_menu(ctx, css_file)
   # The menu is only collapsed INSIDE the narrow-screen media query: the desktop bar is untouched.
   nav_collapse_rule_error(css) and
     fail!("#{css_file} collapses the menu outside the (max-width:860px) media query: the desktop header would lose its links")
-  Checks::Site.read(ctx.en_home).include?("document.documentElement.className") || fail!("#{ctx.en_home} has no head script that flips no-js to js")
+  head_script = nav_head_script(load_file(ctx.en_home))
+  (head_script.include?('classList.replace("no-js","js")') && head_script.include?("DOMContentLoaded") && head_script.include?("dataset.nav")) ||
+    fail!("#{ctx.en_home} has no head script that flips no-js to js, and back to no-js on DOMContentLoaded unless <html data-nav> is set (the fallback for a nav.js that did not load): found #{head_script.inspect}")
+  head_script.match?(/classList\.remove\( *["']js["'] *\)/) && head_script.match?(/classList\.add\( *["']no-js["'] *\)/) ||
+    fail!("the head script must swap back with classList.remove(\"js\") and classList.add(\"no-js\"), never overwrite className: #{head_script.inspect}")
+  head_script.match?(/className *=[^=]/) and fail!("the head script overwrites <html>'s className: use classList so the other classes survive")
   # nav.js reverts to the no-JS layout when anything throws (a menu that cannot open must not stay collapsed).
   js = Checks::Site.read(nav_js)
+  js.match?(/dataset\.nav *= *['"]ready['"]/) ||
+    fail!("#{nav_js} must set document.documentElement.dataset.nav = 'ready' once its setup is complete (the head script reverts to no-js when it is missing)")
   (js.include?("catch") && js.match?(/classList\.remove\( *['"]js['"] *\)/) && js.match?(/classList\.add\( *['"]no-js['"] *\)/)) ||
     fail!("#{nav_js} must wrap its setup in try/catch and swap <html>'s js class for no-js (classList.remove('js'), classList.add('no-js')) on any error")
   if js.match?(/className *=[^=]/)
@@ -150,7 +157,7 @@ def nav_mobile_menu(ctx, css_file)
   css.match?(/\.nav__book(,[^{]*)?\{[^}]*display:none/) || fail!("#{css_file}: .nav__book must be hidden by default (the desktop bar has the button in .nav__cta)")
   css.match?(/@media ?\(max-width: ?860px\)\{[^@]*\.nav__book\{[^}]*display:inline-flex/) || fail!("#{css_file}: .nav__book must be shown (display:inline-flex) in the (max-width:860px) media query")
   css.match?(/\.no-js \.nav\{position:static/) || fail!("#{css_file}: the no-JS open menu must not stay stuck (.no-js .nav{position:static})")
-  pass "mobile menu: button (constant Menu label) with aria-expanded=false + aria-controls (EN, IT, inner page), Book in the phone bar, deferred nav.js with onerror + try/catch classList swap back to no-js, <=860px CSS, reduced-motion guard, no-JS fallback"
+  pass "mobile menu: button (constant Menu label) with aria-expanded=false + aria-controls (EN, IT, inner page), Book in the phone bar, deferred nav.js (no onerror attribute) that announces itself with data-nav=ready, head script reverting to no-js on DOMContentLoaded without it, try/catch classList swap back to no-js, <=860px CSS, reduced-motion guard, no-JS fallback"
 end
 
 # nil when the collapse rule is inside the (max-width:860px) media query, else the reason.
@@ -160,6 +167,11 @@ def nav_collapse_rule_error(css)
   depth = before.count("{") - before.count("}")
   query = before.rindex("@media")
   "the collapse rule is at depth #{depth}" unless depth == 1 && query && before[query, 40] =~ /max-width: ?860px/
+end
+
+# The text of the page's one inline script (the head script that flips no-js to js); "" when none.
+def nav_head_script(page)
+  page.css("head script:not([src]):not([type])").map(&:text).join("\n")
 end
 
 def nav_mobile_menu_errors(lang, file)
@@ -193,11 +205,10 @@ def nav_mobile_menu_errors(lang, file)
   end
   js = page.css("script[src]").find { |s| s["src"].to_s.end_with?("/assets/js/nav.js") }
   errors << "nav.js must be loaded with a <script src=\"/assets/js/nav.js\" defer>" unless js && js.has_attribute?("defer")
-  # A failed load must give the open (no-JS) layout back: the script tag reverts js -> no-js.
-  # It swaps the class (classList: remove js, add no-js) and never overwrites className, which would drop any other class of <html>.
-  onerror = js && js["onerror"].to_s
-  errors << "the nav.js <script> needs an onerror handler that swaps <html>'s js class for no-js with classList.remove('js') and classList.add('no-js'), it has #{onerror.inspect}" unless onerror && onerror.match?(/classList\.remove\(\s*["']js["']\s*\)/) && onerror.match?(/classList\.add\(\s*["']no-js["']\s*\)/)
-  errors << "the onerror handler must not overwrite className (it would drop the other classes of <html>): #{onerror.inspect}" if onerror&.match?(/className\s*=(?!=)/)
+  # A failed load must give the open (no-JS) layout back: not with an onerror attribute (an inline event
+  # handler would need 'unsafe-hashes' in the CSP) but with the head script's DOMContentLoaded handler,
+  # which reverts js -> no-js unless nav.js set <html data-nav> (asserted above, on the home).
+  errors << "the nav.js <script> must not carry an onerror attribute (Content-Security-Policy: no inline handlers; the head script reverts to no-js when <html data-nav> is missing), it has #{js["onerror"].inspect}" if js&.key?("onerror")
   errors << "<html> must start as class=\"no-js\" (the fallback until the head script flips it)" unless page.at_css("html")["class"].to_s.split.include?("no-js")
   errors
 end

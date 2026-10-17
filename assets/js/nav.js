@@ -3,9 +3,14 @@
 // head script, so there is no flash of the open menu). Without JavaScript the links
 // stay open and reachable.
 //
-// If this file cannot do its job (it fails to load, which the <script onerror> in
-// head.html handles, or anything below throws), <html> swaps its js class for no-js
-// (a classList swap: any other class on <html> stays) and the open menu layout returns: a menu that cannot open must never stay shut.
+// If this file cannot do its job, <html> swaps its js class for no-js (a classList swap: any
+// other class on <html> stays) and the open menu layout returns: a menu that cannot open must
+// never stay shut. Two ways in: anything below throws (giveUp, here), or the file never runs
+// (it fails to load, or the browser blocks it). For the second one this file announces itself
+// at the end of its setup with <html data-nav="ready">, and the inline script of head.html,
+// on DOMContentLoaded (after every deferred script has run or failed), swaps back to no-js when
+// that flag is missing. (There is no onerror attribute on the <script> tag: an inline event
+// handler would need 'unsafe-hashes' in the Content-Security-Policy.)
 //
 // The button (.nav__toggle) controls the menu through aria-controls and mirrors the
 // state in aria-expanded (its accessible name stays "Menu"). Escape closes the menu
@@ -64,6 +69,9 @@
     };
     if (narrow.addEventListener) narrow.addEventListener('change', onResize);
     else if (narrow.addListener) narrow.addListener(onResize);
+
+    // The setup is complete: tell head.html's DOMContentLoaded handler to keep the js layout.
+    root.dataset.nav = 'ready';
   } catch (error) {
     giveUp();
   }
