@@ -1,8 +1,19 @@
 # The old WordPress URL -> the URL on this site, for every page whose address
-# changed in the migration. This file is DATA only: nothing reads it at build time
-# yet. Emitting the real 301 redirects is Plan 3 (they depend on the host). Pages that
-# kept their old URL are not listed. script/check-build.sh checks that the file parses,
-# that every `to` is a page of the build and that no `from` is a built page.
+# changed in the migration. Pages that kept their old URL are not listed.
+#
+# This file is the source of every redirect the host serves, each answered with a 301:
+#   * `redirects` (Jekyll) writes it to /_redirects for Cloudflare Pages (and Netlify);
+#   * script/build-redirects.rb writes it to deploy/nginx/redirects.conf (the fallback
+#     if the site is served by nginx); run it after every change here, CI fails on a
+#     stale file.
+# Each `from` is served with and without its trailing slash (both are generated, list the
+# slash form only). script/check-build.sh checks that the file parses, that every `to` is
+# a page of the build, that no `from` is a built page, and what is emitted.
+#
+# Not redirects, on purpose: the WordPress blog pagination (/blog/?mdg_blog_page=N) is the
+# built /blog/ page with a query string, which a static host ignores, and
+# _redirects cannot match a query anyway; /wp-content/uploads/* is added as ordinary
+# entries by the MotioForge downloads task.
 #
 # Paths are public URL paths, with the /it/ prefix for the Italian site.
 

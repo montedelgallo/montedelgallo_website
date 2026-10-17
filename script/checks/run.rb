@@ -56,6 +56,7 @@ AREAS = %w[
   language_switch
   case_studies
   redirects
+  redirects_emit
   services
   i18n
   home

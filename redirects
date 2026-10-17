@@ -1,0 +1,23 @@
+---
+permalink: /_redirects
+sitemap: false
+---
+{%- comment -%}
+  The 301 redirects of the old WordPress URLs, in the format of Cloudflare Pages and
+  Netlify (`/from /to 301`, one per line, first match wins), written to /_redirects.
+  Jekyll skips source files that start with an underscore, hence this file and its
+  permalink. It has no extension on purpose: Jekyll adds the extension of the source
+  file to a permalink that does not end in it (redirects.txt would be written as
+  _redirects.txt). It is a single file at the site root: it is listed in
+  `exclude_from_localization`, so jekyll-polyglot does not build /it/_redirects as well
+  (`include: [_redirects]` would not work: an included file ignores the exclusions).
+  The data is _data/redirects.yml; each `from` is written twice, with its trailing slash
+  and without, the same rule as BuildRedirects.rules in script/build-redirects.rb, which
+  also writes the nginx form. script/checks/redirects_emit.rb proves that they agree.
+{%- endcomment -%}
+# Generated from _data/redirects.yml by redirects. Do not edit.
+{% for r in site.data.redirects -%}
+{%- assign cut = r.from.size | minus: 1 -%}
+{{ r.from }} {{ r.to }} 301
+{{ r.from | slice: 0, cut }} {{ r.to }} 301
+{% endfor -%}

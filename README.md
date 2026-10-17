@@ -30,7 +30,7 @@ named areas (for example `home nav`).
 
 - `script/checks/run.rb` lists the areas in the order they run. Each area is one file,
   `script/checks/<area>.rb`, that defines `check_<area>(ctx)`: `build`, `styles`, `shell`, `nav`, `projects`,
-  `language_switch`, `case_studies`, `redirects`, `services`, `i18n`, `home`, `blog`, `company`, `contact`.
+  `language_switch`, `case_studies`, `redirects`, `redirects_emit`, `services`, `i18n`, `home`, `blog`, `company`, `contact`.
 - `script/checks/lib/` holds what they share: `report.rb` (`pass`, `fail!`, `fail_list!`, `assert_file`,
   `assert_contains`), `site.rb` (the context handed to every check), `pages.rb` (load a built page, canonical /
   hreflang / language-switch assertions, links that stay in the page's language), `images.rb`
@@ -81,7 +81,7 @@ named areas (for example `home nav`).
   without one the figures lead the page). The body is the migrated text. `_layouts/case_study.html` renders the
   page, `_includes/case-card.html` the card on the index (`case-studies.html`, `it/casi-di-studio.html`, a pair
   like the project index). `_data/redirects.yml` records old URL -> new URL for the pages whose address
-  changed (data only; the 301s are emitted later).
+  changed; see "Redirects" below.
 - `_services/`: the eight services of the home page (Custom software, AI & automation, Data systems, Mobile
   apps, Websites, E-commerce, Digital signage, SEO & GEO), one document per language (the Italian ones in
   `_services/it/`), a shared `page_id`, bare permalinks: `/services/<slug>/` in English, `/servizi/<slug>/` in
@@ -100,6 +100,18 @@ named areas (for example `home nav`).
   written once per language has `lang:` and a shared `page_id:` (see `_includes/lang-url.html`); an
   English-only one adds `lang-exclusive: [en]`, so nothing is built under `/it/`. Permalinks never carry
   the `/it/` prefix (polyglot adds it): write `/servizi/`, not `/it/servizi/`.
+
+## Redirects
+
+`_data/redirects.yml` (`from`, `to`) is the one source of the 301s for the old WordPress URLs. Each `from` is
+served with and without its trailing slash. Two files are generated from it:
+
+- `/_redirects` (Cloudflare Pages, the chosen host; Netlify reads it too): written by Jekyll from the `redirects`
+  page (the source has no extension and a `/_redirects` permalink, because Jekyll skips files that start with an
+  underscore), once at the site root, never under `/it/`. At most 2,000 static rules; queries cannot be matched.
+- `deploy/nginx/redirects.conf` (the fallback if nginx serves the site): committed, written by
+  `bundle exec ruby script/build-redirects.rb`. Run it after every change to `_data/redirects.yml`:
+  `script/check-build.sh` fails when the committed file is stale (`ruby script/build-redirects.rb --check` tells too).
 
 ## Continuous integration
 
