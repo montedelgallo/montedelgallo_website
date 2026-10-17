@@ -13,8 +13,9 @@ require "yaml"
 #   - what loads first: the cover of a detail page and the first row of cards of an index page
 #     are eager (the first of them fetchpriority=high); every other picture is lazy.
 #   - the three font families the first screen uses are preloaded.
-#   - aria-current="page" on exactly one link of the main navigation (the brand link on the
-#     home), none on the 404 and the legal pages.
+#   - aria-current on exactly one link of the main navigation: "page" when the page IS the link's
+#     page, "true" when it is only inside the link's section (a project page marks Work); the brand
+#     link carries "page" on the home; none on the 404 and the legal pages.
 #   - the hero chip does not cover the log line of the dashboard (the stylesheet reserves room).
 
 PERF_VARIANTS_FILE = "_data/image_variants.yml"
@@ -50,7 +51,7 @@ def check_perf(ctx)
   pass "the three font families of the first screen are preloaded (Archivo, Hanken Grotesk, IBM Plex Mono 500)"
 
   fail_list!(files.flat_map { |f| perf_current_errors(f, site_dir) }, "aria-current in the navigation is wrong (see the list above)")
-  pass "aria-current=\"page\" is on exactly one link of the navigation of every page (the brand link on the home; none on the 404 and the legal pages)"
+  pass "aria-current is on exactly one link of the navigation of every page: \"page\" for the page itself, \"true\" for its section only (the brand link on the home; none on the 404 and the legal pages)"
 
   fail_list!(perf_team_cap_errors(ctx.css), "a portrait could be drawn larger than its pixel size (see the list above)")
   pass "team portraits: no inline style; the stylesheet draws a tile at most as wide as the smallest portrait file (a portrait is never upscaled)"
@@ -226,7 +227,10 @@ def perf_current_errors(file, site_dir)
     return PERF_NO_SECTION.include?(segment) ? (current.empty? ? [] : ["#{rel}: no link may be current, found #{hrefs.inspect}"]) : ["#{rel}: the check has no nav section for the URL segment #{segment.inspect} (add it to PERF_SECTIONS)"]
   end
   errors = []
-  errors << "#{rel}: exactly one header link must carry aria-current=\"page\" (#{want}), found #{hrefs.inspect}" unless hrefs == [[want, "page"]]
+  # The page itself is aria-current="page"; a page that is only INSIDE a section (a project page, an
+  # article) marks the section's link aria-current="true". Exactly one link, never both.
+  value = path == want ? "page" : "true"
+  errors << "#{rel}: exactly one header link must carry aria-current=\"#{value}\" (#{want}), found #{hrefs.inspect}" unless hrefs == [[want, value]]
   inside = page.css('header.nav nav.nav__links a[aria-current]').size
   errors << "#{rel}: #{inside} link(s) of nav.nav__links are current, expected #{path == home ? 0 : 1}" unless inside == (path == home ? 0 : 1)
   errors

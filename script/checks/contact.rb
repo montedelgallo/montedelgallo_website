@@ -205,6 +205,8 @@ def legal_page_errors(lang, id, file)
   # Nothing invented: no retention period, no legal basis article, no number of days or years.
   invented = text.scan(/\b(\d+\s*(giorni|days|mesi|months|anni|years)|art\.?\s*\d+|GDPR|Reg(olamento)?\.?\s*\(?UE\)?)/i)
   errors << "#{lang}/#{id}: invented legal detail #{invented.flatten.compact.first.inspect}: the placeholder may only state known facts" unless invented.empty?
+  stores = text.scan(/stores nothing on your device|non salva nulla/i)
+  errors << "#{lang}/#{id}: #{stores.first.inspect} is a claim nobody verified (cookieless is not storage-less): say only that the analytics sets no cookie" unless stores.empty?
   errors << "#{lang}/#{id}: a processor 'to be completed' must not state a retention period or a legal basis" if text =~ /retention period of|legal basis is|base giuridica è/i
   errors
 end

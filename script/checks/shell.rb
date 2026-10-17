@@ -87,8 +87,8 @@ def check_shell(ctx)
       require_match home, /rel="preload" href="\/assets\/fonts\/#{font}\.woff2" as="font" type="font\/woff2" crossorigin/,
                     "#{home} does not preload /assets/fonts/#{font}.woff2 (as=\"font\" type=\"font/woff2\" crossorigin)"
     end
-    assert_contains home, 'rel="stylesheet" href="/assets/css/main.css"',
-                    "the stylesheet link must stay at /assets/css/main.css"
+    require_match home, /rel="stylesheet" href="\/assets\/css\/main\.css\?v=\d+"/,
+                   "the stylesheet link must stay at /assets/css/main.css, with the ?v=<build time> cache-buster"
   end
   if Checks::Site.read(it_home).include?("/it/assets/")
     fail!("#{it_home} links to /it/assets/...: assets are shared at /assets/ (exclude_from_localization)")

@@ -203,8 +203,8 @@ def nav_mobile_menu_errors(lang, file)
     end
     errors << "the desktop Book button (.nav__cta a.btn--solid) is missing from the menu wrapper" unless menu && menu.at_css(".nav__cta a.btn--solid")
   end
-  js = page.css("script[src]").find { |s| s["src"].to_s.end_with?("/assets/js/nav.js") }
-  errors << "nav.js must be loaded with a <script src=\"/assets/js/nav.js\" defer>" unless js && js.has_attribute?("defer")
+  js = page.css("script[src]").find { |s| s["src"].to_s.match?(%r{\A/assets/js/nav\.js\?v=\d+\z}) }
+  errors << "nav.js must be loaded with a <script src=\"/assets/js/nav.js?v=<build time>\" defer>" unless js && js.has_attribute?("defer")
   # A failed load must give the open (no-JS) layout back: not with an onerror attribute (an inline event
   # handler would need 'unsafe-hashes' in the CSP) but with the head script's DOMContentLoaded handler,
   # which reverts js -> no-js unless nav.js set <html data-nav> (asserted above, on the home).

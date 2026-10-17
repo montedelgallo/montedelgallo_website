@@ -14,7 +14,7 @@
 # _includes/icons.html and is the same in both languages (the check compares it).
 
 lang:
-  name: "English" # the language's own name, used by the language switch
+  name: "English" # the language's own name (not the switch's accessible name: that is its visible text, WCAG 2.5.3)
 
 a11y:
   skip: "Skip to content"

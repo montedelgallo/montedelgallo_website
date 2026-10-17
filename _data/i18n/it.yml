@@ -5,7 +5,7 @@
 # script/check-build.sh). Vedi en.yml per le convenzioni.
 
 lang:
-  name: "Italiano" # il nome della lingua nella lingua stessa, usato dal selettore di lingua
+  name: "Italiano" # il nome della lingua nella lingua stessa (non e' il nome accessibile del selettore: quello e' il testo visibile, WCAG 2.5.3)
 
 a11y:
   skip: "Vai al contenuto"

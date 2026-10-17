@@ -13,10 +13,11 @@
   label) and the one in .nav__cta (desktop only); only one is displayed at a time, so
   there is never a double tab stop.
 
-  The link of the section the page belongs to carries aria-current="page" (see `also:` in
-  _data/nav.yml: a project page marks Work, an article marks Blog, a case study marks Work),
-  and on the home the brand link does (the home has no link of its own in the navigation).
-  The 404 and the legal pages mark none.
+  The link of the page itself carries aria-current="page" (its URL is exactly the page's);
+  the link of the SECTION the page belongs to carries aria-current="true" (see `also:` in
+  _data/nav.yml: a project page marks Work, an article marks Blog, a case study marks Work).
+  At most one link is marked. On the home the brand link carries "page" (the home has no link
+  of its own in the navigation). The 404 and the legal pages mark none.
 
   The links are plain root-relative paths on purpose: in the Italian build
   jekyll-polyglot puts /it/ in front of them.
@@ -40,13 +41,15 @@
       <nav class="nav__links" aria-label="{{ t.a11y.main_nav | escape }}">
         {%- for item in site.data.nav.main -%}
         {%- assign nv_here = false -%}
+        {%- assign nv_exact = false -%}
+        {%- if page.url == item[lang] %}{% assign nv_exact = true %}{% endif -%}
         {%- assign nv_paths = item[lang] | split: "," -%}
         {%- if item.also -%}{%- assign nv_paths = nv_paths | concat: item.also[lang] -%}{%- endif -%}
         {%- for nv_path in nv_paths -%}
           {%- assign nv_head = page.url | slice: 0, nv_path.size -%}
           {%- if nv_head == nv_path %}{% assign nv_here = true %}{% endif -%}
-        {%- endfor -%}
-        <a href="{{ item[lang] | relative_url }}"{% if nv_here %} aria-current="page"{% endif %}>{{ t.nav[item.key] | escape }}</a>
+                  {%- endfor -%}
+        <a href="{{ item[lang] | relative_url }}"{% if nv_exact %} aria-current="page"{% elsif nv_here %} aria-current="true"{% endif %}>{{ t.nav[item.key] | escape }}</a>
         {%- endfor -%}
       </nav>
       <div class="nav__langsw">{% include lang-switch.html %}</div>

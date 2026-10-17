@@ -16,16 +16,23 @@ require "yaml"
 #     this module proves it with throw-away entries that the validator must reject;
 #   - the repository still holds no archive and no other PDF (company.rb allows exactly these three PDFs).
 
-DOWNLOADS_ZIP_URL = "https://soshiki.io/cf/p3F7GT5iZGBEo8Fh8met6D2f/download"
 DOWNLOADS_PDFS = %w[MotioForge_Studio_overview_it.pdf MotioForge_Studio_overview_en.pdf MotioForge_Studio_overview_zh.pdf].freeze
 DOWNLOADS_DIR = "assets/downloads"
 DOWNLOADS_MAX_BYTES = (3.5 * 1024 * 1024).to_i
+# The Soshiki archive URL has ONE source, `motioforge_download_url` in _data/site_meta.yml (the client
+# manages it); the checks follow it. Only its shape is asserted (downloads_data_errors).
+def downloads_zip_url
+  redirect_site_meta["motioforge_download_url"].to_s
+end
+
 # Old WordPress path => where it must redirect now.
-DOWNLOADS_OLD = {
-  "/wp-content/uploads/motioforge/MotioForge_Studio.zip" => DOWNLOADS_ZIP_URL,
-  "/wp-content/uploads/2026/09/MotioForge_Studio_overview_it.pdf" => "/assets/downloads/MotioForge_Studio_overview_it.pdf",
-  "/wp-content/uploads/2026/09/MotioForge_Studio_overview_en.pdf" => "/assets/downloads/MotioForge_Studio_overview_en.pdf"
-}.freeze
+def downloads_old
+  {
+    "/wp-content/uploads/motioforge/MotioForge_Studio.zip" => downloads_zip_url,
+    "/wp-content/uploads/2026/09/MotioForge_Studio_overview_it.pdf" => "/assets/downloads/MotioForge_Studio_overview_it.pdf",
+    "/wp-content/uploads/2026/09/MotioForge_Studio_overview_en.pdf" => "/assets/downloads/MotioForge_Studio_overview_en.pdf"
+  }
+end
 DOWNLOADS_PAGES = [["en", "motioforge/index.html"], ["it", "it/motioforge/index.html"]].freeze
 
 def check_downloads(ctx)
@@ -50,7 +57,7 @@ end
 
 def downloads_data_errors(meta)
   errors = []
-  errors << "motioforge_download_url is #{meta["motioforge_download_url"].inspect}, expected #{DOWNLOADS_ZIP_URL}" unless meta["motioforge_download_url"] == DOWNLOADS_ZIP_URL
+  errors << "motioforge_download_url is #{meta["motioforge_download_url"].inspect}, expected an https://soshiki.io/ URL with a path" unless meta["motioforge_download_url"].to_s.match?(%r{\Ahttps://soshiki\.io/\S+\z})
   errors << "downloads_base must be gone (the archive is on Soshiki, the PDFs are in the repository)" if meta.key?("downloads_base")
   list = meta["downloads"]
   return errors + ["downloads: must be a list of {file, bytes}"] unless list.is_a?(Array)
@@ -88,8 +95,8 @@ def downloads_page_errors(lang, file, site_dir, meta)
   hrefs = main.css("a[href]").map { |a| a["href"] }
 
   hrefs.grep(/\.(zip|exe|dmg)(\z|[?#])/i).each { |href| errors << "#{lang}: #{href} is a direct link to an archive" }
-  zip_links = main.css("a[href=\"#{DOWNLOADS_ZIP_URL}\"]")
-  errors << "#{lang}: the Soshiki archive link #{DOWNLOADS_ZIP_URL} must appear exactly once (found #{zip_links.size})" unless zip_links.size == 1
+  zip_links = main.css("a[href=\"#{downloads_zip_url}\"]")
+  errors << "#{lang}: the Soshiki archive link #{downloads_zip_url} must appear exactly once (found #{zip_links.size})" unless zip_links.size == 1
   if (zip = zip_links.first)
     errors << "#{lang}: the archive link needs data-track=\"download_click\"" unless zip["data-track"] == "download_click"
     errors << "#{lang}: the archive link needs data-track-location=\"motioforge\"" unless zip["data-track-location"] == "motioforge"
@@ -133,7 +140,7 @@ def downloads_redirect_errors(site_dir)
   entries = redirect_entries
   built = File.read(File.join(site_dir, "_redirects"), encoding: "utf-8").lines.map(&:chomp)
   nginx = File.read("deploy/nginx/redirects.conf", encoding: "utf-8")
-  DOWNLOADS_OLD.each do |old, target|
+  downloads_old.each do |old, target|
     entry = entries.find { |e| e["from"] == old }
     errors << "#{old} is not a `from` in _data/redirects.yml" unless entry
     errors << "#{old} redirects to #{entry["to"].inspect}, expected #{target}" if entry && entry["to"] != target
@@ -153,7 +160,7 @@ def downloads_rule_errors(site_dir)
   probe = lambda do |from, to|
     redirect_map_errors(site_dir, [{ "from" => from, "to" => to }]).reject { |e| e.include?("is not in _data/redirects.yml") }
   end
-  [[zip_from, DOWNLOADS_ZIP_URL], [pdf_from, pdf_to]].each do |from, to|
+  [[zip_from, downloads_zip_url], [pdf_from, pdf_to]].each do |from, to|
     errors << "the good entry #{from} -> #{to} is rejected: #{probe.call(from, to).inspect}" unless probe.call(from, to).empty?
   end
   {
@@ -162,18 +169,18 @@ def downloads_rule_errors(site_dir)
     "another Soshiki path" => [zip_from, "https://soshiki.io/cf/another/download"],
     "a Soshiki form URL" => [zip_from, "https://soshiki.io/f/l3opjfhj10ocxgca"],
     "a lookalike Soshiki host" => [zip_from, "https://soshiki.io.evil.example/cf/p3F7GT5iZGBEo8Fh8met6D2f/download"],
-    "plain http for the Soshiki link" => [zip_from, DOWNLOADS_ZIP_URL.sub("https", "http")],
-    "the Soshiki link with a suffix" => [zip_from, "#{DOWNLOADS_ZIP_URL}?x=1"],
+    "plain http for the Soshiki link" => [zip_from, downloads_zip_url.sub("https", "http")],
+    "the Soshiki link with a suffix" => [zip_from, "#{downloads_zip_url}?x=1"],
     "a PDF that is not listed" => [pdf_from, "/assets/downloads/Other.pdf"],
     "a built image as a download target" => [pdf_from, "/assets/img/share/default-en.png"],
     "a built page as the target of an uploads file" => [pdf_from, "/about/"],
     "an uploads file sent to a PDF folder it is not in" => [pdf_from, "/assets/css/main.css"],
-    "a page redirected to the Soshiki link" => ["/old-page/", DOWNLOADS_ZIP_URL],
+    "a page redirected to the Soshiki link" => ["/old-page/", downloads_zip_url],
     "a page redirected to a PDF" => ["/old-page/", pdf_to],
-    "a file path outside /wp-content/uploads/" => ["/files/MotioForge_Studio.zip", DOWNLOADS_ZIP_URL],
-    "a wp-content path that is not uploads" => ["/wp-content/themes/MotioForge_Studio.zip", DOWNLOADS_ZIP_URL],
-    "a traversal out of uploads" => ["/wp-content/uploads/../secret.zip", DOWNLOADS_ZIP_URL],
-    "an uploads path with no extension" => ["/wp-content/uploads/motioforge", DOWNLOADS_ZIP_URL],
+    "a file path outside /wp-content/uploads/" => ["/files/MotioForge_Studio.zip", downloads_zip_url],
+    "a wp-content path that is not uploads" => ["/wp-content/themes/MotioForge_Studio.zip", downloads_zip_url],
+    "a traversal out of uploads" => ["/wp-content/uploads/../secret.zip", downloads_zip_url],
+    "an uploads path with no extension" => ["/wp-content/uploads/motioforge", downloads_zip_url],
     "a page path with no trailing slash" => ["/old-page", "/about/"]
   }.each do |what, (from, to)|
     errors << "#{what} is accepted: #{from} -> #{to}" if probe.call(from, to).empty?

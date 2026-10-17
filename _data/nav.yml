@@ -10,7 +10,7 @@
 #
 # `main` entries also carry `also:`, the other pages of the same section (per language, again without
 # /it/): a page whose URL starts with the entry's path or with one of these paths is "in" that section,
-# and the header marks the entry aria-current="page" (_includes/header.html). The home, the 404 and
+# and the header marks the entry aria-current="true" ("page" when the page is the entry itself; _includes/header.html). The home, the 404 and
 # the legal pages belong to no section.
 #
 # Every entry leads to a page of its own: no link here may be a home anchor (/#...)

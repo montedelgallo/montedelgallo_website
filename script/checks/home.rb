@@ -164,6 +164,8 @@ def home_page_errors(lang, file)
   numbers = main.css(".proc .steps .num").map { |node| norm.(node.text) }
   errors << "the process steps are numbered #{numbers.inspect}, expected 01, 02, ..." unless numbers == (1..list.("process", "items").size).map { |index| format("%02d", index) }
 
+  errors << "the process step numerals (.num) must be aria-hidden=\"true\" (decoration: the steps are headings)" unless main.css(".proc .steps .num").all? { |node| node["aria-hidden"] == "true" }
+
   # The calls to action: booking goes to Soshiki, WhatsApp to the company phone, and
   # "see our work" scrolls to the work section.
   href_of = ->(selector) { main.at_css(selector)&.[]("href") }

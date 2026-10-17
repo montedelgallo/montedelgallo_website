@@ -12,7 +12,7 @@
     </div>
     <div class="steps">
       {%- for step_item in t.home.process.items %}
-      <div><div class="num">0{{ forloop.index }}</div><h3>{{ step_item.title | escape }}</h3><p>{{ step_item.text | escape }}</p></div>
+      <div><div class="num" aria-hidden="true">0{{ forloop.index }}</div><h3>{{ step_item.title | escape }}</h3><p>{{ step_item.text | escape }}</p></div>
       {%- endfor %}
     </div>
   </div>

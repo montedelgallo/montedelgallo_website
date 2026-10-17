@@ -8,6 +8,11 @@
   Plausible: data-domain + script.js (or the per-site pa-<id>.js given as `src`).
   Umami: data-website-id + script.js.
 
+  Plausible's newer per-site `pa-<id>.js` snippet needs an INLINE init stub, which conflicts with
+  the single-hash Content-Security-Policy (only the inline script of head.html is allowed, by its
+  SHA-256). If you switch to it, either self-host the stub as a file or add its hash to `headers`
+  and to deploy/nginx/headers.conf.
+
   events.js then reports the clicks and the form submit that the markup declares with
   data-track (see that file); it never blocks them.
 {%- endcomment -%}

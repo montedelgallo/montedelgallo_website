@@ -19,7 +19,7 @@
       {%- if there == "" -%}
         {%- if l == site.default_lang -%}{%- assign there = "/" -%}{%- else -%}{%- assign there = "/" | append: l | append: "/" -%}{%- endif -%}
       {%- endif -%}
-      <a class="langsw__link" {% static_href %}href="{{ there | prepend: site.baseurl }}"{% endstatic_href %} hreflang="{{ l }}" lang="{{ l }}" aria-label="{{ site.data.i18n[l].lang.name | escape }}">{{ l | upcase }}</a>
+      <a class="langsw__link" {% static_href %}href="{{ there | prepend: site.baseurl }}"{% endstatic_href %} hreflang="{{ l }}" lang="{{ l }}">{{ l | upcase }}</a>
     {%- endif -%}
     {%- unless forloop.last -%}<span aria-hidden="true">·</span>{%- endunless -%}
   {%- endfor -%}
