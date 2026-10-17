@@ -30,3 +30,13 @@ jobs:
 
       - name: Check bilingual build output
         run: bash script/check-build.sh
+
+      # The built site (.check-site, from the step above) is served by script/serve-built-site.py with
+      # its own /_headers (Content-Security-Policy included), then audited on the home, a project, an
+      # article and the contact page: performance, accessibility and SEO >= 95, best practices >= 90.
+      # Chrome is preinstalled on ubuntu-latest.
+      - name: Lighthouse CI (mobile)
+        run: npx --yes @lhci/cli@0.15.1 autorun --config=.lighthouserc.json
+
+      - name: Lighthouse CI (desktop)
+        run: npx --yes @lhci/cli@0.15.1 autorun --config=.lighthouserc.desktop.json

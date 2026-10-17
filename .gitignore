@@ -19,3 +19,6 @@ vendor/
 
 # Client-supplied hi-res portrait originals (kept locally, not part of the site)
 design/portrait-sources/
+
+# Lighthouse CI reports
+.lighthouseci/

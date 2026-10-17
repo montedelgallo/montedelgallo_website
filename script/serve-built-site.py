@@ -65,4 +65,5 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
 
 socketserver.TCPServer.allow_reuse_address = True
+print("serving %s on http://127.0.0.1:%d (listening)" % (root, port), flush=True)
 http.server.ThreadingHTTPServer(("127.0.0.1", port), Handler).serve_forever()
