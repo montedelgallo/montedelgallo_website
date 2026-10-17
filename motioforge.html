@@ -15,10 +15,12 @@ permalink: /motioforge/
 
   Downloads. The Beta archive (about 214 MB) is NOT in this repository: the "Download Beta" button
   links the Soshiki download URL of _data/site_meta.yml (motioforge_download_url), which the
-  client manages; no size or checksum is shown for it. The two overview PDFs (about 2.9 MB each) ARE in
-  the repository, in assets/downloads/, linked with their size (site_meta.yml downloads:). The old
-  WordPress addresses of the three files redirect to these (_data/redirects.yml). script/checks/downloads.rb
-  checks all of it, and script/checks/company.rb lets exactly these two PDFs into the repository (any other
+  client manages; no size or checksum is shown for it. The three overview PDFs (Italian and English
+  about 2.9 MB each, Simplified Chinese about 1.1 MB) ARE in the repository, in assets/downloads/,
+  linked with their size (site_meta.yml downloads:). The old WordPress addresses of the archive and of
+  the Italian and English PDFs redirect to these (_data/redirects.yml); the Chinese PDF is new and had
+  no WordPress address. script/checks/downloads.rb checks all of it, and script/checks/company.rb lets
+  exactly these three PDFs into the repository (any other
   archive or PDF fails the build). The links are plain hrefs, not {% raw %}{% static_href %}{% endraw %}: the Soshiki link is on another
   host, and jekyll-polyglot only rewrites root-relative links and links under the site's own url, so
   the Italian page keeps them as they are (a static_href on a foreign host is even left as
@@ -231,6 +233,12 @@ permalink: /motioforge/
         <h3>Overview (EN)</h3>
         <p>The full document in English: features, hardware and installation.</p>
         <p><a class="btn btn--ghost" href="/assets/downloads/MotioForge_Studio_overview_en.pdf" data-track="download_click" data-track-location="motioforge_pdf_en">English PDF</a> <span class="dl__size">{% include download-size.html file="MotioForge_Studio_overview_en.pdf" %}</span></p>
+      </div>
+      <div class="dl">
+        <p class="pcell__tag">PDF · <span lang="zh-Hans">中文</span></p>
+        <h3>Overview (ZH)</h3>
+        <p>The full document in Simplified Chinese: features, hardware and installation.</p>
+        <p><a class="btn btn--ghost" href="/assets/downloads/MotioForge_Studio_overview_zh.pdf" hreflang="zh-Hans" data-track="download_click" data-track-location="motioforge_pdf_zh">Chinese PDF</a> <span class="dl__size">{% include download-size.html file="MotioForge_Studio_overview_zh.pdf" %}</span></p>
       </div>
     </div>
     <p class="pnote">Requirements: Windows 10/11 64-bit · Arduino Mega board (or compatible) via USB</p>

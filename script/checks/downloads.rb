@@ -7,17 +7,17 @@ require "yaml"
 #   - the Beta archive (about 214 MB) is NOT hosted by this site: the "Download Beta" button of
 #     both MotioForge pages links the Soshiki download URL of _data/site_meta.yml
 #     (`motioforge_download_url`), which the client manages. No size and no checksum are shown for it;
-#   - the two overview PDFs (about 2.9 MB each) are self-hosted in assets/downloads/ and linked from
+#   - the three overview PDFs (Italian and English about 2.9 MB each, Chinese about 1.1 MB) are self-hosted in assets/downloads/ and linked from
 #     both pages, each with its size (the data is `downloads:` in _data/site_meta.yml);
 #   - nothing on the pages still points at the old WordPress uploads, and the three old
 #     /wp-content/uploads/... URLs are 301 redirects (the archive to the Soshiki URL, the PDFs to
 #     /assets/downloads/...) in _data/redirects.yml, in the built /_redirects and in the nginx file;
 #   - the redirect rules that make that possible are as narrow as they can be (see redirects.rb):
 #     this module proves it with throw-away entries that the validator must reject;
-#   - the repository still holds no archive and no other PDF (company.rb allows exactly these two PDFs).
+#   - the repository still holds no archive and no other PDF (company.rb allows exactly these three PDFs).
 
 DOWNLOADS_ZIP_URL = "https://soshiki.io/cf/p3F7GT5iZGBEo8Fh8met6D2f/download"
-DOWNLOADS_PDFS = %w[MotioForge_Studio_overview_it.pdf MotioForge_Studio_overview_en.pdf].freeze
+DOWNLOADS_PDFS = %w[MotioForge_Studio_overview_it.pdf MotioForge_Studio_overview_en.pdf MotioForge_Studio_overview_zh.pdf].freeze
 DOWNLOADS_DIR = "assets/downloads"
 DOWNLOADS_MAX_BYTES = (3.5 * 1024 * 1024).to_i
 # Old WordPress path => where it must redirect now.
@@ -34,7 +34,7 @@ def check_downloads(ctx)
   meta = YAML.load_file("_data/site_meta.yml")
 
   fail_list!(downloads_data_errors(meta), "_data/site_meta.yml motioforge_download_url / downloads is wrong (see the list above)")
-  pass "_data/site_meta.yml: motioforge_download_url is the Soshiki link, downloads: lists the 2 overview PDFs, whose size matches the file of #{DOWNLOADS_DIR}/ (a real PDF, at most 3.5 MB), and nothing else is in that folder"
+  pass "_data/site_meta.yml: motioforge_download_url is the Soshiki link, downloads: lists the 3 overview PDFs, whose size matches the file of #{DOWNLOADS_DIR}/ (a real PDF, at most 3.5 MB), and nothing else is in that folder"
 
   DOWNLOADS_PAGES.each do |lang, path|
     fail_list!(downloads_page_errors(lang, File.join(site_dir, path), site_dir, meta), "the #{lang} MotioForge page downloads are wrong (see the list above)")
@@ -68,7 +68,7 @@ def downloads_data_errors(meta)
     end
   end
   extra = Dir.children(DOWNLOADS_DIR).sort - DOWNLOADS_PDFS rescue DOWNLOADS_PDFS
-  errors << "#{DOWNLOADS_DIR}/ holds #{extra.inspect}: only the two overview PDFs are allowed" unless extra.empty?
+  errors << "#{DOWNLOADS_DIR}/ holds #{extra.inspect}: only the three overview PDFs are allowed" unless extra.empty?
   errors
 end
 

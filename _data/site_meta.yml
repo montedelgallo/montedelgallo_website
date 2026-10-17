@@ -63,6 +63,8 @@ downloads:
     bytes: 2912514
   - file: "MotioForge_Studio_overview_en.pdf"
     bytes: 2913060
+  - file: "MotioForge_Studio_overview_zh.pdf"
+    bytes: 1140793
 
 # Facts about the company, the same in every language.
 company:

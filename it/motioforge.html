@@ -15,11 +15,13 @@ permalink: /motioforge/
 
   Download. L'archivio Beta (circa 214 MB) NON è nel repository: il pulsante "Scarica la Beta"
   porta all'URL di download di Soshiki di _data/site_meta.yml (motioforge_download_url), gestito dal
-  cliente; per l'archivio non si mostrano né dimensione né checksum. I due PDF di panoramica (circa 2,9 MB
-  ciascuno) SONO nel repository, in assets/downloads/, collegati con la loro dimensione
-  (site_meta.yml downloads:). I vecchi indirizzi WordPress dei tre file reindirizzano qui
-  (_data/redirects.yml). script/checks/downloads.rb verifica tutto, e script/checks/company.rb lascia entrare
-  nel repository esattamente questi due PDF (qualunque altro archivio o PDF fa fallire la build). I link sono
+  cliente; per l'archivio non si mostrano né dimensione né checksum. I tre PDF di panoramica (italiano e
+  inglese circa 2,9 MB ciascuno, cinese semplificato circa 1,1 MB) SONO nel repository, in
+  assets/downloads/, collegati con la loro dimensione (site_meta.yml downloads:). I vecchi indirizzi
+  WordPress dell'archivio e dei PDF italiano e inglese reindirizzano qui (_data/redirects.yml); il PDF
+  cinese è nuovo e non aveva un indirizzo WordPress. script/checks/downloads.rb verifica tutto, e
+  script/checks/company.rb lascia entrare nel repository esattamente questi tre PDF (qualunque altro
+  archivio o PDF fa fallire la build). I link sono
   href semplici, non {% raw %}{% static_href %}{% endraw %}: il link di Soshiki è su un altro host e jekyll-polyglot riscrive solo i link
   relativi alla radice e quelli sotto l'url del sito, quindi la pagina italiana li lascia com'è (un
   static_href su un host esterno resterebbe addirittura ferh="..." nell'output); /assets/ è escluso dalla
@@ -230,6 +232,12 @@ permalink: /motioforge/
         <h3>Overview (EN)</h3>
         <p>Il documento completo in inglese: funzionalità, hardware e installazione.</p>
         <p><a class="btn btn--ghost" href="/assets/downloads/MotioForge_Studio_overview_en.pdf" data-track="download_click" data-track-location="motioforge_pdf_en">Documento EN</a> <span class="dl__size">{% include download-size.html file="MotioForge_Studio_overview_en.pdf" %}</span></p>
+      </div>
+      <div class="dl">
+        <p class="pcell__tag">PDF · <span lang="zh-Hans">中文</span></p>
+        <h3>Panoramica (ZH)</h3>
+        <p>Il documento completo in cinese semplificato: funzionalità, hardware e installazione.</p>
+        <p><a class="btn btn--ghost" href="/assets/downloads/MotioForge_Studio_overview_zh.pdf" hreflang="zh-Hans" data-track="download_click" data-track-location="motioforge_pdf_zh">Documento ZH</a> <span class="dl__size">{% include download-size.html file="MotioForge_Studio_overview_zh.pdf" %}</span></p>
       </div>
     </div>
     <p class="pnote">Requisiti: Windows 10/11 64-bit · scheda Arduino Mega (o compatibile) via USB</p>

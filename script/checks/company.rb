@@ -342,13 +342,13 @@ def company_motioforge(ctx)
   fail_list!(motioforge_errors("en", "#{site_dir}/motioforge/index.html"), "the English MotioForge page is wrong (see the list above)")
   fail_list!(motioforge_errors("it", "#{site_dir}/it/motioforge/index.html"), "the Italian MotioForge page is wrong (see the list above)")
   # No archive, PDF or large file of any kind in the repository or in the output.
-  # The one exception: the two overview PDFs, at exactly these paths and at most 3.5 MB each.
+  # The one exception: the three overview PDFs, at exactly these paths and at most 3.5 MB each.
   big_file = company_large_file(".", pruned: %W[./.git ./_site ./#{Checks::SITE_DIR} ./#{Checks::CACHE_DIR} ./vendor ./.bundle ./node_modules ./.jekyll-cache ./.superpowers],
                                      extensions: %w[.zip .pdf .exe .dmg], allowed: company_allowed_downloads("."))
-  big_file && fail!("a download or large file is in the repository: #{big_file} (the MotioForge archive is the Soshiki link of site_meta.yml; only the two overview PDFs of assets/downloads/ may be here, at most 3.5 MB each)")
+  big_file && fail!("a download or large file is in the repository: #{big_file} (the MotioForge archive is the Soshiki link of site_meta.yml; only the three overview PDFs of assets/downloads/ may be here, at most 3.5 MB each)")
   site_big = company_large_file(site_dir, pruned: [], extensions: %w[.zip .pdf], allowed: company_allowed_downloads(site_dir))
   site_big && fail!("the built site ships #{site_big}: a download or a large file was copied into the site")
-  pass "MotioForge (EN + IT): the demo opens on YouTube (no embedded frame), mailto contact; no archive, no PDF other than the two overview PDFs of assets/downloads/ (3.5 MB each at most) and no file over 3 MB in the repository or in the built site"
+  pass "MotioForge (EN + IT): the demo opens on YouTube (no embedded frame), mailto contact; no archive, no PDF other than the three overview PDFs of assets/downloads/ (3.5 MB each at most) and no file over 3 MB in the repository or in the built site"
 
   # The Robotic Lab project links to MotioForge in its own language, and MotioForge links
   # back (above): both ends of the connection resolve to built pages.
@@ -364,10 +364,10 @@ def company_motioforge(ctx)
 end
 
 # The only downloads that may be in the repository and in the built site, as path => largest size
-# in bytes: the two MotioForge overview PDFs (exactly these paths, nothing else, no wildcard).
+# in bytes: the three MotioForge overview PDFs (exactly these paths, nothing else, no wildcard).
 COMPANY_ALLOWED_PDF_BYTES = (3.5 * 1024 * 1024).to_i
 def company_allowed_downloads(root)
-  %w[MotioForge_Studio_overview_it.pdf MotioForge_Studio_overview_en.pdf].to_h do |name|
+  %w[MotioForge_Studio_overview_it.pdf MotioForge_Studio_overview_en.pdf MotioForge_Studio_overview_zh.pdf].to_h do |name|
     [File.join(root, "assets", "downloads", name), COMPANY_ALLOWED_PDF_BYTES]
   end
 end
