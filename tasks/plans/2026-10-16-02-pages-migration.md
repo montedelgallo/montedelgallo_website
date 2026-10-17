@@ -1,7 +1,5 @@
 # MDG Site — Plan 2: Pages + Content Migration — Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
-
 **Goal:** Build every remaining page type of the bilingual MDG site and migrate the real content (EN + IT) from the live WordPress site into them, so the site is content-complete and internally navigable.
 
 **Architecture:** Extends Plan 1's Jekyll + `jekyll-polyglot` foundation. Four collections (`projects`, `case_studies`, `services`, `_posts`) each get a detail layout + an index page; standalone pages (About hub, Startup Studio, Product Lab, Careers, MotioForge, Contact, legal) are single files. All content is migrated from the **live, fully-crawlable** site (EN from the root URL, IT from the `/it/` URL), paired by `page_id`, with real images downloaded to `/assets`. Navigation is rewired to the now-real pages and a mobile menu is added.
@@ -17,7 +15,7 @@
 - Every page keeps `<html lang>`, canonical, and hreflang `en`/`it`/`x-default` (the head already does this). Content migrated into a page must appear in **both** languages' output; EN-only content is excluded from `/it/` with `lang-exclusive` until translated.
 - **Real content only** — migrate the live site's actual text and images (IT from the live `/it/` pages, which exist). No lorem ipsum. Images self-hosted under `assets/img/…`, optimized to webp (fallback to the original format if no converter).
 - Foundry design language throughout; no pastels/cream/highlighter-yellow. Accessibility AA, focus visible, `prefers-reduced-motion`, every image has `alt`. Responsive to ~375px, no horizontal scroll.
-- Git hygiene: author **Giovanni Panasiti <giova.panasiti@gmail.com>**, **no Claude/AI attribution** in any commit; `.superpowers/` never committed; targeted `git add`.
+- Git hygiene: author **Giovanni Panasiti <giova.panasiti@gmail.com>**, **no Claude/AI attribution** in any commit; the internal notes folder never committed; targeted `git add`.
 
 ## Review Focus
 

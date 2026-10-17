@@ -1,7 +1,5 @@
 # MDG Site — Plan 1: Foundation + Home — Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
-
 **Goal:** Stand up a bilingual (EN/IT) Jekyll site that builds in CI, carries the "Foundry" design system, and renders a complete, concrete home page with real featured-project previews.
 
 **Architecture:** Jekyll + `jekyll-polyglot` (EN at root, IT under `/it/`). One `default` layout composes `head`/`header`/`footer` includes; all UI copy comes from `_data/i18n/{en,it}.yml` so one source file renders both languages. The Foundry look is a small SCSS design system (`_sass/foundry/*`). The home's "Selected work" reads a `projects` collection; three featured projects are seeded with **real** cover screenshots pulled from the current site.

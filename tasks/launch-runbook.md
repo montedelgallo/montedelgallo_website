@@ -20,8 +20,9 @@ Tutto cio' che il codice non puo' decidere. Finche' una voce [BLOCCANTE] e' aper
 - [ ] **[BLOCCANTE] Testo legale privacy e cookie.** Le pagine `privacy.html` / `it/privacy.html` e
       `cookie.html` / `it/cookie.html` sono bozze con i punti "to be confirmed" (hosting, analytics, ...).
       Servono i testi veri (titolare, base giuridica, hosting Cloudflare, Plausible senza cookie, Soshiki come
-      destinatario del form di contatto e delle prenotazioni, diritti, contatti), in EN e IT. Le bozze non
-      dicono che Plausible "non salva nulla sul dispositivo": non affermarlo senza verifica del legale.
+      destinatario del form di contatto e delle prenotazioni, diritti, contatti), in EN e IT. Le bozze dicono
+      solo che Plausible non imposta cookie: non scrivere che "non salva nulla sul dispositivo" (o simili) senza
+      la verifica del legale; un controllo del build (`script/checks/contact.rb`) boccia quelle frasi.
       Le pagine sono `noindex` finche' sono bozze: togliere `noindex` e la dicitura "draft" quando il testo e' definitivo.
 - [ ] **[BLOCCANTE] Careers: decisione.** Ci sono posizioni aperte reali? Se si', scrivere ruoli e testo in
       `careers.html` / `it/lavora-con-noi.html` (EN + IT); se no, tenere la pagina come "candidatura spontanea"
@@ -67,6 +68,8 @@ Tutto cio' che il codice non puo' decidere. Finche' una voce [BLOCCANTE] e' aper
       Il push di `site/foundation-home` fa partire il workflow **Build**: build EN+IT, `script/check-build.sh`,
       Lighthouse mobile e desktop, poi deploy **preview** su Cloudflare (serve il punto 2.2). Annotare l'URL
       della preview (riepilogo del job, o Environments → preview) e aprirlo: e' la prima prova reale.
+      Al primo push progetto Cloudflare e secret (2.2 e punto successivo) non esistono ancora, quindi il job
+      **deploy** fallisce: dopo il 2.2 rilanciare il job (Actions → il run → *Re-run failed jobs*).
 - [ ] **Settings → Environments**: creare `production` e `preview`; in **ciascuno** i due secret
       `CLOUDFLARE_API_TOKEN` e `CLOUDFLARE_ACCOUNT_ID` (valori dal punto 2.2). Su `production`: *Deployment
       branches* = solo `main`; opzionale *Required reviewers*.
@@ -89,7 +92,11 @@ Dettagli e motivi in `deploy/cloudflare/README.md`.
 ### 2.3 Plausible (analytics senza cookie)
 - [ ] Creare il sito `montedelgallo.com` su plausible.io (il dominio e' gia' in `_data/site_meta.yml`:
       `analytics.domain`). Se Plausible fornisce il nuovo script `pa-<id>.js`, metterne l'URL in
-      `analytics.src` (stesso file) e rifare il check.
+      `analytics.src` (stesso file) e rifare il check. Attenzione: quel nuovo snippet richiede uno stub di
+      inizializzazione **inline**, che la CSP a un solo hash non ammette: o si ospita lo stub come file, o se ne
+      aggiunge l'hash a `headers` e a `deploy/nginx/headers.conf` (nota in `_includes/analytics.html`).
+- [ ] **Site settings → Shields → Hostnames**: consentire solo `montedelgallo.com`, cosi' le visite alle
+      preview e ai `*.pages.dev` non vengono contate.
 - [ ] **Goals → Add goal → Custom event**, con questi nomi esatti (li manda `assets/js/events.js`):
       `book_call_click` (la conversione principale), `contact_submit`, `download_click`, e anche
       `phone_click`, `email_click`, `whatsapp_click`.
@@ -146,11 +153,18 @@ L'apex `montedelgallo.com` su Pages richiede che il dominio sia una **zona Cloud
 Il cambio dei nameserver e' la parte lenta (ore, a volte 24-48 h): si fa PRIMA, lasciando il sito WordPress
 com'e', cosi' il giorno del lancio cambia un solo record.
 
+- [ ] **DNSSEC**: se e' attivo presso il registrar, **rimuovere il record DS** dal registrar PRIMA di cambiare i
+      nameserver (un DS che non corrisponde alla nuova zona rende il dominio non risolvibile per i resolver che
+      validano). Dopo il passaggio a Cloudflare riattivare DNSSEC su Cloudflare (DNS → Settings) e inserire il
+      **nuovo DS** presso il registrar.
 - [ ] Esportare tutti i record DNS attuali (dal provider DNS / registrar) e conservarli: A, AAAA, CNAME, **MX**,
       **TXT** (SPF, DKIM, DMARC, verifiche), SRV. Annotare l'**IP del server WordPress**.
 - [ ] In Cloudflare: **Add a site** `montedelgallo.com` (Free). Controllare ogni record importato contro
       l'esportazione; **la posta (MX, SPF, DKIM, DMARC) deve essere identica**. Tutti i record in **DNS only**
       (nuvola grigia), apex e `www` compresi: per ora Cloudflare non fa da proxy a WordPress.
+      **Non fidarsi dell'import automatico** di Cloudflare per DKIM e per i TXT lunghi (vengono troncati o
+      spezzati male): confrontare a mano **ogni** record con la zona vecchia. Gli host di posta (target degli MX,
+      `mail`, `autodiscover`, `webmail`, ecc.) restano sempre *DNS only* (nuvola grigia), mai proxied.
 - [ ] Creare `old.montedelgallo.com` → stesso IP del WordPress, *DNS only*.
 - [ ] 24 ore prima del cutover abbassare il **TTL** a 300 secondi (5 minuti) su apex, `www` e `old`.
 - [ ] Dal registrar cambiare i **nameserver** con quelli indicati da Cloudflare. Quando Cloudflare mostra il sito
@@ -240,6 +254,9 @@ Il sito nuovo non viene toccato: resta su `*.pages.dev`.
 4. Dopo il rollback: avvisare chi usa il form, riaprire la questione con calma; il sito nuovo si corregge su una branch
    (le preview sono `noindex`) e si ripubblica con un nuovo merge su `main`.
 5. Per tornare avanti: ripetere la sezione 5 dal punto "cancellare i record A/AAAA".
+
+Nota: i browser mettono in cache i 301 senza scadenza. Dopo un rollback chi ha gia' ricevuto un redirect
+(es. `/technologies/` → `/services/custom-software/`) finisce su un 404 di WordPress. Impatto basso.
 
 Non toccare i **nameserver** per il rollback: restano a Cloudflare, si cambiano solo i record.
 
