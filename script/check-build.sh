@@ -2,7 +2,8 @@
 #
 # Build-and-assert check for the bilingual (EN + IT) Jekyll site.
 #
-# Builds the site from scratch, runs the area checks (script/checks/run.rb: one Ruby
+# Builds the site from scratch into its own folder (never _site/: a running `jekyll serve`
+# rewrites that one, in development mode, while the check reads it), runs the area checks (script/checks/run.rb: one Ruby
 # module per area, see the interface at the top of that file for how to add one), then
 # validates the built site with html-proofer.
 #
@@ -20,7 +21,11 @@ cd "$(dirname "${BASH_SOURCE[0]}")/.."
 # success after checking nothing.
 export RUBYOPT="${RUBYOPT:+$RUBYOPT }-Eutf-8"
 
-SITE_DIR="_site"
+# Where the check builds and reads the site: the one setting is Checks::SITE_DIR in
+# script/checks/lib/site.rb (gitignored folder), which every check and html-proofer follow.
+SITE_DIR="$(bundle exec ruby -r ./script/checks/lib/site -e 'puts Checks::SITE_DIR')"
+[[ -n "$SITE_DIR" && "$SITE_DIR" != "." && "$SITE_DIR" != "_site" ]] ||
+  { echo "FAIL: could not read a build folder (not _site) from script/checks/lib/site.rb" >&2; exit 1; }
 
 fail() {
   echo "FAIL: $*" >&2
@@ -32,10 +37,10 @@ pass() {
 }
 
 echo "==> Building site"
-# Start from a clean slate so a stale _site/ left by an earlier build can never
-# make a broken build look healthy.
+# Start from a clean slate so a stale build left by an earlier run can never make a
+# broken build look healthy.
 rm -rf -- "$SITE_DIR"
-bundle exec jekyll build || fail "'bundle exec jekyll build' failed"
+bundle exec jekyll build --destination "$SITE_DIR" || fail "'bundle exec jekyll build' failed"
 
 # Every assertion about the built site, one module per area (stops at the first failure).
 bundle exec ruby script/checks/run.rb

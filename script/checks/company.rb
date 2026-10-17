@@ -177,6 +177,10 @@ def company_team_grid(ctx, fx)
     fail!("#{css_file} has no media query that gives .team (the team row) four columns at the wider widths")
   css.match?(/\.team--founders\{[^}]*grid-template-columns:repeat\(2,/) &&
     fail!("#{css_file}: the founders row must not set its own phone columns, it keeps the two columns of .team")
+  # The founders row is as wide as three columns of the team row (a quarter of the width is the
+  # fourth column and a gap): without this width the two rows silently misalign.
+  css.match?(/\.team--founders\{[^}]*width:\s*calc\(\s*75%\s*-\s*var\(--team-gap\)\s*\/\s*4\s*\)/) ||
+    fail!("#{css_file}: .team--founders must keep width:calc(75% - var(--team-gap)/4): it makes the founders row exactly three columns of the four-column team row")
   # The cap is the number in the CSS itself, so the guard follows a change of it: no portrait of
   # _data/team.yml may be narrower than the tile cap (it would be stretched and blur).
   tile_cap = css.scan(/\.team__photo[^{]*\{[^}]*width:min\(100%, ?([0-9]+)px\)/).flatten.first
@@ -185,7 +189,7 @@ def company_team_grid(ctx, fx)
   smallest = ((roster["founders"] || []) + (roster["members"] || [])).filter_map { |m| m["photo_w"] }.min
   (smallest.nil? || smallest >= tile_cap.to_i) ||
     fail!("a portrait of _data/team.yml is only #{smallest}px wide, below the #{tile_cap}px cap of .team__photo: it would be stretched")
-  pass "the team grid has two columns on a phone, three (founders) and four (team) from the tablet width up, and a portrait is drawn at most #{tile_cap}px wide (the CSS cap; the smallest portrait is #{smallest || "none"}px)"
+  pass "the team grid has two columns on a phone, three (founders) and four (team) from the tablet width up, and a portrait is drawn at most #{tile_cap}px wide (the CSS cap; the smallest portrait is #{smallest || "none"}px), and the founders row is as wide as three team columns (calc(75% - gap/4))"
 end
 
 # The rows of a team grid inside `scope` (a built page, or the team section of the home):
@@ -330,7 +334,7 @@ def company_motioforge(ctx)
   fail_list!(motioforge_errors("en", "#{site_dir}/motioforge/index.html"), "the English MotioForge page is wrong (see the list above)")
   fail_list!(motioforge_errors("it", "#{site_dir}/it/motioforge/index.html"), "the Italian MotioForge page is wrong (see the list above)")
   # No archive, PDF or large file of any kind in the repository or in the output.
-  big_file = company_large_file(".", pruned: %w[./.git ./_site ./vendor ./.bundle ./node_modules ./.jekyll-cache ./.superpowers], extensions: %w[.zip .pdf .exe .dmg])
+  big_file = company_large_file(".", pruned: %W[./.git ./_site ./#{Checks::SITE_DIR} ./vendor ./.bundle ./node_modules ./.jekyll-cache ./.superpowers], extensions: %w[.zip .pdf .exe .dmg])
   big_file && fail!("a download or large file is in the repository: #{big_file} (the MotioForge files stay on #{MOTIOFORGE_UPLOADS})")
   site_big = company_large_file(site_dir, pruned: [], extensions: %w[.zip .pdf])
   site_big && fail!("the built site ships #{site_big}: a download or a large file was copied into the site")

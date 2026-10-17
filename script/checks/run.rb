@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
-# Runs every area check against the built site (_site/). script/check-build.sh builds the
-# site first, then calls this; to run it alone after a build:
+# Runs every area check against the built site (Checks::SITE_DIR, .check-site/: the one
+# setting, in lib/site.rb; never _site/, which `jekyll serve` rewrites). script/check-build.sh
+# builds the site there first, then calls this; to run it alone after a build:
 #
 #   bundle exec ruby script/checks/run.rb            # every area, in the order below
 #   bundle exec ruby script/checks/run.rb home nav   # only these areas
@@ -14,8 +15,10 @@
 #   1. Create script/checks/<area>.rb defining ONE method, check_<area>(ctx). `ctx` is the
 #      shared context (lib/site.rb): ctx.site_dir, ctx.site_url, ctx.en_home, ctx.it_home,
 #      ctx.css, ctx.year, ctx.fx (the scratch fixture build) and the MIN_* thresholds.
-#      Name the helpers of your module with the area as a prefix (<area>_...): every
-#      module shares one namespace.
+#      NAMING RULE: every module shares one namespace (top-level methods and constants), so
+#      prefix the constants and helper methods that belong to one area with the area name
+#      (company_team_grid, COMPANY_PAGES, redirects_emit_rules). Only what several areas
+#      use (the helpers below, redirect_entries, built_url?) goes unprefixed.
 #   2. Add the area name to AREAS below. The order matters only where a module relies on
 #      what an earlier one built (the fixture is built on first use, by whoever asks first).
 #   3. Use the helpers instead of writing your own:
@@ -25,6 +28,11 @@
 #                         skipped_levels, switch_href, footer_of, built_file,
 #                         assert_translated_pair, assert_index_pair, assert_link_prefixes,
 #                         assert_no_double_prefix, assert_no_shared_assignments
+#        lib/site.rb      Checks::Site.read(path) (a file's text, cached), .page(path) (the
+#                         built page as a Nokogiri HTML5 document, cached), .text_files(root)
+#                         (every text file under root, as grep -rI), .grep_tree(needle, root,
+#                         except_ext: []) (the files under root containing the literal text,
+#                         as grep -rIlF) and .url (the public origin from _config.yml)
 #        lib/images.rb    assert_real_image(public_path, what), Images.inspect_file
 #        lib/manifest.rb  manifest_pairs(:projects | :case_studies | :services)
 #        lib/fixture.rb   throw-away pages built in a scratch copy of the site (ctx.fx)

@@ -17,13 +17,14 @@ The output is plain static files, so it can be deployed to any host. It is built
 ```sh
 bundle install               # install the gems (first run, and after Gemfile changes)
 bundle exec jekyll serve     # dev server: http://localhost:4000 (EN) and http://localhost:4000/it/ (IT)
-bundle exec jekyll build     # one-off build into _site/
+bundle exec jekyll build     # one-off build into _site/ (the check builds into .check-site/, see below)
 bash script/check-build.sh   # clean build, then assert both languages, the design-system CSS, the self-hosted fonts, the page shell (hreflang, navigation, footer, language switch), the projects (all 12 in both languages, real covers and gallery pictures, detail pages with their text, the two index pages, cards), the home page (every string of both languages on the page, sections, links, covers) and the links (html-proofer)
 ```
 
 ### The build check
 
-`script/check-build.sh` is the entry point (CI runs it): it builds the site from a clean `_site/`, runs the
+`script/check-build.sh` is the entry point (CI runs it): it builds the site from scratch into `.check-site/` (gitignored; never `_site/`, which a running `jekyll serve`
+rewrites in development mode, racing the check), runs the
 Ruby checks in `script/checks/`, then runs html-proofer. Run `JEKYLL_ENV=production bash script/check-build.sh`
 to match CI. After a build, `bundle exec ruby script/checks/run.rb [area ...]` runs all the checks, or only the
 named areas (for example `home nav`).
@@ -31,8 +32,13 @@ named areas (for example `home nav`).
 - `script/checks/run.rb` lists the areas in the order they run. Each area is one file,
   `script/checks/<area>.rb`, that defines `check_<area>(ctx)`: `build`, `styles`, `shell`, `nav`, `projects`,
   `language_switch`, `case_studies`, `redirects`, `redirects_emit`, `services`, `i18n`, `home`, `blog`, `company`, `contact`.
+- The build folder is one setting, `Checks::SITE_DIR` in `script/checks/lib/site.rb`: `check-build.sh` reads it for
+  `jekyll build --destination` and html-proofer, and the checks read it as `ctx.site_dir`.
+- Every area shares one Ruby namespace, so prefix the constants and helper methods of an area with its name
+  (`company_team_grid`, `COMPANY_PAGES`, `redirects_emit_rules`); only what several areas use goes unprefixed.
 - `script/checks/lib/` holds what they share: `report.rb` (`pass`, `fail!`, `fail_list!`, `assert_file`,
-  `assert_contains`), `site.rb` (the context handed to every check), `pages.rb` (load a built page, canonical /
+  `assert_contains`), `site.rb` (the context handed to every check, and `Checks::Site.read` / `page` / `text_files` / `grep_tree`:
+  cached file text, Nokogiri page, and grep over the built tree), `pages.rb` (load a built page, canonical /
   hreflang / language-switch assertions, links that stay in the page's language), `images.rb`
   (`assert_real_image`: magic bytes and complete file), `manifest.rb` (`manifest_pairs(:projects)` and the
   other collections) and `fixture.rb` (throw-away pages built in a scratch copy of the site).

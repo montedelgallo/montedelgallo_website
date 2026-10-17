@@ -8,7 +8,11 @@ require "yaml"
 # context handed to every check module.
 
 module Checks
-  SITE_DIR = "_site"
+  # The folder the check builds the site into and reads it from: the ONE setting
+  # (script/check-build.sh passes it to `jekyll build --destination` and to html-proofer;
+  # every module reads it as ctx.site_dir / SITE_DIR). Not _site/: a `jekyll serve` in
+  # development mode rewrites that one while the check runs. Gitignored.
+  SITE_DIR = ".check-site"
 
   module Site
     # Files that grep -I would skip as binary: never read as text.
