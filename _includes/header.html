@@ -48,7 +48,7 @@
         {%- for nv_path in nv_paths -%}
           {%- assign nv_head = page.url | slice: 0, nv_path.size -%}
           {%- if nv_head == nv_path %}{% assign nv_here = true %}{% endif -%}
-                  {%- endfor -%}
+        {%- endfor -%}
         <a href="{{ item[lang] | relative_url }}"{% if nv_exact %} aria-current="page"{% elsif nv_here %} aria-current="true"{% endif %}>{{ t.nav[item.key] | escape }}</a>
         {%- endfor -%}
       </nav>
