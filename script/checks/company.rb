@@ -1,0 +1,330 @@
+# frozen_string_literal: true
+
+require "find"
+
+# The company pages (About hub, Startup Studio, Product Lab, Careers, MotioForge), the
+# Contact and legal pages' documents, the About hub, the team grid and MotioForge.
+#
+# Each page is an English and an Italian document tied by a shared page_id, each with a
+# bare permalink (no /it/ prefix: polyglot adds it). The live site's our-story,
+# manifesto and our-process pages (and their Italian ones) are folded into the About hub
+# as sections with stable ids; _data/redirects.yml maps their old URLs to those anchors.
+
+# page_id, English source, English permalink, Italian source, Italian permalink
+COMPANY_PAGES = [
+  ["about", "about.html", "/about/", "it/chi-siamo.html", "/chi-siamo/"],
+  ["startup-studio", "startup-studio.html", "/startup-studio/", "it/studio-startup.html", "/studio-startup/"],
+  ["product-lab", "product-lab.html", "/product-lab/", "it/laboratorio-prodotto.html", "/laboratorio-prodotto/"],
+  ["careers", "careers.html", "/careers/", "it/lavora-con-noi.html", "/lavora-con-noi/"],
+  ["motioforge", "motioforge.html", "/motioforge/", "it/motioforge.html", "/motioforge/"],
+  ["contact", "contact.html", "/contact/", "it/contatti.html", "/contatti/"],
+  ["privacy", "privacy.html", "/privacy/", "it/privacy.html", "/privacy/"],
+  ["cookie", "cookie.html", "/cookie/", "it/cookie.html", "/cookie/"]
+].freeze
+
+COMPANY_MIN_WORDS = { "about" => 900, "startup-studio" => 250, "product-lab" => 250, "careers" => 140, "motioforge" => 600, "contact" => 90, "privacy" => 90, "cookie" => 80 }.freeze
+
+MOTIOFORGE_UPLOADS = "https://montedelgallo.com/wp-content/uploads/"
+
+def check_company(ctx)
+  section "Asserting the company pages (About hub, Startup Studio, Product Lab, Careers, MotioForge)"
+  site_dir = ctx.site_dir
+  fx = ctx.fx
+
+  fail_list!(company_page_errors(site_dir, ctx.site_url), "a company page is wrong (see the list above)")
+  pass "#{COMPANY_PAGES.size} pages in 2 languages (company pages, Contact and the legal drafts) at bare permalinks: documents agree with the manifest, one <h1>, no skipped heading, a real body, reciprocal canonical/hreflang and a language switch that lands on the other page"
+
+  # The links on those pages stay in the page's language, and no /it/it/ is built.
+  en_pages = COMPANY_PAGES.map { |_, _, en_url, _, _| "#{site_dir}#{en_url}index.html" }
+  it_pages = COMPANY_PAGES.map { |_, _, _, _, it_url| "#{site_dir}/it#{it_url}index.html" }
+  assert_link_prefixes "en", en_pages, "an English company page has a link into the Italian site (see the list above)"
+  assert_link_prefixes "it", it_pages, "an Italian company page has an internal link that is not under /it/ (see the list above)"
+  assert_no_double_prefix
+  pass "every root-relative link on the #{en_pages.size} English and #{it_pages.size} Italian company pages stays in the page's language; no /it/it/"
+
+  # The About hub: four sections with stable ids (the redirects of the old story, manifesto
+  # and process pages point at them), each with an <h2>, in this order, and a small in-page
+  # navigation to them.
+  fail_list!(about_hub_errors("en", "#{site_dir}/about/index.html"), "the English About hub is wrong (see the list above)")
+  fail_list!(about_hub_errors("it", "#{site_dir}/it/chi-siamo/index.html"), "the Italian About hub is wrong (see the list above)")
+  pass "About hub (EN + IT): story, manifesto, process and team sections with stable ids, each with an <h2> and a body, linked from the page, 7+ manifesto principles, 4 process phases"
+
+  company_team_grid(ctx, fx)
+  company_motioforge(ctx)
+end
+
+# Per page and language: the document says what the manifest says (lang, page_id, bare
+# permalink, title, description), the page was built at its URL, in its language, with
+# one <h1>, no skipped heading level, and a body that is not a stub; the canonical and
+# hreflang tags are reciprocal (each page names the other, and the other names it back),
+# and the language switch leads to the other page.
+def company_page_errors(site_dir, site_url)
+  errors = []
+  COMPANY_PAGES.each do |page_id, en_src, en_url, it_src, it_url|
+    pair = { "en" => [en_src, en_url, en_url], "it" => [it_src, it_url, "/it#{it_url}"] }
+    seen = {}
+    pair.each do |lang, (src, permalink, url)|
+      at = "#{page_id} (#{lang})"
+      unless File.file?(src)
+        errors << "#{at}: #{src} does not exist"
+        next
+      end
+      match = File.read(src, encoding: "utf-8").match(/\A---[ \t]*\n(.*?)\n---[ \t]*\n/m)
+      (errors << "#{at}: #{src} has no front matter"; next) unless match
+      front = YAML.safe_load(match[1]) || {}
+      errors << "#{at}: lang should be #{lang}" unless front["lang"] == lang
+      errors << "#{at}: page_id should be #{page_id}" unless front["page_id"] == page_id
+      errors << "#{at}: permalink should be #{permalink} (bare, polyglot adds /it/), it is #{front["permalink"].inspect}" unless front["permalink"] == permalink
+      errors << "#{at}: no title" if front["title"].to_s.strip.empty?
+      errors << "#{at}: the description (meta) should be a real sentence" if front["description"].to_s.strip.size < 60
+      file = File.join(site_dir, url, "index.html")
+      (errors << "#{at}: #{url} was not built (#{file})"; next) unless File.size?(file)
+
+      html = load_file(file)
+      seen[lang] = html
+      errors << "#{at}: <html lang> should be #{lang}" unless html.at_css("html")["lang"] == lang
+      errors << "#{at}: <title> should hold #{front["title"].inspect}" unless html.at_css("title")&.text.to_s.include?(front["title"].to_s)
+      main = html.at_css("main")
+      (errors << "#{at}: no <main>"; next) unless main
+
+      h1 = main.css("h1")
+      errors << "#{at}: main must hold exactly one <h1>, it holds #{h1.size}" unless h1.size == 1
+      levels = main.css("h1,h2,h3,h4,h5,h6").map { |node| node.name[1].to_i }
+      levels.each_cons(2) { |a, b| errors << "#{at}: the headings skip a level (h#{a} then h#{b})" if b > a + 1 }
+      words = main.text.split.size
+      errors << "#{at}: the body has #{words} words, a real page has at least #{COMPANY_MIN_WORDS[page_id]}" if words < COMPANY_MIN_WORDS[page_id]
+      ids = main.css("[id]").map { |node| node["id"] }
+      ids.tally.each { |id, n| errors << "#{at}: id=#{id.inspect} appears #{n} times" if n > 1 }
+      main.css("a[href^='#']").each do |a|
+        errors << "#{at}: the link #{a["href"]} points at no id of the page" unless a["href"] == "#" || ids.include?(a["href"][1..])
+      end
+      errors << "#{at}: an image has no alt attribute" if main.css("img:not([alt])").any?
+      errors << "#{at}: an <img> has no width and height (the page would jump when it loads)" if main.css("img").any? { |img| img["width"].to_s.empty? || img["height"].to_s.empty? }
+    end
+    # reciprocal hreflang: read both pages' alternates and canonical, and the switch
+    pair.each do |lang, (_src, _permalink, url)|
+      html = seen[lang] or next
+      at = "#{page_id} (#{lang})"
+      link = ->(rel, hreflang = nil) { html.css("link[rel='#{rel}']").find { |l| hreflang.nil? || l["hreflang"] == hreflang }&.[]("href") }
+      errors << "#{at}: canonical should be #{site_url}#{url}, it is #{link.("canonical").inspect}" unless link.("canonical") == "#{site_url}#{url}"
+      errors << "#{at}: hreflang=en should be #{site_url}#{en_url}" unless link.("alternate", "en") == "#{site_url}#{en_url}"
+      errors << "#{at}: hreflang=it should be #{site_url}/it#{it_url}" unless link.("alternate", "it") == "#{site_url}/it#{it_url}"
+      errors << "#{at}: hreflang=x-default should be #{site_url}#{en_url}" unless link.("alternate", "x-default") == "#{site_url}#{en_url}"
+      other = lang == "en" ? "it" : "en"
+      target = other == "en" ? en_url : "/it#{it_url}"
+      sw = html.css("a.langsw__link").find { |a| a["hreflang"] == other }
+      errors << "#{at}: the language switch to #{other} should lead to #{target}, it leads to #{sw&.[]("href").inspect}" unless sw && sw["href"] == target
+      errors << "#{at}: the switch target #{target} was not built" unless File.size?(File.join(site_dir, target, "index.html"))
+    end
+  end
+  errors
+end
+
+def about_hub_errors(lang, file)
+  errors = []
+  main = load_file(file).at_css("main")
+  wanted = %w[story manifesto process team]
+  found = main.css("section[id]").map { |node| node["id"] } & wanted
+  errors << "#{lang}: the About hub should have the sections #{wanted.inspect} in this order, it has #{found.inspect}" unless found == wanted
+  wanted.each do |id|
+    section = main.at_css("section##{id}")
+    next errors << "#{lang}: no <section id=\"#{id}\">" unless section
+
+    errors << "#{lang}: section ##{id} has no <h2>" unless section.at_css("h2")
+    errors << "#{lang}: section ##{id} is a stub (#{section.text.split.size} words)" if section.text.split.size < 60
+    errors << "#{lang}: nothing in the page links to ##{id}" unless main.css("a[href='##{id}']").any?
+  end
+  errors << "#{lang}: the manifesto should state at least 7 principles (found #{main.css("#manifesto .mf").size} .mf)" if main.css("#manifesto .mf").size < 7
+  errors << "#{lang}: the process should have 4 phases (found #{main.css("#process .steps > div").size})" unless main.css("#process .steps > div").size == 4
+  errors
+end
+
+# The team grid (_includes/team-grid.html, _data/team.yml). The data names every member
+# with a role and badge in both languages; the grid shows each member as a name, a role
+# and a portrait: a real image (read by its magic bytes, not trusted by its name) with
+# alt text, or, for a member without one, a Foundry initials tile. The include shares
+# the page's variables, so it may not assign t, lang or p (the fixture page is a canary).
+def company_team_grid(ctx, fx)
+  site_dir = ctx.site_dir
+  fail_list!(team_grid_errors("en", "#{site_dir}/about/index.html", site_dir, :site), "the English team grid is wrong (see the list above)")
+  fail_list!(team_grid_errors("it", "#{site_dir}/it/chi-siamo/index.html", site_dir, :site), "the Italian team grid is wrong (see the list above)")
+  fail_list!(team_grid_errors("en", "#{fx}/team-grid-test/index.html", fx, :fixture), "the English team grid fixture is wrong (see the list above)")
+  fail_list!(team_grid_errors("it", "#{fx}/it/team-grid-test/index.html", fx, :fixture), "the Italian team grid fixture is wrong (see the list above)")
+  pass "team grid (EN + IT): every member of _data/team.yml with name and role in the page's language, a real portrait with alt text or the initials tile, the placeholder proven on a fixture, the include leaves the page's t, lang and p alone"
+  assert_no_shared_assignments ["_includes/team-grid.html"],
+                               "_includes/team-grid.html assigns (or loops with) t, lang or p (see the rule in index.html): give the variable a prefix of its own"
+  pass "the team grid include assigns no t, lang or p"
+
+  # The grid on a phone and the size of a portrait, read from the compiled CSS: at least two
+  # columns before any media query (a single column is thousands of pixels of scroll),
+  # five from the tablet width up, and a portrait drawn at most as wide as the .team__photo
+  # cap, which no portrait may be narrower than, so that every tile is the same size and none
+  # is stretched.
+  css_file = ctx.css
+  css = Checks::Site.read(css_file)
+  css.match?(/\.team\{[^}]*grid-template-columns:repeat\(2,/) ||
+    fail!("the .team rule in #{css_file} must start with two columns (grid-template-columns:repeat(2,...)): one column on a phone is too long")
+  css.match?(/@media ?\(min-width: ?[0-9]+px\)\{\.team\{[^}]*grid-template-columns:repeat\(5,/) ||
+    fail!("#{css_file} has no media query that gives .team five columns at the wider widths")
+  # The cap is the number in the CSS itself, so the guard follows a change of it: no portrait of
+  # _data/team.yml may be narrower than the tile cap (it would be stretched and blur).
+  tile_cap = css.scan(/\.team__photo[^{]*\{[^}]*width:min\(100%, ?([0-9]+)px\)/).flatten.first
+  tile_cap || fail!("the .team__photo rule in #{css_file} must size a portrait width:min(100%,<n>px): the cap the portraits are checked against")
+  smallest = YAML.load_file("_data/team.yml")["members"].filter_map { |m| m["photo_w"] }.min
+  (smallest.nil? || smallest >= tile_cap.to_i) ||
+    fail!("a portrait of _data/team.yml is only #{smallest}px wide, below the #{tile_cap}px cap of .team__photo: it would be stretched")
+  pass "the team grid has two columns on a phone and five from the tablet width up, and a portrait is drawn at most #{tile_cap}px wide (the CSS cap; the smallest portrait is #{smallest || "none"}px)"
+end
+
+# team_grid_errors(lang, built page, root, :site | :fixture)
+def team_grid_errors(lang, file, root, mode)
+  errors = []
+  team = YAML.safe_load(File.read("_data/team.yml", encoding: "utf-8"))
+  html = load_file(file)
+
+  real_image = lambda do |public_path|
+    _kind, _size, problem = Checks::Images.inspect_file(File.join(root, public_path), min_bytes: 1000, label: public_path)
+    problem
+  end
+
+  members = html.css("main .team__member")
+  if mode == :fixture
+    canary = text_of(html.at_css("#canary"))
+    errors << "#{lang}: canary: the page lost its own variables to the team include, t, lang and p should read \"keep keep keep\", found #{canary.inspect}" unless canary == "keep keep keep"
+    errors << "#{lang}: the fixture has 2 members, the grid shows #{members.size}" unless members.size == 2
+    first, second = members
+    if first
+      errors << "#{lang}: a member without a portrait should show the initials tile (.team__ph) reading AL" unless text_of(first.at_css(".team__ph")) == "AL"
+      errors << "#{lang}: a member without a portrait must not have an <img>" if first.at_css("img")
+      errors << "#{lang}: the role should be #{lang == "it" ? "Analista" : "Analyst"}" unless text_of(first.at_css(".team__role")) == (lang == "it" ? "Analista" : "Analyst")
+    end
+    if second
+      img = second.at_css("img")
+      errors << "#{lang}: a member with a portrait shows it as an <img> with alt text" unless img && !img["alt"].to_s.strip.empty?
+      errors << "#{lang}: no initials tile on a member that has a portrait" if second.at_css(".team__ph")
+      errors << "#{lang}: the badge should be #{lang == "it" ? "Ammiraglia" : "Admiral"}" unless text_of(second.at_css(".team__badge")) == (lang == "it" ? "Ammiraglia" : "Admiral")
+      errors << "#{lang}: the fixture portrait (480 px) must carry style=\"max-width:480px\", it has #{img && img["style"].inspect}" unless img && img["style"].to_s.match?(/max-width:\s*480px/)
+      msg = img && real_image.(img["src"]) and errors << "#{lang}: #{msg}"
+    end
+  else
+    data = team["members"]
+    errors << "#{lang}: the grid shows #{members.size} member(s), _data/team.yml has #{data.size}" unless members.size == data.size
+    errors << "_data/team.yml has no member" if data.empty?
+    # The roster is DATA: the client adds or removes a person in _data/team.yml and nothing
+    # here names anybody. Every member needs a name, a role in both languages and either a
+    # real portrait with its pixel size or (no `photo`) the initials tile.
+    data.each_with_index do |member, i|
+      who = member["name"].to_s.strip.empty? ? "member #{i + 1}" : member["name"]
+      errors << "_data/team.yml: #{who} has no name" if member["name"].to_s.strip.empty?
+      %w[en it].each { |l| errors << "_data/team.yml: #{who} has no #{l} role" if member.dig("role", l).to_s.strip.empty? }
+      next unless member["photo"]
+
+      errors << "_data/team.yml: #{who}: photo_w and photo_h must be positive numbers (the pixel size of #{member["photo"]})" unless member["photo_w"].to_i.positive? && member["photo_h"].to_i.positive?
+      msg = real_image.(member["photo"]) and errors << "_data/team.yml: #{who}: #{msg}"
+    end
+    data.each_with_index do |member, i|
+      node = members[i] or next
+      errors << "#{lang}: member #{i + 1} should be #{member["name"].inspect}, the grid shows #{text_of(node.at_css(".team__name")).inspect}" unless text_of(node.at_css(".team__name")) == member["name"]
+      errors << "#{lang}: #{member["name"]}: the data has no #{lang} role" if member.dig("role", lang).to_s.strip.empty?
+      errors << "#{lang}: #{member["name"]}: the role should read #{member.dig("role", lang).inspect}, it reads #{text_of(node.at_css(".team__role")).inspect}" unless text_of(node.at_css(".team__role")) == member.dig("role", lang)
+      img = node.at_css("img")
+      if img
+        errors << "#{lang}: #{member["name"]}: the portrait has no alt text" if img["alt"].to_s.strip.empty?
+        errors << "#{lang}: #{member["name"]}: the portrait alt text should name the person" unless img["alt"].to_s.include?(member["name"])
+        errors << "#{lang}: #{member["name"]}: the portrait has no width and height" if img["width"].to_s.empty? || img["height"].to_s.empty?
+        cap = img["style"].to_s[/max-width:\s*(\d+)px/, 1].to_i
+        errors << "#{lang}: #{member["name"]}: the portrait must carry style=\"max-width:#{member["photo_w"]}px\" (never wider than its pixel size, so the small portraits do not blur), it has #{img["style"].inspect}" unless cap.positive? && cap <= member["photo_w"].to_i
+        msg = real_image.(img["src"]) and errors << "#{lang}: #{member["name"]}: #{msg}"
+      else
+        errors << "#{lang}: #{member["name"]}: neither a portrait nor the initials tile" unless node.at_css(".team__ph")
+      end
+    end
+    # The portraits are the team's own and stay in the language-independent assets folder.
+    errors << "#{lang}: the team portraits are not under /assets/team/" if members.any? { |m| m.at_css("img") && !m.at_css("img")["src"].to_s.start_with?("/assets/team/") }
+  end
+  errors
+end
+
+# MotioForge: the download links point at the files that are already live on the old
+# server, as absolute external URLs (the 214 MB archive and the PDFs must not be copied
+# into the repository), the Robotic Lab project and the MotioForge page link to each
+# other in both languages.
+def company_motioforge(ctx)
+  site_dir = ctx.site_dir
+  fail_list!(motioforge_errors("en", "#{site_dir}/motioforge/index.html"), "the English MotioForge page is wrong (see the list above)")
+  fail_list!(motioforge_errors("it", "#{site_dir}/it/motioforge/index.html"), "the Italian MotioForge page is wrong (see the list above)")
+  # No archive, PDF or large file of any kind in the repository or in the output.
+  big_file = company_large_file(".", pruned: %w[./.git ./_site ./vendor ./.bundle ./node_modules ./.jekyll-cache ./.superpowers], extensions: %w[.zip .pdf .exe .dmg])
+  big_file && fail!("a download or large file is in the repository: #{big_file} (the MotioForge files stay on #{MOTIOFORGE_UPLOADS})")
+  site_big = company_large_file(site_dir, pruned: [], extensions: %w[.zip .pdf])
+  site_big && fail!("the built site ships #{site_big}: a download or a large file was copied into the site")
+  pass "MotioForge (EN + IT): the Beta archive and both PDFs are absolute https://montedelgallo.com/wp-content/uploads/ links, the demo opens on YouTube (no embedded frame), mailto contact; no archive, PDF or file over 3 MB in the repository or in the built site"
+
+  # The Robotic Lab project links to MotioForge in its own language, and MotioForge links
+  # back (above): both ends of the connection resolve to built pages.
+  [["en", "#{site_dir}/projects/mdg-robotic-lab/index.html", "/motioforge/", "#{site_dir}/motioforge/index.html"],
+   ["it", "#{site_dir}/it/progetti/mdg-robotic-lab/index.html", "/it/motioforge/", "#{site_dir}/it/motioforge/index.html"]].each do |lang, page, href, target|
+    assert_file page, "the #{lang} Robotic Lab project page"
+    require_contains page, "href=\"#{href}\"", "the #{lang} Robotic Lab project must link to MotioForge at #{href} (it was mentioned, unlinked)"
+    assert_file target, "the #{lang} MotioForge page the Robotic Lab links to"
+  end
+  pass "the Robotic Lab project links to MotioForge in both languages (/motioforge/, /it/motioforge/) and the pages exist"
+
+  company_redirects
+end
+
+# The first file under `root` that is an archive or larger than 3 MB (nil when none).
+def company_large_file(root, pruned:, extensions:)
+  Find.find(root) do |path|
+    Find.prune if pruned.include?(path)
+    next unless File.file?(path) && !File.symlink?(path)
+
+    return path if extensions.include?(File.extname(path).downcase) || File.size(path) > 3 * 1024 * 1024
+  end
+  nil
+end
+
+def motioforge_errors(lang, file)
+  errors = []
+  main = load_file(file).at_css("main")
+  uploads = MOTIOFORGE_UPLOADS
+  wanted = [uploads + "motioforge/MotioForge_Studio.zip", uploads + "2026/09/MotioForge_Studio_overview_it.pdf", uploads + "2026/09/MotioForge_Studio_overview_en.pdf"]
+  hrefs = main.css("a[href]").map { |a| a["href"] }
+  wanted.each { |url| errors << "#{lang}: no link to #{url}" unless hrefs.include?(url) }
+  hrefs.grep(/\.(zip|pdf)(\z|[?#])/i).each do |href|
+    errors << "#{lang}: the download link #{href} must be an absolute #{uploads} URL" unless href.start_with?(uploads)
+  end
+  errors << "#{lang}: the Download section (#download) is missing" unless main.at_css("section#download")
+  errors << "#{lang}: the demo section (#demo) is missing" unless main.at_css("#demo")
+  errors << "#{lang}: the demo should link to the video on YouTube (https://www.youtube.com/watch?v=Rz0HOyaC8jU)" unless hrefs.include?("https://www.youtube.com/watch?v=Rz0HOyaC8jU")
+  errors << "#{lang}: the page must not embed a third-party frame" if main.css("iframe").any?
+  robotic = lang == "it" ? "/it/progetti/mdg-robotic-lab/" : "/projects/mdg-robotic-lab/"
+  errors << "#{lang}: the page should link back to the Robotic Lab project (#{robotic})" unless hrefs.include?(robotic)
+  errors << "#{lang}: the contact address info@montedelgallo.com should be a mailto link" unless hrefs.include?("mailto:info@montedelgallo.com")
+  errors
+end
+
+# The old URLs that became sections of the About hub, and the old Italian MotioForge URL,
+# are in the redirect map with their new targets (anchors included; the map itself,
+# anchors resolved, is validated by the redirects module).
+def company_redirects
+  entries = redirect_entries
+  want = {
+    "/our-story/" => "/about/#story",
+    "/manifesto/" => "/about/#manifesto",
+    "/our-process/" => "/about/#process",
+    "/it/storia/" => "/it/chi-siamo/#story",
+    "/it/manifesto-monte-del-gallo/" => "/it/chi-siamo/#manifesto",
+    "/it/metodo/" => "/it/chi-siamo/#process",
+    "/it/motioforge-2/" => "/it/motioforge/"
+  }
+  errors = []
+  want.each do |from, to|
+    entry = entries.find { |e| e.is_a?(Hash) && e["from"] == from }
+    if entry.nil? then errors << "the old URL #{from} is not in _data/redirects.yml"
+    elsif entry["to"] != to then errors << "#{from} redirects to #{entry["to"].inspect}, it should be #{to}"
+    end
+  end
+  fail_list!(errors, "_data/redirects.yml does not map the old About, manifesto, process and MotioForge URLs (see the list above)")
+  pass "_data/redirects.yml maps the 6 folded About pages to their sections and /it/motioforge-2/ to /it/motioforge/"
+end

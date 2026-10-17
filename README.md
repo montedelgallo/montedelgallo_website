@@ -21,6 +21,25 @@ bundle exec jekyll build     # one-off build into _site/
 bash script/check-build.sh   # clean build, then assert both languages, the design-system CSS, the self-hosted fonts, the page shell (hreflang, navigation, footer, language switch), the projects (all 12 in both languages, real covers and gallery pictures, detail pages with their text, the two index pages, cards), the home page (every string of both languages on the page, sections, links, covers) and the links (html-proofer)
 ```
 
+### The build check
+
+`script/check-build.sh` is the entry point (CI runs it): it builds the site from a clean `_site/`, runs the
+Ruby checks in `script/checks/`, then runs html-proofer. Run `JEKYLL_ENV=production bash script/check-build.sh`
+to match CI. After a build, `bundle exec ruby script/checks/run.rb [area ...]` runs all the checks, or only the
+named areas (for example `home nav`).
+
+- `script/checks/run.rb` lists the areas in the order they run. Each area is one file,
+  `script/checks/<area>.rb`, that defines `check_<area>(ctx)`: `build`, `styles`, `shell`, `nav`, `projects`,
+  `language_switch`, `case_studies`, `redirects`, `services`, `i18n`, `home`, `blog`, `company`, `contact`.
+- `script/checks/lib/` holds what they share: `report.rb` (`pass`, `fail!`, `fail_list!`, `assert_file`,
+  `assert_contains`), `site.rb` (the context handed to every check), `pages.rb` (load a built page, canonical /
+  hreflang / language-switch assertions, links that stay in the page's language), `images.rb`
+  (`assert_real_image`: magic bytes and complete file), `manifest.rb` (`manifest_pairs(:projects)` and the
+  other collections) and `fixture.rb` (throw-away pages built in a scratch copy of the site).
+- To add checks: create `script/checks/<area>.rb` with `check_<area>(ctx)`, add the area name to `AREAS` in
+  `run.rb`, and make sure the check fails when what it protects is broken. The interface is also documented at
+  the top of `run.rb`.
+
 ## Where things live
 
 - `_layouts/default.html` wraps every page. `_includes/` has the head (SEO, hreflang), header, footer,
