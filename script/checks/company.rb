@@ -334,7 +334,7 @@ def company_motioforge(ctx)
   fail_list!(motioforge_errors("en", "#{site_dir}/motioforge/index.html"), "the English MotioForge page is wrong (see the list above)")
   fail_list!(motioforge_errors("it", "#{site_dir}/it/motioforge/index.html"), "the Italian MotioForge page is wrong (see the list above)")
   # No archive, PDF or large file of any kind in the repository or in the output.
-  big_file = company_large_file(".", pruned: %W[./.git ./_site ./#{Checks::SITE_DIR} ./vendor ./.bundle ./node_modules ./.jekyll-cache ./.superpowers], extensions: %w[.zip .pdf .exe .dmg])
+  big_file = company_large_file(".", pruned: %W[./.git ./_site ./#{Checks::SITE_DIR} ./#{Checks::CACHE_DIR} ./vendor ./.bundle ./node_modules ./.jekyll-cache ./.superpowers], extensions: %w[.zip .pdf .exe .dmg])
   big_file && fail!("a download or large file is in the repository: #{big_file} (the MotioForge files stay on #{MOTIOFORGE_UPLOADS})")
   site_big = company_large_file(site_dir, pruned: [], extensions: %w[.zip .pdf])
   site_big && fail!("the built site ships #{site_big}: a download or a large file was copied into the site")

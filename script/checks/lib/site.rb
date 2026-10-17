@@ -13,6 +13,10 @@ module Checks
   # every module reads it as ctx.site_dir / SITE_DIR). Not _site/: a `jekyll serve` in
   # development mode rewrites that one while the check runs. Gitignored.
   SITE_DIR = ".check-site"
+  # The check's own Jekyll cache folder (a shared .jekyll-cache would be wiped under a
+  # running `jekyll serve`). It reaches Jekyll through script/checks/check-config.yml,
+  # which the build area asserts to say the same. Gitignored.
+  CACHE_DIR = ".check-cache"
 
   module Site
     # Files that grep -I would skip as binary: never read as text.

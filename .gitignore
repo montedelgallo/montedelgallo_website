@@ -1,6 +1,7 @@
 # Jekyll build
 _site/
 .check-site/
+.check-cache/
 .jekyll-cache/
 .jekyll-metadata
 .sass-cache/

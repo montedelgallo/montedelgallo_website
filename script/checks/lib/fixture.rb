@@ -225,7 +225,7 @@ module Checks
       PAGE
     }.freeze
 
-    EXCLUDES = %w[_site .check-site .git .jekyll-cache .superpowers vendor .bundle].freeze
+    EXCLUDES = %w[_site .check-site .check-cache .git .jekyll-cache .superpowers vendor .bundle].freeze
 
     module_function
 

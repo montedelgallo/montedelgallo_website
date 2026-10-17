@@ -2,8 +2,8 @@
 # frozen_string_literal: true
 
 # Generates the nginx form of the redirect map (_data/redirects.yml) into
-# deploy/nginx/redirects.conf. The Cloudflare Pages / Netlify form (_site/_redirects) is
-# built by Jekyll from redirects.txt; this file holds the same rules in Ruby
+# deploy/nginx/redirects.conf. The Cloudflare Pages / Netlify form (/_redirects in the built
+# site) is built by Jekyll from the extensionless `redirects` page; this file holds the same rules in Ruby
 # (BuildRedirects.cloudflare) so script/checks/redirects_emit.rb can prove the two agree.
 #
 #   bundle exec ruby script/build-redirects.rb          # rewrite deploy/nginx/redirects.conf
@@ -28,11 +28,13 @@ module BuildRedirects
   def rules
     YAML.safe_load(File.read(DATA, encoding: "utf-8")).flat_map do |entry|
       from = entry.fetch("from")
+      raise ArgumentError, "_data/redirects.yml: a `from` of / cannot be redirected (its no-slash form is empty)" if from == "/"
+
       [[from, entry.fetch("to")], [from.chomp("/"), entry.fetch("to")]]
     end
   end
 
-  # The body of _site/_redirects (Cloudflare Pages, Netlify): `from to 301` per line.
+  # The body of /_redirects (Cloudflare Pages, Netlify): `from to 301` per line.
   def cloudflare
     rules.map { |from, to| "#{from} #{to} 301\n" }.join
   end

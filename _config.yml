@@ -95,7 +95,11 @@ plugins:
 # --- Repo files that must not be published -----------------------------------
 # (Gemfile, Gemfile.lock, node_modules, vendor/bundle and dot-directories such
 # as .github are already excluded by Jekyll's defaults.)
+# The build check's output and cache folders (script/check-build.sh) are not part of the
+# site, and a running `jekyll serve` must not regenerate when the check writes there.
 exclude:
+  - .check-site/
+  - .check-cache/
   - README.md
   - script/
   - tasks/

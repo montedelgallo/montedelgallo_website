@@ -24,8 +24,12 @@ bash script/check-build.sh   # clean build, then assert both languages, the desi
 ### The build check
 
 `script/check-build.sh` is the entry point (CI runs it): it builds the site from scratch into `.check-site/` (gitignored; never `_site/`, which a running `jekyll serve`
-rewrites in development mode, racing the check), runs the
-Ruby checks in `script/checks/`, then runs html-proofer. Run `JEKYLL_ENV=production bash script/check-build.sh`
+rewrites in development mode, racing the check) with its own Jekyll cache, `.check-cache/` (layered over
+`_config.yml` by `script/checks/check-config.yml`: Jekyll empties the whole cache folder when a build's
+configuration differs, which would wipe the cache under a running `jekyll serve`), runs the Ruby checks in
+`script/checks/`, then runs html-proofer. Both folders are in `exclude` in `_config.yml`, so a running `jekyll serve`
+does not regenerate when the check writes there. `jekyll serve` only ignores a folder that exists when it starts, so
+run the check once, then (re)start the serve once to pick it up. Run `JEKYLL_ENV=production bash script/check-build.sh`
 to match CI. After a build, `bundle exec ruby script/checks/run.rb [area ...]` runs all the checks, or only the
 named areas (for example `home nav`).
 
@@ -33,7 +37,8 @@ named areas (for example `home nav`).
   `script/checks/<area>.rb`, that defines `check_<area>(ctx)`: `build`, `styles`, `shell`, `nav`, `projects`,
   `language_switch`, `case_studies`, `redirects`, `redirects_emit`, `services`, `i18n`, `home`, `blog`, `company`, `contact`.
 - The build folder is one setting, `Checks::SITE_DIR` in `script/checks/lib/site.rb`: `check-build.sh` reads it for
-  `jekyll build --destination` and html-proofer, and the checks read it as `ctx.site_dir`.
+  `jekyll build --destination` and html-proofer, and the checks read it as `ctx.site_dir`. The cache folder,
+  `Checks::CACHE_DIR`, is repeated in `script/checks/check-config.yml` (the `build` area asserts they agree).
 - Every area shares one Ruby namespace, so prefix the constants and helper methods of an area with its name
   (`company_team_grid`, `COMPANY_PAGES`, `redirects_emit_rules`); only what several areas use goes unprefixed.
 - `script/checks/lib/` holds what they share: `report.rb` (`pass`, `fail!`, `fail_list!`, `assert_file`,

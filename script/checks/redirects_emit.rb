@@ -2,8 +2,8 @@
 
 require_relative "../build-redirects"
 
-# The redirects as the host receives them: _site/_redirects (Cloudflare Pages / Netlify, built
-# by Jekyll from redirects.txt) and deploy/nginx/redirects.conf (the nginx fallback, written by
+# The redirects as the host receives them: /_redirects (Cloudflare Pages / Netlify, built
+# by Jekyll from the extensionless `redirects` page) and deploy/nginx/redirects.conf (the nginx fallback, written by
 # script/build-redirects.rb). _data/redirects.yml itself (targets are built pages, no source
 # shadows a page) is asserted by the `redirects` area; this one asserts what is emitted.
 
@@ -33,7 +33,7 @@ def redirects_emit_file(site_dir)
   found = Dir.glob(File.join(site_dir, "**", "_redirects*"), File::FNM_DOTMATCH).sort
   expected = File.join(site_dir, "_redirects")
   found == [expected] ||
-    fail!("expected exactly one #{expected} in the built site (not duplicated under /it/, no _redirects.txt), found: #{found.empty? ? "none" : found.join(", ")}")
+    fail!("expected exactly one #{expected} in the built site (not duplicated under /it/, no _redirects.txt, which a redirects.txt source would give), found: #{found.empty? ? "none" : found.join(", ")}")
   expected
 end
 

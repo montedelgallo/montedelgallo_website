@@ -40,7 +40,9 @@ echo "==> Building site"
 # Start from a clean slate so a stale build left by an earlier run can never make a
 # broken build look healthy.
 rm -rf -- "$SITE_DIR"
-bundle exec jekyll build --destination "$SITE_DIR" || fail "'bundle exec jekyll build' failed"
+# check-config.yml (layered over _config.yml, which must come first) gives the check its own
+# Jekyll cache folder, so it never empties the cache of a running `jekyll serve`.
+bundle exec jekyll build --config _config.yml,script/checks/check-config.yml --destination "$SITE_DIR" || fail "'bundle exec jekyll build' failed"
 
 # Every assertion about the built site, one module per area (stops at the first failure).
 bundle exec ruby script/checks/run.rb

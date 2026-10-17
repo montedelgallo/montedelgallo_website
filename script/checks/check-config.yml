@@ -1,0 +1,11 @@
+# Jekyll config layered over _config.yml by script/check-build.sh
+# (`jekyll build --config _config.yml,script/checks/check-config.yml`; _config.yml first).
+#
+# The check gets its own cache folder. Jekyll wipes the WHOLE cache dir when the build
+# configuration differs from the one that filled it (Jekyll::Cache.clear_if_config_changed),
+# and the check's build (another destination, production) always differs from a running
+# `jekyll serve`: with the shared .jekyll-cache each check run emptied the cache under the
+# live server (the Errno::ENOENT crashes polyglot's serial_default_lang also guards against).
+#
+# Keep this equal to Checks::CACHE_DIR in script/checks/lib/site.rb (the build area asserts it).
+cache_dir: .check-cache
