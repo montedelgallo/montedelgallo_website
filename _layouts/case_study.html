@@ -39,7 +39,7 @@ layout: default
     </header>
     {%- if page.cover %}
     {%- comment %} The cover is the largest image above the fold, so it is not lazy-loaded. 1200x675 is the size of a cover. {% endcomment %}
-    <img class="project__cover case__cover" src="{{ page.cover | relative_url }}" alt="{{ page.cover_alt | default: page.title | escape }}" width="1200" height="675" decoding="async" fetchpriority="high">
+    {% include picture.html src=page.cover alt=page.cover_alt alt_fallback=page.title sizes="cover" class="project__cover case__cover" eager=true priority="high" %}
     {%- endif %}
     <section class="case__results" aria-labelledby="case-results-title">
       <h2 class="case__title" id="case-results-title">{{ cs_t.results | escape }}</h2>

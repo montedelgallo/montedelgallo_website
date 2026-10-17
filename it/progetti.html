@@ -17,6 +17,7 @@ permalink: /progetti/
 {%- assign idx_all = site.projects | where: "lang", site.active_lang -%}
 {%- assign idx_lead = idx_all | where: "featured", true -%}
 {%- assign idx_rest = idx_all | where: "featured", false -%}
+{%- assign idx_ordered = idx_lead | concat: idx_rest -%}
 <section class="pindex pad">
   <div class="wrap">
     <div class="pindex__head">
@@ -28,11 +29,8 @@ permalink: /progetti/
       <h2 class="pindex__count"><b>{{ idx_all.size }}</b> progetti</h2>
     </div>
     <div class="pgrid">
-      {%- for idx_proj in idx_lead %}
-      {% include project-card.html project=idx_proj %}
-      {%- endfor %}
-      {%- for idx_proj in idx_rest %}
-      {% include project-card.html project=idx_proj %}
+      {%- for idx_proj in idx_ordered %}
+      {% include project-card.html project=idx_proj index=forloop.index0 %}
       {%- endfor %}
     </div>
   </div>

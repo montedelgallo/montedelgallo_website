@@ -8,6 +8,11 @@
 # slug that differs from the English one (/services/ and /servizi/) is written
 # as it is.
 #
+# `main` entries also carry `also:`, the other pages of the same section (per language, again without
+# /it/): a page whose URL starts with the entry's path or with one of these paths is "in" that section,
+# and the header marks the entry aria-current="page" (_includes/header.html). The home, the 404 and
+# the legal pages belong to no section.
+#
 # Every entry leads to a page of its own: no link here may be a home anchor (/#...)
 # or the bare home, script/check-build.sh fails on both. When a page moves, change
 # its two paths here; no template changes.
@@ -19,9 +24,15 @@ main:
   - key: work
     en: "/projects/"
     it: "/progetti/"
+    also:
+      en: ["/case-studies/", "/motioforge/"]
+      it: ["/casi-di-studio/", "/motioforge/"]
   - key: about
     en: "/about/"
     it: "/chi-siamo/"
+    also:
+      en: ["/careers/", "/startup-studio/", "/product-lab/"]
+      it: ["/lavora-con-noi/", "/studio-startup/", "/laboratorio-prodotto/"]
   - key: blog
     en: "/blog/"
     it: "/articoli/"

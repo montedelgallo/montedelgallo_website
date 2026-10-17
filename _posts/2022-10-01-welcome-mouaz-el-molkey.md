@@ -19,7 +19,7 @@ Summer is gone, fall is upon us, and our pipeline is brimming with excited tech 
 
 With a background in accounting, Mouaz has been following his passion for coding and technology since when he was in middle school (sounds familiar!). We are beyond excited to welcome Mouaz in the team, and cannot wait to see where this new addition will bring the team.
 
-<figure class="post__fig"><img src="/assets/img/blog/mouaz-el-molkey-at-work.webp" alt="Mouaz at his laptop, seen from behind" width="1200" height="800" loading="lazy" decoding="async"></figure>
+<figure class="post__fig"><img src="/assets/img/blog/mouaz-el-molkey-at-work.webp" srcset="/assets/img/blog/mouaz-el-molkey-at-work-480.webp 480w, /assets/img/blog/mouaz-el-molkey-at-work-800.webp 800w, /assets/img/blog/mouaz-el-molkey-at-work.webp 1200w" sizes="(min-width: 860px) 780px, calc(100vw - 40px)" alt="Mouaz at his laptop, seen from behind" width="1200" height="800" loading="lazy" decoding="async"></figure>
 
 ## Meet Mouaz
 

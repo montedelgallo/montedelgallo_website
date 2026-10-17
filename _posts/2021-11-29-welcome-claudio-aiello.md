@@ -19,7 +19,7 @@ Our second hire of the month, Claudio Aiello joins MdG today, bringing to the te
 
 A professional musician, Claudio is the mastermind behind [Dancla](https://www.dancla.app/), a mobile app fully dedicated to online violin classes. We can’t wait to collaborate with Claudio on our software and mobile development projects, and get enriched by his creativity and peculiar perspective.
 
-<figure class="post__fig"><img src="/assets/img/blog/claudio-aiello-portrait.webp" alt="Portrait of Claudio Aiello looking at the camera against a black background" width="1200" height="1190" loading="lazy" decoding="async"></figure>
+<figure class="post__fig"><img src="/assets/img/blog/claudio-aiello-portrait.webp" srcset="/assets/img/blog/claudio-aiello-portrait-480.webp 480w, /assets/img/blog/claudio-aiello-portrait-800.webp 800w, /assets/img/blog/claudio-aiello-portrait.webp 1200w" sizes="(min-width: 860px) 780px, calc(100vw - 40px)" alt="Portrait of Claudio Aiello looking at the camera against a black background" width="1200" height="1190" loading="lazy" decoding="async"></figure>
 
 ## Meet Claudio
 

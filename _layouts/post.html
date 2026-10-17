@@ -35,7 +35,7 @@ layout: default
       </header>
       {%- if page.cover %}
       {%- comment %} The cover is the largest image above the fold, so it is not lazy-loaded. {% endcomment %}
-      <img class="project__cover post__cover" src="{{ page.cover | relative_url }}" alt="{{ page.cover_alt | default: page.title | escape }}" width="{{ page.cover_width }}" height="{{ page.cover_height }}" decoding="async" fetchpriority="high">
+      {% include picture.html src=page.cover alt=page.cover_alt alt_fallback=page.title sizes="post" class="project__cover post__cover" eager=true priority="high" %}
       {%- endif %}
       <div class="project__body post__body">
         {{ content }}

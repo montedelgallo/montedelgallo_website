@@ -19,10 +19,12 @@
   the tile and the two rows); when `members` is given, the founders row is `founders`
   alone (none, if it is not given).
 
-  A portrait is never shown wider than its own pixel width: the <img> carries
-  style="max-width:<photo_w>px" (the stylesheet draws a tile as wide as its column, at most
-  260px, the width of the smallest real portrait, so the tiles are all the same size and
-  none is stretched; script/check-build.sh asserts both).
+  A portrait is never shown wider than its own pixel width: the stylesheet draws a tile as
+  wide as its column, at most 260px, the width of the smallest real portrait, so the tiles are
+  all the same size and none is stretched (there is no inline style: the Content-Security-Policy
+  has no 'unsafe-inline' for styles; script/checks/perf.rb asserts the cap against the data).
+  The <img> is a responsive picture (_includes/picture.html): 260w and 520w variants plus the
+  master, written by script/make-image-variants.rb.
 
   The initials are the first letter of the first and of the last word of the name
   ("Ada Lovelace" is AL, "Grace" is G).
@@ -48,7 +50,8 @@
   {%- for tg_member in tg_list %}
   <li class="team__member">
     {%- if tg_member.photo %}
-    <img class="team__photo" src="{{ tg_member.photo | relative_url }}" alt="{{ site.data.team.portrait[tg_lang] | escape }} {{ tg_member.name | escape }}" width="{{ tg_member.photo_w }}" height="{{ tg_member.photo_h }}" style="max-width:{{ tg_member.photo_w }}px" loading="lazy" decoding="async">
+    {%- capture tg_alt %}{{ site.data.team.portrait[tg_lang] }} {{ tg_member.name }}{% endcapture %}
+    {% include picture.html src=tg_member.photo alt=tg_alt sizes="team" class="team__photo" width=tg_member.photo_w height=tg_member.photo_h %}
     {%- else %}
     {%- assign tg_words = tg_member.name | split: " " %}
     <span class="team__ph" aria-hidden="true">{{ tg_words.first | slice: 0 }}{% if tg_words.size > 1 %}{{ tg_words.last | slice: 0 }}{% endif %}</span>

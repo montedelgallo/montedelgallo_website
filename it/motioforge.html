@@ -41,7 +41,7 @@ permalink: /motioforge/
         <li>Animatronica</li><li>Show control</li><li>Servo bus</li><li>Servo PWM</li><li>Audio &amp; lip-sync</li><li>Assistente AI</li>
       </ul>
     </div>
-    <img class="mfshot" src="/assets/img/motioforge/timeline-editor.webp" alt="Timeline editor di MotioForge Studio con tracce servo colorate, uscita switch e forma d'onda audio" width="1920" height="1039" decoding="async" fetchpriority="high">
+    {% include picture.html src="/assets/img/motioforge/timeline-editor.webp" alt="Timeline editor di MotioForge Studio con tracce servo colorate, uscita switch e forma d'onda audio" sizes="full" class="mfshot" eager=true priority="high" %}
   </div>
   <div class="wrap">
     <div class="stats">
@@ -126,13 +126,13 @@ permalink: /motioforge/
     <ul class="project__shots pshots">
       <li>
         <figure>
-          <img src="/assets/img/motioforge/start-window.webp" alt="Finestra di avvio di MotioForge Studio per creare o aprire un dominio" width="818" height="474" loading="lazy" decoding="async">
+          {% include picture.html src="/assets/img/motioforge/start-window.webp" alt="Finestra di avvio di MotioForge Studio per creare o aprire un dominio" sizes="(min-width: 700px) 551px, calc(100vw - 42px)" %}
           <figcaption><strong>Finestra di avvio · Domini in un colpo d’occhio.</strong> Crei o apri un dominio, gestisci porte ed elementi e carichi il firmware DEIMOS sull’Arduino, tutto dalla schermata iniziale.</figcaption>
         </figure>
       </li>
       <li>
         <figure>
-          <img src="/assets/img/motioforge/audio-properties.webp" alt="Finestra proprietà del segmento audio di MotioForge Studio con associazioni di frequenza per il lip-sync" width="590" height="537" loading="lazy" decoding="async">
+          {% include picture.html src="/assets/img/motioforge/audio-properties.webp" alt="Finestra proprietà del segmento audio di MotioForge Studio con associazioni di frequenza per il lip-sync" sizes="(min-width: 700px) 551px, calc(100vw - 42px)" %}
           <figcaption><strong>Proprietà audio · Movimenti labiali dal suono.</strong> Colleghi un servo al volume, imposti le bande bass/mid/high e generi automaticamente i segmenti sincronizzati con l’audio.</figcaption>
         </figure>
       </li>

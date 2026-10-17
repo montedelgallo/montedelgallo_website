@@ -14,13 +14,14 @@ permalink: /projects/
   for jekyll-polyglot, like the English and the Italian document of a project.
   The words of the page are written here, once per language, not in _data/i18n.
 
-  This page assigns idx_all, idx_lead, idx_rest and loops with idx_proj, all with
+  This page assigns idx_all, idx_lead, idx_rest, idx_ordered and loops with idx_proj, all with
   a prefix: the card include shares the page's variables, and a page that left
   t, lang or p in them would break the cards (see the rule in index.html).
 {%- endcomment -%}
 {%- assign idx_all = site.projects | where: "lang", site.active_lang -%}
 {%- assign idx_lead = idx_all | where: "featured", true -%}
 {%- assign idx_rest = idx_all | where: "featured", false -%}
+{%- assign idx_ordered = idx_lead | concat: idx_rest -%}
 <section class="pindex pad">
   <div class="wrap">
     <div class="pindex__head">
@@ -32,11 +33,8 @@ permalink: /projects/
       <h2 class="pindex__count"><b>{{ idx_all.size }}</b> projects</h2>
     </div>
     <div class="pgrid">
-      {%- for idx_proj in idx_lead %}
-      {% include project-card.html project=idx_proj %}
-      {%- endfor %}
-      {%- for idx_proj in idx_rest %}
-      {% include project-card.html project=idx_proj %}
+      {%- for idx_proj in idx_ordered %}
+      {% include project-card.html project=idx_proj index=forloop.index0 %}
       {%- endfor %}
     </div>
   </div>

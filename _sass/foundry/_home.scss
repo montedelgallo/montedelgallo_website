@@ -157,8 +157,11 @@
   margin-left:4px;
 }
 
+// The bottom padding is the room for the "AI automation" chip (below): the chip hangs over the
+// lower left corner (45px of it inside the picture on a phone and on a desktop alike), and the
+// log line, the last row, must stay above it. script/checks/perf.rb asserts the padding.
 .shot__body{
-  padding:16px;
+  padding:16px 16px 3.75rem;
 }
 
 .shot__hd{

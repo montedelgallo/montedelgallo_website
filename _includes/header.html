@@ -13,6 +13,11 @@
   label) and the one in .nav__cta (desktop only); only one is displayed at a time, so
   there is never a double tab stop.
 
+  The link of the section the page belongs to carries aria-current="page" (see `also:` in
+  _data/nav.yml: a project page marks Work, an article marks Blog, a case study marks Work),
+  and on the home the brand link does (the home has no link of its own in the navigation).
+  The 404 and the legal pages mark none.
+
   The links are plain root-relative paths on purpose: in the Italian build
   jekyll-polyglot puts /it/ in front of them.
 {%- endcomment -%}
@@ -28,13 +33,20 @@
 </div>
 <header class="nav">
   <div class="wrap">
-    <a class="brand" href="{{ '/' | relative_url }}"><svg aria-hidden="true" focusable="false"><use href="#mdg-mark"/></svg>{{ site.title | escape }}</a>
+    <a class="brand" href="{{ '/' | relative_url }}"{% if page.url == '/' %} aria-current="page"{% endif %}><svg aria-hidden="true" focusable="false"><use href="#mdg-mark"/></svg>{{ site.title | escape }}</a>
     <a class="btn btn--solid nav__book" href="{{ site.data.site_meta.booking_url }}" data-track="book_call_click" data-track-location="header_bar" aria-label="{{ t.cta.book_call | escape }}">{{ t.cta.book_call_short | escape }}</a>
     <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="site-menu" aria-label="{{ t.nav.menu | escape }}"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path class="nav__bars" d="M4 7h16M4 12h16M4 17h16"/><path class="nav__x" d="M6 6l12 12M18 6L6 18"/></svg></button>
     <div class="nav__menu" id="site-menu">
       <nav class="nav__links" aria-label="{{ t.a11y.main_nav | escape }}">
         {%- for item in site.data.nav.main -%}
-        <a href="{{ item[lang] | relative_url }}">{{ t.nav[item.key] | escape }}</a>
+        {%- assign nv_here = false -%}
+        {%- assign nv_paths = item[lang] | split: "," -%}
+        {%- if item.also -%}{%- assign nv_paths = nv_paths | concat: item.also[lang] -%}{%- endif -%}
+        {%- for nv_path in nv_paths -%}
+          {%- assign nv_head = page.url | slice: 0, nv_path.size -%}
+          {%- if nv_head == nv_path %}{% assign nv_here = true %}{% endif -%}
+        {%- endfor -%}
+        <a href="{{ item[lang] | relative_url }}"{% if nv_here %} aria-current="page"{% endif %}>{{ t.nav[item.key] | escape }}</a>
         {%- endfor -%}
       </nav>
       <div class="nav__langsw">{% include lang-switch.html %}</div>

@@ -210,8 +210,7 @@ def home_team_errors(lang, main, norm)
     errors << "team member #{name.inspect}: the portrait has no alt text naming the person" unless img["alt"].to_s.include?(name) && !name.empty?
     errors << "team member #{name.inspect}: the portrait has no width and height" if img["width"].to_s.empty? || img["height"].to_s.empty?
     errors << "team member #{name.inspect}: the portrait must be lazy-loaded (the section is below the fold)" unless img["loading"] == "lazy"
-    cap = img["style"].to_s[/max-width:\s*(\d+)px/, 1].to_i
-    errors << "team member #{name.inspect}: the portrait needs style=\"max-width:<its pixel width>px\" so it is never shown larger than its pixel size (width=#{img["width"]}, style=#{img["style"].inspect})" unless cap.positive? && cap <= img["width"].to_i
+    errors << "team member #{name.inspect}: the portrait must not carry a style attribute (CSP: no inline styles; the stylesheet caps the tile at the smallest portrait, asserted in perf), it has #{img["style"].inspect}" if img.key?("style")
   end
   about_href = lang == "it" ? "/it/chi-siamo/#team" : "/about/#team"
   errors << "the Team section must link to the About hub's team section (#{about_href}), it links to #{team.css("a").map { |a| a["href"] }.inspect}" unless team.css("a").any? { |a| a["href"] == about_href }

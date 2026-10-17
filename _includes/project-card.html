@@ -9,23 +9,28 @@
   from its front matter (_projects/). Put the cards in <div class="pgrid">. The
   title is an <h3>, for a card that sits under a section's <h2>.
 
-  This include assigns NO variable, and must stay that way: Liquid's `assign` is
+  This include assigns no variable the page could own (only pc_eager and pc_priority, and
+  picture.html's pic_*), and must stay that way: Liquid's `assign` is
   global, and an include shares the variables of the page that includes it. An
   `assign t = ...` here would replace the page's own `t` (the whole i18n tree,
   see index.html) and every section rendered after the cards would read the
   wrong thing and print blanks, with no error. So it reads include.project
   directly. script/check-build.sh has a canary for this.
 
-  The cover is lazy-loaded (cards are below the fold) and carries its size, so
-  the page does not jump when it arrives; every cover is 1200x675. The alt text
-  is `cover_alt`, which describes the picture, and falls back to the title.
+  The cover is a responsive picture (_includes/picture.html: srcset from the manifest, its
+  size reserves the space, every cover is 1200x675). It is lazy-loaded unless the caller
+  passes `index=<position in the list>`: the first three cards (the first row of an index page)
+  are eager and the very first has fetchpriority=high. The home passes no index: all lazy. The alt text is `cover_alt`, which describes the picture, and falls back to the title.
 
   The link is written as a plain root-relative path: in the Italian build
   jekyll-polyglot puts /it/ in front of it. The "View project" label is in the
   language of the document (its `lang`, which every project sets).
 {%- endcomment -%}
+{%- assign pc_eager = false -%}{%- assign pc_priority = "" -%}
+{%- if include.index < 3 -%}{%- assign pc_eager = true -%}{%- endif -%}
+{%- if include.index == 0 -%}{%- assign pc_priority = "high" -%}{%- endif %}
 <a class="pcard" href="{{ include.project.url | relative_url }}">
-  <img class="pcard__thumb" src="{{ include.project.cover | relative_url }}" alt="{{ include.project.cover_alt | default: include.project.title | escape }}" width="1200" height="675" loading="lazy" decoding="async">
+  {% include picture.html src=include.project.cover alt=include.project.cover_alt alt_fallback=include.project.title sizes="card" class="pcard__thumb" eager=pc_eager priority=pc_priority %}
   <div class="pcard__body">
     <span class="pcard__sector">{{ include.project.sector | escape }}</span>
     <h3 class="pcard__title">{{ include.project.title | escape }}</h3>

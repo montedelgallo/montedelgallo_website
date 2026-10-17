@@ -413,8 +413,8 @@
 // (calc(75% - gap/4)), so the two rows read as one composition and a fourth team member
 // fills the row without moving anyone. A portrait fills its column and is drawn at most 260px
 // wide, the width of the smallest real portrait (Claudio's and Giuseppe's), so no portrait is
-// stretched and all the tiles line up; the <img> also carries max-width:<its own pixel width>
-// (_includes/team-grid.html). script/check-build.sh asserts all of it.
+// stretched and all the tiles line up (script/checks/perf.rb asserts the cap against the data; the
+// <img> carries no inline style, the Content-Security-Policy forbids it).
 .team{
   --team-gap:clamp(14px,2.4vw,28px);
   display:grid;

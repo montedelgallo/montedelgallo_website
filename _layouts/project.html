@@ -36,7 +36,7 @@ layout: default
       <p class="lede">{{ page.summary | escape }}</p>
     </header>
     {%- comment %} The cover is the largest image above the fold, so it is not lazy-loaded. 1200x675 is the size of every cover. {% endcomment %}
-    <img class="project__cover" src="{{ page.cover | relative_url }}" alt="{{ page.cover_alt | default: page.title | escape }}" width="1200" height="675" decoding="async" fetchpriority="high">
+    {% include picture.html src=page.cover alt=page.cover_alt alt_fallback=page.title sizes="cover" class="project__cover" eager=true priority="high" %}
     {%- if page.metrics %}
     {%- comment %} The tiles are the case study's (.case__metric, see _case-study.scss); .project__tiles only makes a word fit in one. {% endcomment %}
     <div class="case__results">
@@ -95,7 +95,7 @@ layout: default
         {%- for shot in page.gallery %}
         <li>
           <figure>
-            <img src="{{ shot.src | relative_url }}" alt="{{ shot.alt | escape }}" width="{{ shot.width }}" height="{{ shot.height }}" loading="lazy" decoding="async">
+            {% include picture.html src=shot.src alt=shot.alt sizes="shot" %}
             {%- if shot.caption %}
             <figcaption>{{ shot.caption | escape }}</figcaption>
             {%- endif %}

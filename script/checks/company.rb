@@ -234,11 +234,13 @@ def team_rows_errors(lang, scope, where)
   errors
 end
 
-# assets/team/ (source and built site) holds exactly the portraits _data/team.yml names.
+# assets/team/ (source and built site) holds exactly the portraits _data/team.yml names (and their variants).
 def team_portrait_files_errors(site_dir)
   errors = []
   data = YAML.safe_load(File.read("_data/team.yml", encoding: "utf-8"))
-  wanted = ((data["founders"] || []) + (data["members"] || [])).filter_map { |m| m["photo"] && File.basename(m["photo"]) }.sort
+  masters = ((data["founders"] || []) + (data["members"] || [])).filter_map { |m| m["photo"] && File.basename(m["photo"]) }
+  # A portrait also has its responsive variants (<name>-260.webp, <name>-520.webp: script/make-image-variants.rb).
+  wanted = masters.flat_map { |f| [f] + Dir.glob("assets/team/#{f.sub(/\.webp\z/, "")}-[0-9]*.webp").map { |v| File.basename(v) } }.sort
   ["assets/team", File.join(site_dir, "assets/team")].each do |dir|
     have = Dir.glob(File.join(dir, "*")).map { |f| File.basename(f) }.sort
     errors << "#{dir}/ holds #{(have - wanted).inspect} that _data/team.yml does not use (remove the portrait of a person who left)" unless (have - wanted).empty?
@@ -271,7 +273,8 @@ def team_grid_errors(lang, file, root, mode)
       errors << "#{lang}: a member with a portrait shows it as an <img> with alt text" unless img && !img["alt"].to_s.strip.empty?
       errors << "#{lang}: no initials tile on a member that has a portrait" if founder.at_css(".team__ph")
       errors << "#{lang}: the badge should be #{lang == "it" ? "Ammiraglia" : "Admiral"}" unless text_of(founder.at_css(".team__badge")) == (lang == "it" ? "Ammiraglia" : "Admiral")
-      errors << "#{lang}: the fixture portrait (480 px) must carry style=\"max-width:480px\", it has #{img && img["style"].inspect}" unless img && img["style"].to_s.match?(/max-width:\s*480px/)
+      errors << "#{lang}: the fixture portrait must not carry a style attribute (the Content-Security-Policy has no 'unsafe-inline' for styles: the stylesheet caps the tile), it has #{img && img["style"].inspect}" unless img && !img.key?("style")
+      errors << "#{lang}: the fixture portrait must be drawn with its own pixel size (260x260), it says #{img && img["width"]}x#{img && img["height"]}" unless img && [img["width"], img["height"]] == %w[260 260]
       msg = img && real_image.(img["src"]) and errors << "#{lang}: #{msg}"
     end
     # Every team member of the fixture has no photo: four initials tiles in the second row.
@@ -313,8 +316,8 @@ def team_grid_errors(lang, file, root, mode)
         errors << "#{lang}: #{member["name"]}: the portrait has no alt text" if img["alt"].to_s.strip.empty?
         errors << "#{lang}: #{member["name"]}: the portrait alt text should name the person" unless img["alt"].to_s.include?(member["name"])
         errors << "#{lang}: #{member["name"]}: the portrait has no width and height" if img["width"].to_s.empty? || img["height"].to_s.empty?
-        cap = img["style"].to_s[/max-width:\s*(\d+)px/, 1].to_i
-        errors << "#{lang}: #{member["name"]}: the portrait must carry style=\"max-width:#{member["photo_w"]}px\" (never wider than its pixel size, so the small portraits do not blur), it has #{img["style"].inspect}" unless cap.positive? && cap <= member["photo_w"].to_i
+        errors << "#{lang}: #{member["name"]}: the portrait must not carry a style attribute (CSP: no inline styles; the stylesheet caps every tile at the smallest portrait, see perf), it has #{img["style"].inspect}" if img.key?("style")
+        errors << "#{lang}: #{member["name"]}: the portrait says #{img["width"]}x#{img["height"]}, the data says #{member["photo_w"]}x#{member["photo_h"]}" unless [img["width"].to_i, img["height"].to_i] == [member["photo_w"].to_i, member["photo_h"].to_i]
         msg = real_image.(img["src"]) and errors << "#{lang}: #{member["name"]}: #{msg}"
       else
         errors << "#{lang}: #{member["name"]}: neither a portrait nor the initials tile" unless node.at_css(".team__ph")

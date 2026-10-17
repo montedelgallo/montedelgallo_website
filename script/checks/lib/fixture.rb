@@ -163,8 +163,8 @@ module Checks
             role: { en: "Compiler engineer", it: "Ingegnera di compilatori" }
             badge: { en: "Admiral", it: "Ammiraglia" }
             photo: /assets/team/giuseppe.webp
-            photo_w: 480
-            photo_h: 480
+            photo_w: 260
+            photo_h: 260
         fx_members:
           - name: "Ada Lovelace"
             role: { en: "Analyst", it: "Analista" }

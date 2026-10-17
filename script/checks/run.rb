@@ -77,6 +77,7 @@ AREAS = %w[
   seo_meta
   share_404
   analytics
+  perf
 ].freeze
 
 AREAS.each { |area| require_relative area }

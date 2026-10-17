@@ -39,7 +39,7 @@ You’ll be able to see all of our discussions, questions, doubts, real time and
 
 ## 2. We test our code and take accountability. For real.
 
-<figure class="post__fig"><img src="/assets/img/blog/mdg-way-test.webp" alt="Workers in yellow helmets climbing a tall steel structure against a blue sky" width="1200" height="801" loading="lazy" decoding="async"></figure>
+<figure class="post__fig"><img src="/assets/img/blog/mdg-way-test.webp" srcset="/assets/img/blog/mdg-way-test-480.webp 480w, /assets/img/blog/mdg-way-test-800.webp 800w, /assets/img/blog/mdg-way-test.webp 1200w" sizes="(min-width: 860px) 780px, calc(100vw - 40px)" alt="Workers in yellow helmets climbing a tall steel structure against a blue sky" width="1200" height="801" loading="lazy" decoding="async"></figure>
 
 Because we hate wasting time troubleshooting issues when it’s too late, we believe in obsessive, precise testing. We test each and every line of our code, using state-of-the-art technologies and international best practices.
 

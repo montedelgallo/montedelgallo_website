@@ -42,7 +42,7 @@ permalink: /motioforge/
         <li>Animatronics</li><li>Show control</li><li>Servo bus</li><li>Servo PWM</li><li>Audio &amp; lip-sync</li><li>AI assistant</li>
       </ul>
     </div>
-    <img class="mfshot" src="/assets/img/motioforge/timeline-editor.webp" alt="MotioForge Studio timeline editor with colored servo tracks, switch output and audio waveform" width="1920" height="1039" decoding="async" fetchpriority="high">
+    {% include picture.html src="/assets/img/motioforge/timeline-editor.webp" alt="MotioForge Studio timeline editor with colored servo tracks, switch output and audio waveform" sizes="full" class="mfshot" eager=true priority="high" %}
   </div>
   <div class="wrap">
     <div class="stats">
@@ -127,13 +127,13 @@ permalink: /motioforge/
     <ul class="project__shots pshots">
       <li>
         <figure>
-          <img src="/assets/img/motioforge/start-window.webp" alt="MotioForge Studio start window to create or open a domain" width="818" height="474" loading="lazy" decoding="async">
+          {% include picture.html src="/assets/img/motioforge/start-window.webp" alt="MotioForge Studio start window to create or open a domain" sizes="(min-width: 700px) 551px, calc(100vw - 42px)" %}
           <figcaption><strong>Start window · Domains at a glance.</strong> Create or open a domain, manage ports and elements and load the DEIMOS firmware onto the Arduino, all from the start screen.</figcaption>
         </figure>
       </li>
       <li>
         <figure>
-          <img src="/assets/img/motioforge/audio-properties.webp" alt="MotioForge Studio audio segment properties window with frequency bindings for lip-sync" width="590" height="537" loading="lazy" decoding="async">
+          {% include picture.html src="/assets/img/motioforge/audio-properties.webp" alt="MotioForge Studio audio segment properties window with frequency bindings for lip-sync" sizes="(min-width: 700px) 551px, calc(100vw - 42px)" %}
           <figcaption><strong>Audio properties · Lip-sync from sound.</strong> Link a servo to the volume, set the bass/mid/high bands and auto-generate segments synced to the audio.</figcaption>
         </figure>
       </li>

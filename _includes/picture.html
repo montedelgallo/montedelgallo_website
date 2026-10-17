@@ -1,0 +1,59 @@
+{%- comment -%}
+  One responsive picture: <img> with src, srcset, sizes, alt, width, height, loading and
+  decoding. Used for every cover, gallery shot, collage picture and team portrait.
+
+    {% raw %}{% include picture.html src=p.cover alt=p.cover_alt sizes="card" class="pcard__thumb" %}{% endraw %}
+
+  Parameters:
+    src       the public path of the master picture (a key of _data/image_variants.yml)
+    alt       the alternative text (escaped here); alt_fallback is used when alt is empty
+    sizes     a preset (card, cover, post, collage-wide, collage-half, shot, team, full: the
+              width the picture is drawn at, see the table below) or a raw `sizes` value
+    class     optional class attribute
+    eager     true: loading is eager (the picture is on the first screen); the default is lazy
+    priority  "high": fetchpriority=high (the one picture the first screen is waiting for)
+    width, height   only for a picture that is not in the manifest (a master without variants
+              is listed there anyway: the manifest is the source of the real size)
+
+  The variants (<name>-480.webp ...) come from _data/image_variants.yml, written by
+  script/make-image-variants.rb. The master is always the largest candidate of the srcset,
+  at its own width. A picture without variants (a 260px portrait) has no srcset. script/checks/perf.rb
+  asserts that every candidate exists, is a real WebP of the width it declares, and that no <img> wider
+  than 480px lacks a srcset.
+
+  The presets are the widths the CSS draws the picture at (.wrap is at most 1160px with 20px
+  gutters), written for the browser to choose a candidate before the layout is known:
+    card          the project/article card: a third of the wrap from 821px up, the full width below
+    cover         a detail page's cover: the whole wrap
+    post          an article's cover and pictures: the reading column (820px at most)
+    collage-wide  the Robotic Lab collage, its first picture (the whole right column)
+    collage-half  the Robotic Lab collage, the two others (half of that column)
+    shot          a gallery shot: auto-fit columns of at least 260px
+    team          a portrait: the column of a two-column phone grid, 260px at most from 760px up
+    full          the full-width screenshot of the MotioForge page
+
+  This include shares the variables of the page that includes it, so every one it assigns has the
+  prefix pic_ (see the rule in index.html).
+{%- endcomment -%}
+{%- assign pic_info = site.data.image_variants[include.src] -%}
+{%- assign pic_width = pic_info.width | default: include.width -%}
+{%- assign pic_height = pic_info.height | default: include.height -%}
+{%- case include.sizes -%}
+  {%- when "card" -%}{%- assign pic_sizes = "(min-width: 1180px) 361px, (min-width: 821px) calc((100vw - 76px) / 3), calc(100vw - 40px)" -%}
+  {%- when "cover" -%}{%- assign pic_sizes = "(min-width: 1200px) 1120px, calc(100vw - 40px)" -%}
+  {%- when "post" -%}{%- assign pic_sizes = "(min-width: 860px) 780px, calc(100vw - 40px)" -%}
+  {%- when "collage-wide" -%}{%- assign pic_sizes = "(min-width: 861px) 560px, calc(100vw - 40px)" -%}
+  {%- when "collage-half" -%}{%- assign pic_sizes = "(min-width: 861px) 274px, calc((100vw - 52px) / 2)" -%}
+  {%- when "shot" -%}{%- assign pic_sizes = "(min-width: 700px) 360px, calc(100vw - 42px)" -%}
+  {%- when "team" -%}{%- assign pic_sizes = "(min-width: 760px) 260px, calc((100vw - 54px) / 2)" -%}
+  {%- when "full" -%}{%- assign pic_sizes = "(min-width: 1200px) 1120px, calc(100vw - 40px)" -%}
+  {%- else -%}{%- assign pic_sizes = include.sizes -%}
+{%- endcase -%}
+{%- capture pic_srcset -%}
+  {%- if pic_info.variants.size > 0 -%}
+    {%- assign pic_base = include.src | remove: ".webp" -%}
+    {%- for pic_v in pic_info.variants -%}{{ pic_base | append: "-" | append: pic_v | append: ".webp" | relative_url }} {{ pic_v }}w, {% endfor -%}
+    {{ include.src | relative_url }} {{ pic_width }}w
+  {%- endif -%}
+{%- endcapture -%}
+<img{% if include.class %} class="{{ include.class }}"{% endif %} src="{{ include.src | relative_url }}"{% if pic_srcset != "" %} srcset="{{ pic_srcset }}" sizes="{{ pic_sizes }}"{% endif %} alt="{{ include.alt | default: include.alt_fallback | escape }}" width="{{ pic_width }}" height="{{ pic_height }}"{% unless include.eager %} loading="lazy"{% endunless %} decoding="async"{% if include.priority == "high" %} fetchpriority="high"{% endif %}>

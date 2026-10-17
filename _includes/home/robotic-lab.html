@@ -37,9 +37,9 @@
     <ul class="rlab__shots">
       {%- assign rl_ref = rl_project.gallery | where_exp: "rl_g", "rl_g.src contains 'mdg-robotic-lab-reference'" | first -%}
       {%- assign rl_face = rl_project.gallery | where_exp: "rl_g", "rl_g.src contains 'mdg-robotic-lab-face'" | first %}
-      <li><img src="{{ rl_ref.src | relative_url }}" alt="{{ rl_ref.alt | escape }}" width="{{ rl_ref.width }}" height="{{ rl_ref.height }}" loading="lazy" decoding="async"></li>
-      <li><img src="{{ '/assets/img/motioforge/timeline-editor.webp' | relative_url }}" alt="{{ t.home.robotic_lab.shots.timeline_alt | escape }}" width="1920" height="1039" loading="lazy" decoding="async"></li>
-      <li><img src="{{ rl_face.src | relative_url }}" alt="{{ rl_face.alt | escape }}" width="{{ rl_face.width }}" height="{{ rl_face.height }}" loading="lazy" decoding="async"></li>
+      <li>{% include picture.html src=rl_ref.src alt=rl_ref.alt sizes="collage-wide" %}</li>
+      <li>{% include picture.html src="/assets/img/motioforge/timeline-editor.webp" alt=t.home.robotic_lab.shots.timeline_alt sizes="collage-half" %}</li>
+      <li>{% include picture.html src=rl_face.src alt=rl_face.alt sizes="collage-half" %}</li>
     </ul>
   </div>
 </section>

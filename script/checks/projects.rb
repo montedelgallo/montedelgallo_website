@@ -234,7 +234,7 @@ def projects_cards(ctx)
   minimum = ctx.min_projects
   fail_list!(project_card_errors("en", "#{ctx.site_dir}/projects/index.html", ctx.site_dir, "main", which: "all", minimum: minimum), "the project cards on the English index are wrong (see the list above)")
   fail_list!(project_card_errors("it", "#{ctx.site_dir}/it/progetti/index.html", ctx.site_dir, "main", which: "all", minimum: minimum), "the project cards on the Italian index are wrong (see the list above)")
-  pass "project index: a card for every project of the language (at least #{minimum}), the featured ones first, each with a real lazy-loaded image, non-empty alt, sector, title, metric and a link to a built page"
+  pass "project index: a card for every project of the language (at least #{minimum}), the featured ones first, each with a real image (lazy below the first row), non-empty alt, sector, title, metric and a link to a built page"
 end
 
 # project_card_errors(lang, built page, site dir, scope, canary:, which:, minimum:)
@@ -268,9 +268,11 @@ def project_card_errors(lang, page_file, root, scope, canary: false, which: "fea
     errors << "#{where} lost its own variables to the card include (an include shares them): t, lang and p should still read \"keep keep keep\" after the cards, found #{found.inspect}" unless found == "keep keep keep"
   end
 
-  cards.each do |card|
+  cards.each_with_index do |card, position|
     at = "#{lang} card #{card["href"]}"
     image = card.at_css("img")
+    # The first row of the index is eager (script/checks/perf.rb asserts which); every other card is lazy.
+    first_row = which == "all" && position < 3
     if image.nil?
       errors << "#{at}: the card has no <img>"
     else
@@ -278,7 +280,7 @@ def project_card_errors(lang, page_file, root, scope, canary: false, which: "fea
       errors << "#{at}: the <img> needs a non-empty alt" if alt.empty?
       errors << "#{at}: the alt #{alt.inspect} is a file name, not a description" if alt.match?(/\.(webp|jpe?g|png)\z/i)
       errors << "#{at}: the image #{image["src"].inspect} is not in the built site" unless File.size?(File.join(root, image["src"].to_s))
-      errors << "#{at}: the <img> must be loading=lazy" unless image["loading"] == "lazy"
+      errors << "#{at}: the <img> must be loading=lazy" unless first_row || image["loading"] == "lazy"
       errors << "#{at}: the <img> needs width and height, which reserve its space before it loads" unless image["width"] && image["height"]
     end
     errors << "#{at}: the link leads to a page that was not built" unless File.size?(File.join(root, card["href"].to_s, "index.html"))
