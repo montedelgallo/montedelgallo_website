@@ -143,7 +143,7 @@ home:
         text: "Budget, timing and legacy systems become design constraints that lead to sharper, more useful solutions."
   team: # the grid under it is the team (_data/team.yml), not copy
     eyebrow: "Our team"
-    title: "The people behind the code."
+    title: "The people behind."
     lede: "A compact multidisciplinary team: software engineering, web design, WordPress, business development and finance working close to the client."
     more: "Meet the team"
     more_path: "/about/#team" # the About hub's team section, written without the /it/ prefix (like nav.yml)
