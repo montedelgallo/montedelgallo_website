@@ -232,6 +232,13 @@ contact: # la pagina Contatti e il modulo di contatto Soshiki (_includes/contact
     privacy_pre: "Leggi la nostra"
     privacy_link: "informativa sulla privacy"
 
+not_found: # la pagina 404 (404.html, resa su /404.html e /it/404.html)
+  eyebrow: "Errore 404"
+  title: "Questa pagina non c'è più, o non è mai esistita."
+  lede: "L'indirizzo che hai seguito non porta da nessuna parte sul nostro sito. Riparti da una di queste pagine, oppure scrivici e ti indichiamo la strada giusta."
+  home: "Home"
+  other_language: "Leggi il sito in inglese" # il link alla home inglese
+
 footer:
   tagline: "Boutique di sviluppo software. Sistemi su misura, automazione e AI — realizzati a Roma."
   company: "Azienda"

@@ -149,7 +149,11 @@ module Checks
     # the visitor back to English; an /it/ link on the English page does the opposite.
     # The language switch, and the link of a blog index to the blog in the other
     # language (a.xlang), are the links that have to cross over.
+    # The brand files at the root (the favicon set and the manifest, BRAND_ROOT_FILES) are
+    # emitted once and linked unprefixed from both languages, like the assets.
     # Returns the list of problems.
+    BRAND_ROOT_FILES = %w[/favicon.ico /favicon.svg /apple-touch-icon.png /site.webmanifest].freeze
+
     def link_prefix_errors(lang, files)
       errors = []
       files.each do |file|
@@ -162,7 +166,7 @@ module Checks
           if lang == "it"
             next if switch && node["hreflang"] == "en" # the way back to English
 
-            errors << "#{where}<#{node.name} href=\"#{href}\"> is neither under /it/ nor an asset: the Italian page sends the visitor to the English site" unless href.start_with?("/it/", "/assets/")
+            errors << "#{where}<#{node.name} href=\"#{href}\"> is neither under /it/ nor an asset: the Italian page sends the visitor to the English site" unless href.start_with?("/it/", "/assets/") || BRAND_ROOT_FILES.include?(href)
           else
             next if switch && node["hreflang"] == "it" # the way to Italian
 

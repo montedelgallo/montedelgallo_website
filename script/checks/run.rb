@@ -74,6 +74,7 @@ AREAS = %w[
   sitemap
   jsonld
   seo_meta
+  share_404
 ].freeze
 
 AREAS.each { |area| require_relative area }

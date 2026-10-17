@@ -7,20 +7,21 @@
 #   meta_title   the complete <title>, for when it has to differ from the name
 #   description  meta description, also used for Open Graph and Twitter
 #   image        share-image path for this page, e.g. /assets/img/share/home.png
+#                (a page with a `cover` shares its cover; any other page shares the
+#                default card of its language, <lang>.share_image below)
 
 en:
   title: "Monte del Gallo | Custom software, automation & AI in Rome"
   description: "Monte del Gallo is a software boutique in Rome. We build custom software, automate the work you repeat and put AI where it pays off. Book a 30-minute call."
   locale: "en_US" # Open Graph locale
+  tagline: "Custom software, automation and AI. Built in Rome." # printed on the share card
+  share_image: "/assets/img/share/default-en.png"
 it:
   title: "Monte del Gallo | Software su misura, AI, automazione a Roma"
   description: "Monte del Gallo è una boutique del software a Roma: software su misura, automazione dei processi e AI dove rende davvero. Prenota una call di 30 minuti."
   locale: "it_IT"
-
-# Share image for pages that set none (Open Graph and Twitter cards): a path
-# under the site root to a 1200x630 PNG or JPG. Empty until the logo exists: a
-# card without an image is better than a card with a placeholder.
-share_image: ""
+  tagline: "Software su misura, automazione e AI. Realizzati a Roma."
+  share_image: "/assets/img/share/default-it.png"
 
 # Booking page: the primary call to action on every page.
 booking_url: "https://soshiki.io/book/mdg/short-call-with-giovanni"

@@ -3,7 +3,8 @@
   hreflang alternates, Open Graph / Twitter, font preloads, stylesheet.
 
   Front matter a page can set: title, meta_title, description, image (see
-  _data/site_meta.yml), and noindex: true (a draft page: robots noindex; pair it with
+  _data/site_meta.yml; without one the share image is the page's `cover`, and
+  without a cover the default card of the page's language), and noindex: true (a draft page: robots noindex; pair it with
   sitemap: false). A page that sets none gets the site defaults of its
   language. A collection item that has a `summary` (a project) uses it as its
   description when it sets no `description`, so its page does not repeat the
@@ -33,7 +34,7 @@
 {%- endif -%}
 {%- comment -%} An article (a post) has an `excerpt` in its front matter and no `description` or `summary`. {%- endcomment -%}
 {%- assign seo_description = page.description | default: page.summary | default: page.excerpt | default: meta.description | strip_html | normalize_whitespace -%}
-{%- assign seo_image = page.image | default: site.data.site_meta.share_image -%}
+{%- assign seo_image = page.image | default: page.cover | default: meta.share_image -%}
 
 {%- comment -%} The canonical URL is the page's own, in its own language: for a fallback copy that is the original, not the copy. {%- endcomment -%}
 {%- capture canonical_path %}{% include lang-url.html lang=own_lang %}{% endcapture -%}
@@ -87,6 +88,11 @@
 <meta name="twitter:title" content="{{ seo_title | escape }}">
 <meta name="twitter:description" content="{{ seo_description | escape }}">
 
+<link rel="icon" href="{{ '/favicon.ico' | relative_url }}" sizes="32x32">
+<link rel="icon" href="{{ '/favicon.svg' | relative_url }}" type="image/svg+xml">
+<link rel="apple-touch-icon" href="{{ '/apple-touch-icon.png' | relative_url }}">
+<link rel="manifest" href="{{ '/site.webmanifest' | relative_url }}">
+<meta name="theme-color" content="#EEF1EF">
 <link rel="preload" href="{{ '/assets/fonts/archivo-latin-wght-normal.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="{{ '/assets/fonts/hanken-grotesk-latin-wght-normal.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">

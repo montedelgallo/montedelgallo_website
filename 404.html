@@ -1,0 +1,49 @@
+---
+layout: default
+title: "Page not found"
+permalink: /404.html
+description: "The page you were looking for does not exist on the Monte del Gallo site. Start again from the home page, the services, our work, the blog or the contact page."
+noindex: true
+sitemap: false
+---
+{%- comment -%}
+  The 404 page. ONE source, rendered once per language like the home: /404.html (English)
+  and /it/404.html (Italian), because Cloudflare Pages serves the 404.html nearest to the
+  missing URL, looking up the directory tree (so a missing /it/... page gets /it/404.html,
+  and anything else /404.html). On nginx the same is done by deploy/nginx/error-pages.conf.
+  `noindex` keeps it out of search results and the sitemap (head.html, sitemap.xml). The words
+  are in _data/i18n/<lang>.yml (not_found:), the links in _data/nav.yml (the main
+  navigation), written root-relative so polyglot prefixes the Italian ones. The link to the
+  other language's home is wrapped in static_href: polyglot would otherwise prefix it too.
+{%- endcomment -%}
+{%- assign nf_lang = site.active_lang -%}
+{%- assign nf_t = site.data.i18n[nf_lang] -%}
+<section class="hero hero--page">
+  <svg class="hero__range" aria-hidden="true" focusable="false"><use href="#mdg-range"/></svg>
+  <div class="wrap">
+    <div>
+      <p class="eyebrow">{{ nf_t.not_found.eyebrow | escape }}</p>
+      <h1>{{ nf_t.not_found.title | escape }}</h1>
+      <p class="hero__sub">{{ nf_t.not_found.lede | escape }}</p>
+      <div class="hero__cta">
+        <a class="btn btn--solid" href="{{ '/' | relative_url }}">{{ nf_t.not_found.home | escape }}</a>
+        {%- for nf_item in site.data.nav.main %}
+        <a class="btn btn--ghost" href="{{ nf_item[nf_lang] | relative_url }}">{{ nf_t.nav[nf_item.key] | escape }}</a>
+        {%- endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="pad">
+  <div class="wrap">
+    <p>
+      {%- for nf_other in site.languages -%}
+        {%- if nf_other != nf_lang -%}
+          {%- if nf_other == site.default_lang -%}{%- assign nf_other_home = "/" -%}{%- else -%}{%- assign nf_other_home = "/" | append: nf_other | append: "/" -%}{%- endif -%}
+          <a class="xlang" {% static_href %}href="{{ nf_other_home | prepend: site.baseurl }}"{% endstatic_href %} hreflang="{{ nf_other }}" lang="{{ nf_other }}">{{ nf_t.not_found.other_language | escape }}</a>
+        {%- endif -%}
+      {%- endfor -%}
+    </p>
+  </div>
+</section>

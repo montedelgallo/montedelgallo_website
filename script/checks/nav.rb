@@ -213,7 +213,7 @@ def nav_orphan_errors(site_dir)
   end
   file_of = ->(url) { File.join(site_dir, url.end_with?("/") ? "#{url}index.html" : url) }
   pages = Dir.glob(File.join(site_dir, "**/*.html")).reject { |f| f.start_with?(File.join(site_dir, "assets") + "/") }.map(&url_of)
-  pages -= ["/404/", "/404.html"]
+  pages -= ["/404/", "/404.html", "/it/404/", "/it/404.html"]
   errors = []
   %w[en it].each do |lang|
     prefix = lang == "it" ? "/it/" : "/"
