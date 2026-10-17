@@ -67,7 +67,7 @@ Ritratti **illustrati** (stile vettoriale su sfondo "circuito/blueprint") dei me
 
 ## 5. Architettura delle informazioni (IA) — bilingue
 
-URL scheme: **EN alla radice**, **IT sotto `/it/`** (rispecchia l'attuale → massimo mantenimento SEO). Coppie EN↔IT collegate via campo `ref` → `hreflang` + switch lingua.
+URL scheme: **EN alla radice**, **IT sotto `/it/`** (rispecchia l'attuale → massimo mantenimento SEO). Coppie EN↔IT collegate via campo `page_id` condiviso → `hreflang` + switch lingua.
 
 | Sezione | EN | IT |
 |---|---|---|
@@ -99,14 +99,14 @@ Nav primaria: **Services · Work · About · Blog · Contact** + *Book a call* +
 ## 6. Modello dei contenuti (Jekyll)
 
 Collections + data files:
-- `_posts/` (blog): `title, date, lang, ref, categories, excerpt, cover, author`.
-- `_projects/`: `title, lang, ref, sector, year, stack[], summary, cover, gallery[], metrics[], featured, url?` (`cover` = screenshot reale; `featured: true` → mostrato in home).
-- `_case_studies/`: `title, lang, ref, client?, sector, challenge, solution, results[], stack[], cover`.
-- `_services/`: `title, lang, ref, icon, summary, body, faq[]`.
+- `_posts/` (blog): `title, date, lang, page_id, categories, excerpt, cover, author`.
+- `_projects/`: `title, lang, page_id, sector, year, stack[], summary, cover, gallery[], metrics[], featured, url?` (`cover` = screenshot reale; `featured: true` → mostrato in home).
+- `_case_studies/`: `title, lang, page_id, client?, sector, challenge, solution, results[], stack[], cover`.
+- `_services/`: `title, lang, page_id, icon, summary, body, faq[]`.
 - Pagine singole: Home, About, Startup Studio, Product Lab, Careers, MotioForge, Contact, Legal.
 - `_data/i18n/{en,it}.yml` (stringhe UI), `_data/nav.yml`, `_data/site_meta.yml`, `_data/redirects.yml` (vedi §10).
 
-**Collegamento traduzioni:** `ref` condiviso EN/IT → `hreflang` + switch lingua (fallback alla home di lingua se manca la traduzione).
+**Collegamento traduzioni:** `page_id` condiviso EN/IT (permalink "bare", senza `/it/`: lo aggiunge polyglot) → `hreflang` + switch lingua (fallback alla home di lingua se manca la traduzione).
 
 ---
 
@@ -191,7 +191,7 @@ Si **mantiene** come pagina prodotto (`/motioforge/`, `/it/motioforge-2/`), vecc
 
 **Mie (confermabili):**
 - SSG **Jekyll** + **`jekyll-polyglot`**, build **GitHub Actions**, output host-agnostic.
-- URL **EN radice / IT `/it/`**; content model a **collections**; `ref` per le coppie lingua.
+- URL **EN radice / IT `/it/`**; content model a **collections**; `page_id` per le coppie lingua (polyglot non usa `ref`), permalink senza `/it/`.
 - **Projects e Case studies separati**; **About hub** + Startup Studio/Product Lab/Careers/MotioForge come pagine.
 - **Blog sotto `/blog/`** (301 dai vecchi URL a radice).
 - **Redirect 301 veri** via `_data/redirects.yml` → nginx (+ `_redirects` futuro); categorie → `/blog/`.
