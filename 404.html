@@ -1,8 +1,7 @@
 ---
 layout: default
-title: "Page not found"
 permalink: /404.html
-description: "The page you were looking for does not exist on the Monte del Gallo site. Start again from the home page, the services, our work, the blog or the contact page."
+meta_key: not_found
 noindex: true
 sitemap: false
 ---
@@ -11,6 +10,8 @@ sitemap: false
   and /it/404.html (Italian), because Cloudflare Pages serves the 404.html nearest to the
   missing URL, looking up the directory tree (so a missing /it/... page gets /it/404.html,
   and anything else /404.html). On nginx the same is done by deploy/nginx/error-pages.conf.
+  Its <title> and description come from not_found.meta_title / meta_description of the same
+  files (`meta_key` in the front matter, read by head.html), so the Italian page is Italian.
   `noindex` keeps it out of search results and the sitemap (head.html, sitemap.xml). The words
   are in _data/i18n/<lang>.yml (not_found:), the links in _data/nav.yml (the main
   navigation), written root-relative so polyglot prefixes the Italian ones. The link to the

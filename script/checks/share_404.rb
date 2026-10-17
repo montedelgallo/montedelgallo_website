@@ -1,14 +1,16 @@
 # frozen_string_literal: true
 
+require "digest"
 require "json"
 require "yaml"
 
 # Share images (Open Graph / Twitter cards), the favicon set, the web manifest and the 404 pages.
 #
 #   - every INDEXABLE page has an absolute og:image and twitter:image that is a real file of the
-#     built site (a complete image, by its magic bytes and its tail): the page's own cover when it
-#     shows one (projects, articles, case studies), else the default card of the page's language,
-#     a PNG of exactly 1200x630; twitter:card is summary_large_image;
+#     built site (a complete image, by its magic bytes and its tail), never webp, always 1200x630:
+#     the JPG made from the page's own cover when it shows one (projects, articles, case studies),
+#     else the default card (PNG) of the page's language, the two cards being different images;
+#     og:image:type / width / height / alt say what it is; twitter:card is summary_large_image;
 #   - the favicon set is emitted ONCE at the root (favicon.svg, favicon.ico with 16 and 32,
 #     apple-touch-icon.png 180x180, icon-192.png, icon-512.png, site.webmanifest), is linked from
 #     EVERY page head (noindex ones and the 404s too), the manifest is JSON whose icons resolve to
@@ -48,51 +50,94 @@ def share_noindex?(page)
   page.css('meta[name="robots"]').any? { |m| m["content"].to_s.split(/[\s,]+/).include?("noindex") }
 end
 
-# The og:image of every indexable page.
+# [width, height] of a JPEG, from its first start-of-frame marker.
+def share_jpeg_size(file)
+  data = File.binread(file)
+  pos = 2
+  while pos < data.bytesize
+    pos += 1 while data.getbyte(pos) == 0xFF && data.getbyte(pos + 1) == 0xFF
+    marker = data.getbyte(pos + 1)
+    return data.byteslice(pos + 5, 4).unpack("nn").reverse if (0xC0..0xCF).cover?(marker) && ![0xC4, 0xC8, 0xCC].include?(marker)
+
+    pos += 2 + data.byteslice(pos + 2, 2).unpack1("n")
+  end
+  nil
+end
+
+# [width, height] of a JPEG or PNG file; nil for anything else.
+def share_image_size(file)
+  case Checks::Images.detect(file)
+  when :png then share_png_size(file)
+  when :jpeg then share_jpeg_size(file)
+  end
+end
+
+SHARE_MIME = { ".jpg" => "image/jpeg", ".png" => "image/png" }.freeze
+
+# The og:image of every indexable page. Social crawlers (LinkedIn's above all) do not take
+# webp, so the share image is always a JPG or PNG of 1200x630: for a page with a cover, the JPG
+# made from that cover (assets/img/share/cover/<cover basename>.jpg, script/make-share-images.rb);
+# for any other, the default card of the page's language.
 def share_images(pages, site_dir, origin)
   errors = []
   checked = covers = defaults = 0
+  defaults_meta = YAML.load_file("_data/site_meta.yml", aliases: true)
   pages.each do |file|
     page = Checks::Site.page(file)
     next if share_noindex?(page)
 
     checked += 1
-    og = page.at_css('meta[property="og:image"]')&.[]("content").to_s
-    tw = page.at_css('meta[name="twitter:image"]')&.[]("content").to_s
-    card = page.at_css('meta[name="twitter:card"]')&.[]("content").to_s
+    meta = ->(selector) { page.at_css(selector)&.[]("content").to_s }
+    og = meta.call('meta[property="og:image"]')
     errors << "#{file}: no og:image" if og.empty?
-    errors << "#{file}: twitter:image #{tw.inspect} is not the og:image #{og.inspect}" unless tw == og
-    errors << "#{file}: twitter:card is #{card.inspect}, with an image it must be summary_large_image" unless card == "summary_large_image"
+    errors << "#{file}: twitter:image #{meta.call('meta[name="twitter:image"]').inspect} is not the og:image #{og.inspect}" unless meta.call('meta[name="twitter:image"]') == og
+    errors << "#{file}: twitter:card is #{meta.call('meta[name="twitter:card"]').inspect}, with an image it must be summary_large_image" unless meta.call('meta[name="twitter:card"]') == "summary_large_image"
     next if og.empty?
 
     unless og.start_with?("#{origin}/")
       errors << "#{file}: og:image #{og.inspect} is not an absolute URL on #{origin}"
       next
     end
+    ext = File.extname(og).downcase
+    errors << "#{file}: og:image #{og} is #{ext.inspect}: only .jpg and .png are accepted by every social crawler (no webp)" unless SHARE_MIME.key?(ext)
     image = "#{site_dir}#{og.delete_prefix(origin)}"
-    _kind, _size, problem = Checks::Images.inspect_file(image, min_bytes: 2048, label: og)
+    kind, _size, problem = Checks::Images.inspect_file(image, min_bytes: 2048, label: og)
     if problem
       errors << "#{file}: og:image is not a real image in the built site: #{problem}"
       next
     end
-    cover = page.at_css("img.project__cover")&.[]("src")
-    if cover
+    errors << "#{file}: og:image #{og} is named #{ext} but is a #{kind.to_s.upcase} (magic bytes)" unless { ".jpg" => :jpeg, ".png" => :png }[ext] == kind
+    errors << "#{file}: #{og} is #{share_image_size(image).inspect}, not #{SHARE_CARD_SIZE.inspect}" unless share_image_size(image) == SHARE_CARD_SIZE
+
+    # The declared type, size and alt travel with the image.
+    errors << "#{file}: og:image:type is #{meta.call('meta[property="og:image:type"]').inspect}, expected #{SHARE_MIME[ext]}" unless meta.call('meta[property="og:image:type"]') == SHARE_MIME[ext]
+    errors << "#{file}: og:image:width/height are #{meta.call('meta[property="og:image:width"]').inspect}/#{meta.call('meta[property="og:image:height"]').inspect}, expected #{SHARE_CARD_SIZE.join("/")}" unless [meta.call('meta[property="og:image:width"]'), meta.call('meta[property="og:image:height"]')] == SHARE_CARD_SIZE.map(&:to_s)
+    alt = meta.call('meta[property="og:image:alt"]')
+    errors << "#{file}: no og:image:alt" if alt.strip.empty?
+    errors << "#{file}: twitter:image:alt #{meta.call('meta[name="twitter:image:alt"]').inspect} is not the og:image:alt #{alt.inspect}" unless meta.call('meta[name="twitter:image:alt"]') == alt
+
+    cover_img = page.at_css("img.project__cover")
+    if cover_img
       covers += 1
-      errors << "#{file}: the page shows the cover #{cover} but its og:image is #{og}" unless og == "#{origin}#{cover}"
+      want = "#{origin}/assets/img/share/cover/#{File.basename(cover_img["src"], ".*")}.jpg"
+      errors << "#{file}: the page shows the cover #{cover_img["src"]}, so og:image must be its JPG variant #{want}, it is #{og}" unless og == want
+      errors << "#{file}: og:image:alt #{alt.inspect} is not the cover's alt #{cover_img["alt"].inspect}" unless alt == cover_img["alt"]
     else
       defaults += 1
-      locale = page.at_css('meta[property="og:locale"]')&.[]("content").to_s
-      lang = locale.split("_").first
+      lang = meta.call('meta[property="og:locale"]').split("_").first
       want = "#{origin}/assets/img/share/default-#{lang}.png"
       errors << "#{file}: no cover, so og:image must be its language's default card #{want}, it is #{og}" unless og == want
-      errors << "#{file}: #{og} is not a PNG of #{SHARE_CARD_SIZE.join("x")}" unless Checks::Images.detect(image) == :png && share_png_size(image) == SHARE_CARD_SIZE
+      errors << "#{file}: og:image:alt #{alt.inspect} is not the #{lang} card's description #{defaults_meta.dig(lang, "share_alt").inspect}" unless alt == defaults_meta.dig(lang, "share_alt")
     end
   end
   errors << "no indexable page found" if checked.zero?
   errors << "no page uses a cover as its share image" if covers.zero?
   errors << "no page uses a default card" if defaults.zero?
+  en_card = "#{site_dir}/assets/img/share/default-en.png"
+  it_card = "#{site_dir}/assets/img/share/default-it.png"
+  errors << "the English and the Italian default cards are the same image: each language needs its own" if File.file?(en_card) && File.file?(it_card) && Digest::SHA256.file(en_card) == Digest::SHA256.file(it_card)
   fail_list!(errors, "a page has no valid share image (see the list above)")
-  pass "#{checked} indexable pages have an absolute og:image = twitter:image (summary_large_image) that is a real file: #{covers} use their cover, #{defaults} the 1200x630 default card of their language"
+  pass "#{checked} indexable pages have an absolute og:image = twitter:image (summary_large_image), a real 1200x630 JPG or PNG (never webp) with type, size and alt: #{covers} use the JPG made from their cover, #{defaults} the default card of their language (the two cards differ)"
 end
 
 # The favicon files and their links.
@@ -172,6 +217,8 @@ end
 def share_404_pages(site_dir, origin)
   sitemap = Checks::Site.read("#{site_dir}/sitemap.xml")
   errors = []
+  i18n = %w[en it].to_h { |l| [l, YAML.load_file("_data/i18n/#{l}.yml")["not_found"] || {}] }
+  heads = {}
   { "en" => ["/404.html", "/", "/it/"], "it" => ["/it/404.html", "/it/", "/"] }.each do |lang, (path, home, other_home)|
     file = "#{site_dir}#{path}"
     unless File.size?(file)
@@ -189,11 +236,23 @@ def share_404_pages(site_dir, origin)
     sections = lang == "it" ? %w[/servizi/ /progetti/ /articoli/ /contatti/] : %w[/services/ /projects/ /blog/ /contact/]
     sections.each { |s| errors << "#{path}: main has no link to #{prefix}#{s}" unless hrefs.include?("#{prefix}#{s}") }
     errors << "#{path}: has no <h1>" unless page.at_css("main h1")
+    # The head says it in the page's own language: the i18n values, not a copy of the English.
+    content = ->(selector) { page.at_css(selector)&.[]("content").to_s }
+    title = page.at_css("title")&.text.to_s
+    description = content.call('meta[name="description"]')
+    heads[lang] = [title, description]
+    errors << "#{path}: <title> is #{title.inspect}, expected not_found.meta_title #{i18n[lang]["meta_title"].inspect}" unless !i18n[lang]["meta_title"].to_s.empty? && title == i18n[lang]["meta_title"]
+    errors << "#{path}: meta description is #{description.inspect}, expected not_found.meta_description #{i18n[lang]["meta_description"].inspect}" unless !i18n[lang]["meta_description"].to_s.empty? && description == i18n[lang]["meta_description"]
+    { "og:title" => title, "twitter:title" => title, "og:description" => description, "twitter:description" => description }.each do |name, want|
+      got = content.call(name.start_with?("og:") ? %(meta[property="#{name}"]) : %(meta[name="#{name}"]))
+      errors << "#{path}: #{name} is #{got.inspect}, expected #{want.inspect}" unless got == want
+    end
     errors << "#{path}: no header/footer (the Foundry layout)" unless page.at_css("header.nav") && page.at_css("footer.foot")
   end
+  errors << "the English and the Italian 404 share a title or a description (the Italian one is untranslated): #{heads.inspect}" if heads.size == 2 && heads["en"].zip(heads["it"]).any? { |en, it| en == it }
   errors << "the sitemap lists a 404 page" if sitemap.match?(%r{/404})
   fail_list!(errors, "a 404 page is missing or wrong (see the list above)")
-  pass "/404.html (en) and /it/404.html (it): noindex, own <html lang>, Foundry header/footer, links to both homes and the main sections, out of the sitemap"
+  pass "/404.html (en) and /it/404.html (it): noindex, own <html lang>, title and description in their own language (from the i18n files), Foundry header/footer, links to both homes and the main sections, out of the sitemap"
 end
 
 # The nginx fallback: the same per-language 404 as Cloudflare's nearest-404.html rule.

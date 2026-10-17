@@ -244,6 +244,8 @@ not_found: # the 404 page (404.html, rendered at /404.html and /it/404.html)
   eyebrow: "Error 404"
   title: "This page has moved on, or never existed."
   lede: "The address you followed does not lead anywhere on our site. Start again from one of these pages, or write to us and we will point you the right way."
+  meta_title: "Page not found | Monte del Gallo" # the <title> of the page
+  meta_description: "The page you were looking for does not exist on the Monte del Gallo site. Start again from the home page, the services, our work, the blog or the contact page."
   home: "Home"
   other_language: "Read this site in Italian" # the link to the Italian home
 

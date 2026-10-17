@@ -141,6 +141,26 @@ objects are built with the `ld_object` filter (`_plugins/jsonld_object.rb`: alte
 Hash) and serialized with `jsonify`. `script/checks/jsonld.rb` derives what each page must carry from the sources
 and holds every node to a per-type property allow-list.
 
+## Brand images and 404 pages
+
+`script/make-share-images.rb` writes the committed brand rasters; no image tooling runs in CI. It makes the two
+1200x630 default share cards (`assets/img/share/default-en.png`, `default-it.png`: mark, name, tagline from
+`_data/site_meta.yml`), a 1200x630 JPG of every `cover:` (`assets/img/share/cover/<basename>.jpg`, centred crop,
+quality 82: the `og:image` of the page, since LinkedIn's crawler rejects webp; the webp stays on the page),
+`favicon.ico`, `apple-touch-icon.png` and `icon-192.png` / `icon-512.png`. The logo is the `mdg-mark` symbol in
+`_includes/icons.html` (the script reads it from there); the header of the script lists the three places to change
+when the logo does. Needs `rsvg-convert` (librsvg), ImageMagick 7 (`magick`) and python3 with
+`pip install fonttools brotli uharfbuzz` (in a venv: `PYTHON=<venv>/bin/python3`):
+
+    PYTHON=<venv>/bin/python3 ruby script/make-share-images.rb
+
+Run it after a logo, tagline or cover change and commit the outputs; they can differ by a few pixels between
+ImageMagick or librsvg builds, so regenerate only when something changed. `favicon.svg` and `site.webmanifest` are
+hand-written root files; the whole favicon set is emitted once at the root (`exclude_from_localization`).
+`404.html` is one source rendered at `/404.html` and `/it/404.html` (Cloudflare Pages serves the nearest
+`404.html` up the path; `deploy/nginx/error-pages.conf` does the same for nginx), `noindex`, with its head text in the
+`not_found:` tree of the i18n files. `script/checks/share_404.rb` asserts all of it.
+
 ## Continuous integration
 
 `.github/workflows/build.yml` runs on every push and pull request. It installs Ruby and the

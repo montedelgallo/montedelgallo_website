@@ -236,6 +236,8 @@ not_found: # la pagina 404 (404.html, resa su /404.html e /it/404.html)
   eyebrow: "Errore 404"
   title: "Questa pagina non c'è più, o non è mai esistita."
   lede: "L'indirizzo che hai seguito non porta da nessuna parte sul nostro sito. Riparti da una di queste pagine, oppure scrivici e ti indichiamo la strada giusta."
+  meta_title: "Pagina non trovata | Monte del Gallo" # the <title> of the page
+  meta_description: "La pagina che cercavi non esiste sul sito di Monte del Gallo. Riparti dalla home, dai servizi, dai nostri lavori, dal blog o dalla pagina contatti."
   home: "Home"
   other_language: "Leggi il sito in inglese" # il link alla home inglese
 

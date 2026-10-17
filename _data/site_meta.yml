@@ -8,7 +8,9 @@
 #   description  meta description, also used for Open Graph and Twitter
 #   image        share-image path for this page, e.g. /assets/img/share/home.png
 #                (a page with a `cover` shares its cover; any other page shares the
-#                default card of its language, <lang>.share_image below)
+#                default card of its language, <lang>.share_image below; share images
+#                are JPG or PNG of 1200x630, never webp: the cover JPGs are made by
+#                script/make-share-images.rb into assets/img/share/cover/)
 
 en:
   title: "Monte del Gallo | Custom software, automation & AI in Rome"
@@ -16,12 +18,14 @@ en:
   locale: "en_US" # Open Graph locale
   tagline: "Custom software, automation and AI. Built in Rome." # printed on the share card
   share_image: "/assets/img/share/default-en.png"
+  share_alt: "Monte del Gallo: custom software, automation and AI. Built in Rome. The mountain mark on a blueprint grid above a green mountain range." # alt text of the card
 it:
   title: "Monte del Gallo | Software su misura, AI, automazione a Roma"
   description: "Monte del Gallo è una boutique del software a Roma: software su misura, automazione dei processi e AI dove rende davvero. Prenota una call di 30 minuti."
   locale: "it_IT"
   tagline: "Software su misura, automazione e AI. Realizzati a Roma."
   share_image: "/assets/img/share/default-it.png"
+  share_alt: "Monte del Gallo: software su misura, automazione e AI. Realizzati a Roma. Il marchio a montagna su una griglia tecnica sopra una catena di montagne verdi."
 
 # Booking page: the primary call to action on every page.
 booking_url: "https://soshiki.io/book/mdg/short-call-with-giovanni"

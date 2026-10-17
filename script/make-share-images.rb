@@ -4,18 +4,25 @@
 # Generates, ONCE, the committed brand rasters of the site (no image tooling runs in CI):
 #
 #   assets/img/share/default-en.png, default-it.png   1200x630 share cards (Open Graph / Twitter)
+#   assets/img/share/cover/<basename>.jpg             1200x630 JPG (quality 82) of every `cover:` of
+#                                                     the projects, articles, case studies and services
+#                                                     (cover-crop, centred): the share image of their
+#                                                     pages, because LinkedIn's crawler rejects webp
 #   favicon.ico                                       16 + 32, from favicon.svg
 #   apple-touch-icon.png (180), icon-192.png, icon-512.png   the mark on a solid background
 #
-# Run it again, and commit the files, when the logo or the tagline changes:
+# Run it again, and commit the files, when the logo, a tagline or a cover changes:
 #
 #   PYTHON=/path/to/python3 ruby script/make-share-images.rb
 #
-# THE LOGO IS ONE FILE TO SWAP. Today it is the mountain mark, the path of the `mdg-mark`
-# symbol in _includes/icons.html (this script reads it from there, so the header, the cards
-# and the icons cannot drift apart). favicon.svg is the same mark, hand-kept (it carries a
-# dark-mode colour), and is what the browsers use. When the gallo logo arrives: replace the
-# `mdg-mark` symbol, favicon.svg and MARK_PATH below (one path), and run this script.
+# SWAPPING THE LOGO (today: the mountain mark). Three places, then re-run this script:
+#   1. the `mdg-mark` symbol in _includes/icons.html (the header and footer draw it, and this
+#      script READS its path from there for the cards and the icons);
+#   2. favicon.svg, hand-kept (what browsers use; it carries a dark-mode colour);
+#   3. in `card_svg` below, the mark is drawn at translate(76 73) scale(5): that assumes a 24x24
+#      viewBox (24 * 5 = 120 px square) and leaves the name starting at x=228. A logo with another
+#      viewBox or proportions needs that box (translate, scale) and the name's x adjusted; the
+#      icons (`mark_svg`) also assume 24x24. The script does NOT take a drop-in SVG file.
 #
 # Needs: `rsvg-convert` (librsvg), ImageMagick 7 (`magick`, only to pack the .ico and the
 # palette PNG), and python3 with fonttools, brotli and uharfbuzz
@@ -25,6 +32,7 @@
 # the tagline, IBM Plex Mono 500 for the address) and written into the card as vector outlines,
 # so the result does not depend on the fonts installed on the machine that runs this.
 
+require "date"
 require "fileutils"
 require "tmpdir"
 require "yaml"
@@ -145,6 +153,20 @@ def card_svg(title, tagline)
   SVG
 end
 
+# { "assets/img/projects/x-cover.webp" => "assets/img/share/cover/x-cover.jpg" } for every `cover:`.
+def share_covers
+  sources = %w[_projects _posts _case_studies _services].flat_map { |dir| Dir.glob("#{dir}/**/*.md") }.filter_map do |file|
+    front = File.read(file, encoding: "utf-8")[/\A---\s*\n(.*?)\n---/m, 1] or next
+    cover = (YAML.safe_load(front, permitted_classes: [Date, Time]) || {})["cover"]
+    cover.to_s.delete_prefix("/") unless cover.to_s.empty?
+  end.uniq.sort
+  targets = sources.to_h { |src| [src, "assets/img/share/cover/#{File.basename(src, ".*")}.jpg"] }
+  clash = targets.group_by { |_, t| t }.select { |_, v| v.size > 1 }
+  abort "two covers share a basename (their JPGs would collide): #{clash.values.flatten(1).map(&:first).join(", ")}" unless clash.empty?
+  sources.each { |src| abort "cover #{src} does not exist" unless File.file?(src) }
+  targets
+end
+
 Dir.mktmpdir("mdg-share") do |tmp|
   meta = YAML.load_file("_data/site_meta.yml", aliases: true)
   title = YAML.load_file("_config.yml")["title"]
@@ -160,6 +182,15 @@ Dir.mktmpdir("mdg-share") do |tmp|
     run("magick", raw, "-strip", "-colors", "256", "PNG8:#{out}")
     puts "wrote #{out}"
   end
+
+  # The JPG of every cover: 1200x630, cover-crop around the centre. The webp stays on the page.
+  covers = share_covers
+  FileUtils.mkdir_p("assets/img/share/cover")
+  covers.each do |source, target|
+    run("magick", source, "-auto-orient", "-resize", "1200x630^", "-gravity", "center", "-extent", "1200x630",
+        "-strip", "-sampling-factor", "4:2:0", "-interlace", "Plane", "-quality", "82", target)
+  end
+  puts "wrote #{covers.size} cover JPGs in assets/img/share/cover/"
 
   # Icons: the mark on a solid background (iOS ignores transparency).
   { "apple-touch-icon.png" => 180, "icon-192.png" => 192, "icon-512.png" => 512 }.each do |name, size|

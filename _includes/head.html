@@ -25,16 +25,37 @@
 {%- assign meta = site.data.site_meta[own_lang] -%}
 {%- assign origin = site.url | append: site.baseurl -%}
 
+{%- comment -%} A single-source page whose head text must follow the language (the 404) names an i18n tree in `meta_key:`; its meta_title and meta_description are read from there. {%- endcomment -%}
+{%- assign keyed = nil -%}
+{%- if page.meta_key -%}{%- assign keyed = site.data.i18n[own_lang][page.meta_key] -%}{%- endif -%}
 {%- if page.meta_title -%}
   {%- assign seo_title = page.meta_title -%}
+{%- elsif keyed.meta_title -%}
+  {%- assign seo_title = keyed.meta_title -%}
 {%- elsif page.title -%}
   {%- assign seo_title = page.title | append: " | " | append: site.title -%}
 {%- else -%}
   {%- assign seo_title = meta.title -%}
 {%- endif -%}
 {%- comment -%} An article (a post) has an `excerpt` in its front matter and no `description` or `summary`. {%- endcomment -%}
-{%- assign seo_description = page.description | default: page.summary | default: page.excerpt | default: meta.description | strip_html | normalize_whitespace -%}
-{%- assign seo_image = page.image | default: page.cover | default: meta.share_image -%}
+{%- assign seo_description = page.description | default: keyed.meta_description | default: page.summary | default: page.excerpt | default: meta.description | strip_html | normalize_whitespace -%}
+{%- comment -%}
+  The share image is a JPG or PNG of 1200x630, never webp (LinkedIn's crawler rejects it): a page's own
+  `image`, else the JPG made from its `cover` (assets/img/share/cover/<cover basename>.jpg, written by
+  script/make-share-images.rb), else the default card of its language. Alt: the cover's alt or the card's.
+{%- endcomment -%}
+{%- if page.image -%}
+  {%- assign seo_image = page.image -%}
+  {%- assign seo_image_alt = page.image_alt | default: seo_title -%}
+{%- elsif page.cover -%}
+  {%- assign cover_name = page.cover | split: "/" | last | split: "." | first -%}
+  {%- assign seo_image = "/assets/img/share/cover/" | append: cover_name | append: ".jpg" -%}
+  {%- assign seo_image_alt = page.cover_alt | default: page.title -%}
+{%- else -%}
+  {%- assign seo_image = meta.share_image -%}
+  {%- assign seo_image_alt = meta.share_alt -%}
+{%- endif -%}
+{%- assign seo_image_ext = seo_image | split: "." | last | downcase -%}
 
 {%- comment -%} The canonical URL is the page's own, in its own language: for a fallback copy that is the original, not the copy. {%- endcomment -%}
 {%- capture canonical_path %}{% include lang-url.html lang=own_lang %}{% endcapture -%}
@@ -80,8 +101,13 @@
 {%- endfor %}
 {%- if seo_image and seo_image != "" %}
 <meta property="og:image" content="{{ seo_image | absolute_url }}">
+<meta property="og:image:type" content="{% if seo_image_ext == 'png' %}image/png{% else %}image/jpeg{% endif %}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="{{ seo_image_alt | escape }}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="{{ seo_image | absolute_url }}">
+<meta name="twitter:image:alt" content="{{ seo_image_alt | escape }}">
 {%- else %}
 <meta name="twitter:card" content="summary">
 {%- endif %}
