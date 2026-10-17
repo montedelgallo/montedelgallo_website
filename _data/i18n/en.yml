@@ -38,7 +38,7 @@ cta:
 
 home:
   hero:
-    eyebrow: "Software · Automation · AI — Roma"
+    eyebrow: "Software · Automation · AI"
     title: "We build the software your business runs on."
     sub: "Monte del Gallo is a software boutique in Rome. We design custom systems, automate the work you repeat, and put AI where it actually pays off."
     cta_primary: "Book a 30-min call" # leads to the booking page
@@ -48,11 +48,11 @@ home:
         label: "Direct bookings"
       - value: "+150%"
         label: "Online sales"
-      - value: "600+"
+      - value: "60+"
         label: "Businesses served"
     shot: # the dashboard picture beside the headline; `label` describes it to screen readers
       label: "Example operations dashboard built by Monte del Gallo"
-      title: "operations · montedelgallo"
+      title: "operations"
       heading: "Online sales · last 30 days"
       pill: "+150%"
       kpis:
@@ -97,7 +97,7 @@ home:
   growth: # the dark "growth system" band
     eyebrow: "Growth system · one stack"
     title: "Design, code and automation in one workflow."
-    lede: "Three layers that work together — so what we build keeps paying off after launch."
+    lede: "Three layers that work together, so what we build keeps paying off after launch."
     items:
       - icon: "i-ai"
         title: "AI agents & RAG"

@@ -30,7 +30,7 @@ cta:
 # Home page. Bozza italiana, da rivedere (il testo inglese è in en.yml).
 home:
   hero:
-    eyebrow: "Software · Automazione · AI — Roma"
+    eyebrow: "Software · Automazione · AI"
     title: "Costruiamo il software su cui gira la tua azienda."
     sub: "Monte del Gallo è una boutique del software a Roma. Progettiamo sistemi su misura, automatizziamo il lavoro che ripeti e mettiamo l'AI dove rende davvero."
     cta_primary: "Prenota una call di 30 minuti"
@@ -40,7 +40,7 @@ home:
         label: "Prenotazioni dirette"
       - value: "+150%"
         label: "Vendite online"
-      - value: "600+"
+      - value: "60+"
         label: "Aziende servite"
     shot:
       label: "Esempio di dashboard operativa realizzata da Monte del Gallo"
