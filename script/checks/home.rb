@@ -204,6 +204,7 @@ def home_team_errors(lang, main, norm)
     name = norm.(node.at_css(".team__name")&.text)
     img = node.at_css("img")
     errors << "team member #{index + 1} (#{name.inspect}) has neither a portrait nor the initials tile" unless img || node.at_css(".team__ph")
+    errors << "team member #{name.inspect}: the home shows the initials tile, every member has a portrait now" if node.at_css(".team__ph")
     next unless img
 
     errors << "team member #{name.inspect}: the portrait has no alt text naming the person" unless img["alt"].to_s.include?(name) && !name.empty?

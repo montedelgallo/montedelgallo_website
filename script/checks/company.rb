@@ -187,8 +187,8 @@ def company_team_grid(ctx, fx)
   tile_cap || fail!("the .team__photo rule in #{css_file} must size a portrait width:min(100%,<n>px): the cap the portraits are checked against")
   roster = YAML.load_file("_data/team.yml")
   smallest = ((roster["founders"] || []) + (roster["members"] || [])).filter_map { |m| m["photo_w"] }.min
-  (smallest.nil? || smallest >= tile_cap.to_i) ||
-    fail!("a portrait of _data/team.yml is only #{smallest}px wide, below the #{tile_cap}px cap of .team__photo: it would be stretched")
+  (smallest && smallest >= tile_cap.to_i) ||
+    fail!("the smallest portrait of _data/team.yml is #{smallest.inspect}px wide, below the #{tile_cap}px cap of .team__photo: it would be stretched")
   pass "the team grid has two columns on a phone, three (founders) and four (team) from the tablet width up, and a portrait is drawn at most #{tile_cap}px wide (the CSS cap; the smallest portrait is #{smallest || "none"}px), and the founders row is as wide as three team columns (calc(75% - gap/4))"
 end
 
@@ -293,11 +293,17 @@ def team_grid_errors(lang, file, root, mode)
       who = member["name"].to_s.strip.empty? ? "member #{i + 1}" : member["name"]
       errors << "_data/team.yml: #{who} has no name" if member["name"].to_s.strip.empty?
       %w[en it].each { |l| errors << "_data/team.yml: #{who} has no #{l} role" if member.dig("role", l).to_s.strip.empty? }
+      # Every member now has a real portrait: the initials tile stays as the fallback (proven on
+      # the fixture), but the real pages must not show it.
+      errors << "_data/team.yml: #{who} has no photo (every member has a portrait; the initials tile is only the fallback)" unless member["photo"]
       next unless member["photo"]
 
       errors << "_data/team.yml: #{who}: photo_w and photo_h must be positive numbers (the pixel size of #{member["photo"]})" unless member["photo_w"].to_i.positive? && member["photo_h"].to_i.positive?
       msg = real_image.(member["photo"]) and errors << "_data/team.yml: #{who}: #{msg}"
+      real = Checks::Images.webp_dimensions(File.join(root, member["photo"]))
+      errors << "_data/team.yml: #{who}: photo_w x photo_h is #{member["photo_w"]}x#{member["photo_h"]}, the file #{member["photo"]} is #{real&.join("x").inspect}" unless real == [member["photo_w"].to_i, member["photo_h"].to_i]
     end
+    errors << "#{lang}: #{html.css("main .team__ph").size} initials tile(s) on the page: every member has a portrait now" unless html.css("main .team__ph").empty?
     data.each_with_index do |member, i|
       node = members[i] or next
       errors << "#{lang}: member #{i + 1} should be #{member["name"].inspect}, the grid shows #{text_of(node.at_css(".team__name")).inspect}" unless text_of(node.at_css(".team__name")) == member["name"]

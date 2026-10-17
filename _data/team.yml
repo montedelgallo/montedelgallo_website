@@ -7,8 +7,8 @@
 #
 # Each row follows the order of its list. Every name, role and badge is what the live
 # montedelgallo.com About page prints (first names only where the live page gives no
-# surname), except Edoardo Cirone, whom the client supplied on 2026-10-17 (his portrait
-# is pending: until a `photo` is added he shows the initials tile).
+# surname), except Edoardo Cirone, whom the client supplied on 2026-10-17 together
+# with his portrait.
 #
 #   name      what the grid prints (also the start of the portrait's alt text)
 #   badge     optional small label above the name, per language (the founders)
@@ -35,36 +35,39 @@ founders:
     badge: { en: "Founder", it: "Founder" }
     role: { en: "Administration & Finance", it: "Amministrazione e Finanza" }
     photo: /assets/team/francesco.webp
-    photo_w: 306
-    photo_h: 306
+    photo_w: 800
+    photo_h: 800
   - name: "Giovanni Panasiti"
     badge: { en: "Co-Founder", it: "Co-Founder" }
     role: { en: "Software Engineer", it: "Software Engineer" }
     photo: /assets/team/giovanni.webp
-    photo_w: 140
-    photo_h: 140
+    photo_w: 800
+    photo_h: 800
   - name: "Niccolò"
     badge: { en: "Co-Founder", it: "Co-Founder" }
     role: { en: "Business Development", it: "Business Development" }
     photo: /assets/team/niccolo.webp
-    photo_w: 200
-    photo_h: 200
+    photo_w: 800
+    photo_h: 800
 
 members:
   - name: "Carlo"
     role: { en: "Senior Web Designer", it: "Senior Web Designer" }
     photo: /assets/team/carlo.webp
-    photo_w: 306
-    photo_h: 306
+    photo_w: 800
+    photo_h: 800
   - name: "Claudio Aiello"
     role: { en: "Junior Software Engineer", it: "Junior Software Engineer" }
     photo: /assets/team/claudio.webp
-    photo_w: 480
-    photo_h: 480
+    photo_w: 260
+    photo_h: 260
   - name: "Giuseppe"
     role: { en: "WordPress Developer & DJ", it: "WordPress Developer & DJ" }
     photo: /assets/team/giuseppe.webp
-    photo_w: 480
-    photo_h: 480
+    photo_w: 260
+    photo_h: 260
   - name: "Edoardo Cirone"
     role: { en: "Developer", it: "Developer" }
+    photo: /assets/team/edoardo.webp
+    photo_w: 800
+    photo_h: 800

@@ -409,9 +409,9 @@
 // the tablet width up the team row has four columns and the founders row three, drawn on
 // the SAME column width: the founders row is as wide as three columns of the team row
 // (calc(75% - gap/4)), so the two rows read as one composition and a fourth team member
-// fills the row without moving anyone. Every tile is drawn at most 140px wide, the width of
-// the smallest real portrait (Giovanni's), so no portrait is stretched and all the tiles
-// line up; the <img> also carries max-width:<its own pixel width>
+// fills the row without moving anyone. A portrait fills its column and is drawn at most 260px
+// wide, the width of the smallest real portrait (Claudio's and Giuseppe's), so no portrait is
+// stretched and all the tiles line up; the <img> also carries max-width:<its own pixel width>
 // (_includes/team-grid.html). script/check-build.sh asserts all of it.
 .team{
   --team-gap:clamp(14px,2.4vw,28px);
@@ -448,7 +448,7 @@
 .team__photo,
 .team__ph{
   display:block;
-  width:min(100%,140px);
+  width:min(100%,260px);
   aspect-ratio:1 / 1;
   border:1px solid var(--line);
   border-radius:10px;
