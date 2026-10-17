@@ -131,7 +131,10 @@ def about_hub_errors(lang, file)
     next errors << "#{lang}: no <section id=\"#{id}\">" unless section
 
     errors << "#{lang}: section ##{id} has no <h2>" unless section.at_css("h2")
-    errors << "#{lang}: section ##{id} is a stub (#{section.text.split.size} words)" if section.text.split.size < 60
+    # The team section is a heading, a line and the grid of _data/team.yml (a name and a role
+    # per person, two rows): its floor is lower than that of the sections of prose.
+    floor = id == "team" ? 30 : 60
+    errors << "#{lang}: section ##{id} is a stub (#{section.text.split.size} words, at least #{floor})" if section.text.split.size < floor
     errors << "#{lang}: nothing in the page links to ##{id}" unless main.css("a[href='##{id}']").any?
   end
   errors << "#{lang}: the manifesto should state at least 7 principles (found #{main.css("#manifesto .mf").size} .mf)" if main.css("#manifesto .mf").size < 7
@@ -154,26 +157,91 @@ def company_team_grid(ctx, fx)
   assert_no_shared_assignments ["_includes/team-grid.html"],
                                "_includes/team-grid.html assigns (or loops with) t, lang or p (see the rule in index.html): give the variable a prefix of its own"
   pass "the team grid include assigns no t, lang or p"
+  fail_list!(team_portrait_files_errors(site_dir), "the portraits in assets/team/ do not match _data/team.yml (see the list above)")
+  pass "assets/team/ holds exactly the portraits _data/team.yml names, in the repository and in the built site (no portrait of a person who left)"
 
-  # The grid on a phone and the size of a portrait, read from the compiled CSS: at least two
-  # columns before any media query (a single column is thousands of pixels of scroll),
-  # five from the tablet width up, and a portrait drawn at most as wide as the .team__photo
-  # cap, which no portrait may be narrower than, so that every tile is the same size and none
-  # is stretched.
+  # The grid on a phone and the size of a portrait, read from the compiled CSS: two columns
+  # before any media query (a single column is thousands of pixels of scroll), and from the
+  # tablet width up the founders row on three columns and the team row on four (the rows
+  # share one column width, so they read as one composition), and a portrait drawn at most
+  # as wide as the .team__photo cap, which no portrait may be narrower than, so that every
+  # tile is the same size and none is stretched.
   css_file = ctx.css
   css = Checks::Site.read(css_file)
   css.match?(/\.team\{[^}]*grid-template-columns:repeat\(2,/) ||
     fail!("the .team rule in #{css_file} must start with two columns (grid-template-columns:repeat(2,...)): one column on a phone is too long")
-  css.match?(/@media ?\(min-width: ?[0-9]+px\)\{\.team\{[^}]*grid-template-columns:repeat\(5,/) ||
-    fail!("#{css_file} has no media query that gives .team five columns at the wider widths")
+  css.match?(/\.team--founders\{[^}]*grid-template-columns:repeat\(3,/) &&
+    css.match?(/@media ?\(min-width: ?[0-9]+px\)\{[^@]*\.team--founders\{[^}]*grid-template-columns:repeat\(3,/) ||
+    fail!("#{css_file} has no media query that gives the founders row (.team--founders) three columns at the wider widths")
+  css.match?(/@media ?\(min-width: ?[0-9]+px\)\{\.team\{[^}]*grid-template-columns:repeat\(4,/) ||
+    fail!("#{css_file} has no media query that gives .team (the team row) four columns at the wider widths")
+  css.match?(/\.team--founders\{[^}]*grid-template-columns:repeat\(2,/) &&
+    fail!("#{css_file}: the founders row must not set its own phone columns, it keeps the two columns of .team")
   # The cap is the number in the CSS itself, so the guard follows a change of it: no portrait of
   # _data/team.yml may be narrower than the tile cap (it would be stretched and blur).
   tile_cap = css.scan(/\.team__photo[^{]*\{[^}]*width:min\(100%, ?([0-9]+)px\)/).flatten.first
   tile_cap || fail!("the .team__photo rule in #{css_file} must size a portrait width:min(100%,<n>px): the cap the portraits are checked against")
-  smallest = YAML.load_file("_data/team.yml")["members"].filter_map { |m| m["photo_w"] }.min
+  roster = YAML.load_file("_data/team.yml")
+  smallest = ((roster["founders"] || []) + (roster["members"] || [])).filter_map { |m| m["photo_w"] }.min
   (smallest.nil? || smallest >= tile_cap.to_i) ||
     fail!("a portrait of _data/team.yml is only #{smallest}px wide, below the #{tile_cap}px cap of .team__photo: it would be stretched")
-  pass "the team grid has two columns on a phone and five from the tablet width up, and a portrait is drawn at most #{tile_cap}px wide (the CSS cap; the smallest portrait is #{smallest || "none"}px)"
+  pass "the team grid has two columns on a phone, three (founders) and four (team) from the tablet width up, and a portrait is drawn at most #{tile_cap}px wide (the CSS cap; the smallest portrait is #{smallest || "none"}px)"
+end
+
+# The rows of a team grid inside `scope` (a built page, or the team section of the home):
+# the founders row (ul.team--founders) and the team row (ul.team--members), each listing
+# exactly the people of its list in _data/team.yml, in the order of the file, each once,
+# with the role (and badge) of the page's language, and nothing outside the two rows.
+# A list that is empty in the data has no row. Nothing here names anybody.
+def team_rows_errors(lang, scope, where)
+  errors = []
+  data = YAML.safe_load(File.read("_data/team.yml", encoding: "utf-8"))
+  seen = []
+  { "founders" => "Founders", "members" => "Team" }.each_key do |key|
+    list = data[key] || []
+    rows = scope.css("ul.team--#{key}")
+    if list.empty?
+      errors << "#{where} (#{lang}): the data has no #{key}, so the page must have no ul.team--#{key} (it has #{rows.size})" unless rows.empty?
+      next
+    end
+    unless rows.size == 1
+      errors << "#{where} (#{lang}): expected one ul.team--#{key} row, found #{rows.size}"
+      next
+    end
+    row = rows.first
+    label = data.dig("groups", key, lang).to_s
+    errors << "_data/team.yml: groups.#{key}.#{lang} (the accessible name of the row) is missing" if label.strip.empty?
+    errors << "#{where} (#{lang}): the #{key} row should be labelled #{label.inspect} (aria-label), it is #{row["aria-label"].inspect}" unless row["aria-label"].to_s == label
+    nodes = row.css("li.team__member")
+    names = nodes.map { |n| text_of(n.at_css(".team__name")) }
+    seen.concat(names)
+    errors << "#{where} (#{lang}): the #{key} row shows #{names.inspect}, _data/team.yml lists #{list.map { |m| m["name"] }.inspect} (same people, same order)" unless names == list.map { |m| m["name"] }
+    list.zip(nodes).each do |member, node|
+      next unless node
+
+      badge = node.at_css(".team__badge")
+      want = member.dig("badge", lang).to_s
+      errors << "#{where} (#{lang}): #{member["name"]}: the badge should be #{want.empty? ? "absent" : want.inspect}, it is #{badge ? text_of(badge).inspect : "absent"}" unless (badge ? text_of(badge) : "") == want
+    end
+  end
+  all = scope.css(".team__member").map { |n| text_of(n.at_css(".team__name")) }
+  errors << "#{where} (#{lang}): #{all.size} team tile(s) on the page, #{seen.size} in the two rows (a tile outside the rows)" unless all.size == seen.size
+  dup = seen.group_by(&:itself).select { |_, v| v.size > 1 }.keys
+  errors << "#{where} (#{lang}): shown more than once: #{dup.inspect}" unless dup.empty?
+  errors
+end
+
+# assets/team/ (source and built site) holds exactly the portraits _data/team.yml names.
+def team_portrait_files_errors(site_dir)
+  errors = []
+  data = YAML.safe_load(File.read("_data/team.yml", encoding: "utf-8"))
+  wanted = ((data["founders"] || []) + (data["members"] || [])).filter_map { |m| m["photo"] && File.basename(m["photo"]) }.sort
+  ["assets/team", File.join(site_dir, "assets/team")].each do |dir|
+    have = Dir.glob(File.join(dir, "*")).map { |f| File.basename(f) }.sort
+    errors << "#{dir}/ holds #{(have - wanted).inspect} that _data/team.yml does not use (remove the portrait of a person who left)" unless (have - wanted).empty?
+    errors << "#{dir}/ lacks #{(wanted - have).inspect} that _data/team.yml names" unless (wanted - have).empty?
+  end
+  errors
 end
 
 # team_grid_errors(lang, built page, root, :site | :fixture)
@@ -191,28 +259,32 @@ def team_grid_errors(lang, file, root, mode)
   if mode == :fixture
     canary = text_of(html.at_css("#canary"))
     errors << "#{lang}: canary: the page lost its own variables to the team include, t, lang and p should read \"keep keep keep\", found #{canary.inspect}" unless canary == "keep keep keep"
-    errors << "#{lang}: the fixture has 2 members, the grid shows #{members.size}" unless members.size == 2
-    first, second = members
-    if first
-      errors << "#{lang}: a member without a portrait should show the initials tile (.team__ph) reading AL" unless text_of(first.at_css(".team__ph")) == "AL"
-      errors << "#{lang}: a member without a portrait must not have an <img>" if first.at_css("img")
-      errors << "#{lang}: the role should be #{lang == "it" ? "Analista" : "Analyst"}" unless text_of(first.at_css(".team__role")) == (lang == "it" ? "Analista" : "Analyst")
-    end
-    if second
-      img = second.at_css("img")
+    rows = { "founders" => html.css("main ul.team--founders .team__member"), "members" => html.css("main ul.team--members .team__member") }
+    errors << "#{lang}: the fixture has 1 founder and 4 team members, the rows show #{rows["founders"].size} and #{rows["members"].size}" unless rows["founders"].size == 1 && rows["members"].size == 4
+    errors << "#{lang}: the fixture grid shows #{members.size} tile(s), 5 expected" unless members.size == 5
+    founder = rows["founders"].first
+    if founder
+      img = founder.at_css("img")
       errors << "#{lang}: a member with a portrait shows it as an <img> with alt text" unless img && !img["alt"].to_s.strip.empty?
-      errors << "#{lang}: no initials tile on a member that has a portrait" if second.at_css(".team__ph")
-      errors << "#{lang}: the badge should be #{lang == "it" ? "Ammiraglia" : "Admiral"}" unless text_of(second.at_css(".team__badge")) == (lang == "it" ? "Ammiraglia" : "Admiral")
+      errors << "#{lang}: no initials tile on a member that has a portrait" if founder.at_css(".team__ph")
+      errors << "#{lang}: the badge should be #{lang == "it" ? "Ammiraglia" : "Admiral"}" unless text_of(founder.at_css(".team__badge")) == (lang == "it" ? "Ammiraglia" : "Admiral")
       errors << "#{lang}: the fixture portrait (480 px) must carry style=\"max-width:480px\", it has #{img && img["style"].inspect}" unless img && img["style"].to_s.match?(/max-width:\s*480px/)
       msg = img && real_image.(img["src"]) and errors << "#{lang}: #{msg}"
     end
+    # Every team member of the fixture has no photo: four initials tiles in the second row.
+    initials = rows["members"].map { |m| text_of(m.at_css(".team__ph")) }
+    errors << "#{lang}: the four members without a portrait should show the initials AL, KJ, AT and MH in the team row, they show #{initials.inspect}" unless initials == %w[AL KJ AT MH]
+    errors << "#{lang}: a member without a portrait must not have an <img>" if rows["members"].any? { |m| m.at_css("img") }
+    first = rows["members"].first
+    errors << "#{lang}: the role should be #{lang == "it" ? "Analista" : "Analyst"}" if first && text_of(first.at_css(".team__role")) != (lang == "it" ? "Analista" : "Analyst")
+    errors << "#{lang}: the fixture rows should be labelled #{lang == "it" ? "Fondatori" : "Founders"} and Team" unless rows.keys.map { |k| html.at_css("main ul.team--#{k}")&.[]("aria-label") } == [lang == "it" ? "Fondatori" : "Founders", "Team"]
   else
-    data = team["members"]
-    errors << "#{lang}: the grid shows #{members.size} member(s), _data/team.yml has #{data.size}" unless members.size == data.size
+    # Two rows: the founders and the team (_data/team.yml: founders:, members:). The roster is
+    # DATA: the client adds or removes a person in the file and nothing here names anybody.
+    data = (team["founders"] || []) + (team["members"] || [])
     errors << "_data/team.yml has no member" if data.empty?
-    # The roster is DATA: the client adds or removes a person in _data/team.yml and nothing
-    # here names anybody. Every member needs a name, a role in both languages and either a
-    # real portrait with its pixel size or (no `photo`) the initials tile.
+    errors.concat team_rows_errors(lang, html.at_css("main"), "the About hub")
+    members = html.css("main .team--founders .team__member").to_a + html.css("main .team--members .team__member").to_a
     data.each_with_index do |member, i|
       who = member["name"].to_s.strip.empty? ? "member #{i + 1}" : member["name"]
       errors << "_data/team.yml: #{who} has no name" if member["name"].to_s.strip.empty?
@@ -241,6 +313,10 @@ def team_grid_errors(lang, file, root, mode)
     end
     # The portraits are the team's own and stay in the language-independent assets folder.
     errors << "#{lang}: the team portraits are not under /assets/team/" if members.any? { |m| m.at_css("img") && !m.at_css("img")["src"].to_s.start_with?("/assets/team/") }
+    # No portrait of a person who is no longer in the data: every portrait the page references
+    # is a `photo` of the data, and the folder holds no file the data does not use.
+    shown = members.filter_map { |m| m.at_css("img")&.[]("src") }
+    errors << "#{lang}: the team grid shows portraits the data does not name: #{(shown - data.filter_map { |m| m["photo"] }).inspect}" unless (shown - data.filter_map { |m| m["photo"] }).empty?
   end
   errors
 end

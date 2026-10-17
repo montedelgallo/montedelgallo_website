@@ -144,7 +144,7 @@ home:
   team: # the grid under it is the team (_data/team.yml), not copy
     eyebrow: "Our team"
     title: "The people behind the code."
-    lede: "A compact multidisciplinary team: software engineering, design, data, cloud, WordPress and business development working close to the client."
+    lede: "A compact multidisciplinary team: software engineering, web design, WordPress, business development and finance working close to the client."
     more: "Meet the team"
     more_path: "/about/#team" # the About hub's team section, written without the /it/ prefix (like nav.yml)
   process: # the steps are numbered 01, 02, ... by the page

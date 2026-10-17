@@ -404,23 +404,37 @@
 // ---------- the team ----------
 // A square portrait per member. Where there is no portrait the tile carries the
 // initials on the blueprint grid of the hero.
-// Two columns on a phone (one column is ~4,500px of scroll for ten members), five from
-// the tablet width up: ten members make two full rows. Every tile is drawn at most 140px
-// wide, the width of the smallest real portrait (Giovanni's and Davide's), so no portrait
-// is stretched and all the tiles line up; the <img> also carries max-width:<its own pixel
-// width> (_includes/team-grid.html). script/check-build.sh asserts all of it.
+// Two rows: the founders (.team--founders) and the team (.team--members).
+// Two columns on a phone for both rows (one column is thousands of pixels of scroll). From
+// the tablet width up the team row has four columns and the founders row three, drawn on
+// the SAME column width: the founders row is as wide as three columns of the team row
+// (calc(75% - gap/4)), so the two rows read as one composition and a fourth team member
+// fills the row without moving anyone. Every tile is drawn at most 140px wide, the width of
+// the smallest real portrait (Giovanni's), so no portrait is stretched and all the tiles
+// line up; the <img> also carries max-width:<its own pixel width>
+// (_includes/team-grid.html). script/check-build.sh asserts all of it.
 .team{
+  --team-gap:clamp(14px,2.4vw,28px);
   display:grid;
   grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:clamp(22px,3vw,32px) clamp(14px,2.4vw,28px);
+  gap:clamp(22px,3vw,32px) var(--team-gap);
   list-style:none;
   margin:clamp(28px,4vw,44px) 0 0;
   padding:0;
 }
 
+.team + .team{
+  margin-top:clamp(22px,3vw,32px);
+}
+
 @media (min-width:760px){
   .team{
-    grid-template-columns:repeat(5,minmax(0,1fr));
+    grid-template-columns:repeat(4,minmax(0,1fr));
+  }
+
+  .team--founders{
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    width:calc(75% - var(--team-gap) / 4);
   }
 }
 

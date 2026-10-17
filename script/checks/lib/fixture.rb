@@ -148,29 +148,37 @@ module Checks
         </div>
         <p id="canary">{{ t }} {{ lang }} {{ p }}</p>
       PAGE
-      # The same canary for the team grid, and the proof of its placeholder. The page
-      # renders the grid with a list of members of its own (the first has no portrait,
-      # so it must get the initials tile; the second has one). The real team all has
-      # portraits, so without this the placeholder would never be exercised.
+      # The same canary for the team grid, and the proof of its placeholder and of the two
+      # rows. The page renders the grid with lists of its own: one founder with a portrait
+      # and a badge, and four team members WITHOUT a portrait (the real team all has
+      # portraits, so without this the initials tile would never be exercised; four is the
+      # width of the team row, so the fixture is also the "one more entry" case).
       "team-grid-test.html" => <<~'PAGE',
         ---
         layout: default
         title: Team grid
         permalink: /team-grid-test/
-        fx_members:
-          - name: "Ada Lovelace"
-            role: { en: "Analyst", it: "Analista" }
+        fx_founders:
           - name: "Grace"
             role: { en: "Compiler engineer", it: "Ingegnera di compilatori" }
             badge: { en: "Admiral", it: "Ammiraglia" }
             photo: /assets/team/giuseppe.webp
             photo_w: 480
             photo_h: 480
+        fx_members:
+          - name: "Ada Lovelace"
+            role: { en: "Analyst", it: "Analista" }
+          - name: "Katherine Johnson"
+            role: { en: "Mathematician", it: "Matematica" }
+          - name: "Alan Turing"
+            role: { en: "Cryptanalyst", it: "Crittoanalista" }
+          - name: "Margaret Hamilton"
+            role: { en: "Software lead", it: "Responsabile software" }
         ---
         {%- assign t = "keep" -%}
         {%- assign lang = "keep" -%}
         {%- assign p = "keep" -%}
-        {% include team-grid.html members=page.fx_members %}
+        {% include team-grid.html founders=page.fx_founders members=page.fx_members %}
         <p id="canary">{{ t }} {{ lang }} {{ p }}</p>
       PAGE
       # A project with `featured: false`, as an English and an Italian document tied by

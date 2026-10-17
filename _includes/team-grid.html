@@ -1,18 +1,23 @@
 {%- comment -%}
   The team grid: one tile per member, a square portrait, an optional badge
-  (Founder, Co-Founder), the name and the role. Used by the About hub (about.html,
-  it/chi-siamo.html).
+  (Founder, Co-Founder), the name and the role, in two rows: the founders
+  (ul.team--founders) and the team (ul.team--members). Used by the home (the team
+  section) and the About hub (about.html, it/chi-siamo.html).
 
     {% raw %}{% include team-grid.html %}{% endraw %}
 
-  The members are _data/team.yml (members:), in the order of the file, each with a
-  role (and badge) in both languages: the include prints the language of the page
-  (its `lang`, or the language being built for a single-source page). A member with a
+  The people are _data/team.yml: founders: (row 1) and members: (row 2), in the order of
+  the file, each with a role (and badge) in both languages: the include prints the
+  language of the page (its `lang`, or the language being built for a single-source
+  page). Each row is a list with an accessible name (groups: in the data, per
+  language); a list with no entry prints no row. A member with a
   `photo` shows it as an <img> with alt text ("Portrait of <name>", see portrait: in
   the data) and its size, so the page does not jump when it loads; a member without
   one gets a tile with their initials, drawn in the blueprint style of the site (no
-  stock picture, no generated face). Optional parameter `members`: a list of the
-  same shape, instead of the data file (the build check uses it to prove the tile).
+  stock picture, no generated face). Optional parameters `founders` and `members`:
+  lists of the same shape, instead of the data file (the build check uses them to prove
+  the tile and the two rows); when `members` is given, the founders row is `founders`
+  alone (none, if it is not given).
 
   A portrait is never shown wider than its own pixel width: the <img> carries
   style="max-width:<photo_w>px" (the stylesheet draws every tile at most 140px, the
@@ -28,9 +33,19 @@
   rule in index.html, and the canary in script/check-build.sh).
 {%- endcomment -%}
 {%- assign tg_lang = page.lang | default: site.active_lang -%}
-{%- assign tg_members = include.members | default: site.data.team.members -%}
-<ul class="team">
-  {%- for tg_member in tg_members %}
+{%- if include.members -%}
+  {%- assign tg_founders = include.founders -%}
+  {%- assign tg_team = include.members -%}
+{%- else -%}
+  {%- assign tg_founders = site.data.team.founders -%}
+  {%- assign tg_team = site.data.team.members -%}
+{%- endif -%}
+{%- assign tg_rows = "founders,members" | split: "," -%}
+{%- for tg_row in tg_rows %}
+{%- if tg_row == "founders" %}{%- assign tg_list = tg_founders -%}{%- else %}{%- assign tg_list = tg_team -%}{%- endif %}
+{%- if tg_list.size > 0 %}
+<ul class="team team--{{ tg_row }}" role="list" aria-label="{{ site.data.team.groups[tg_row][tg_lang] | escape }}">
+  {%- for tg_member in tg_list %}
   <li class="team__member">
     {%- if tg_member.photo %}
     <img class="team__photo" src="{{ tg_member.photo | relative_url }}" alt="{{ site.data.team.portrait[tg_lang] | escape }} {{ tg_member.name | escape }}" width="{{ tg_member.photo_w }}" height="{{ tg_member.photo_h }}" style="max-width:{{ tg_member.photo_w }}px" loading="lazy" decoding="async">
@@ -48,3 +63,5 @@
   </li>
   {%- endfor %}
 </ul>
+{%- endif %}
+{%- endfor %}

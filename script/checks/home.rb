@@ -190,17 +190,16 @@ def home_page_errors(lang, file)
   errors
 end
 
-# The Team section: the shared team grid (every member of _data/team.yml, each with a
+# The Team section: the shared team grid (the two rows of _data/team.yml, founders and team, each with a
 # portrait with alt text or the initials tile) and a link to the About hub's team
 # section in the same language.
 def home_team_errors(lang, main, norm)
   errors = []
-  team_data = YAML.load_file("_data/team.yml")["members"]
   team = main.at_css("section#team")
   return errors unless team
 
   members = team.css(".team__member")
-  errors << "the Team section shows #{members.size} member(s), _data/team.yml has #{team_data.size}" unless members.size == team_data.size
+  errors.concat team_rows_errors(lang, team, "the home's Team section")
   members.each_with_index do |node, index|
     name = norm.(node.at_css(".team__name")&.text)
     img = node.at_css("img")
