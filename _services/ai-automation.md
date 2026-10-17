@@ -4,7 +4,7 @@
 # has no page of its own for AI & automation. For Giovanni to review.
 title: "AI & automation"
 meta_title: "AI and Process Automation for Business | Monte del Gallo"
-description: "Bring AI into a real business: LLM workflows, document processing, CRM and back-office automation, and copilots that show the source of every answer."
+description: "Bring AI into a real business: LLM workflows, document processing, CRM and back-office automation, and copilots that cite their sources."
 lang: en
 page_id: service-ai-automation
 permalink: /services/ai-automation/

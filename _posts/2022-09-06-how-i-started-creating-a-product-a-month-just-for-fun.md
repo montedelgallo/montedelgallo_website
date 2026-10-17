@@ -1,7 +1,7 @@
 ---
 title: "How I Started Creating a Product a Month Just For Fun"
 meta_title: "Creating a Product a Month, Just for Fun | Monte del Gallo"
-description: "Building a tool every month for Robin Good's Patreon subscribers: what four projects did for my React skills, starting with a Social Media Formatter."
+description: "A tool a month for Robin Good's Patreon subscribers: four small products, starting with a Social Media Formatter, and what they taught the author about React."
 lang: en
 page_id: post-how-i-started-creating-a-product-a-month-just-for-fun
 permalink: /blog/how-i-started-creating-a-product-a-month-just-for-fun/

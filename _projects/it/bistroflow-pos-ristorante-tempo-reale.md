@@ -4,7 +4,7 @@
 # paragrafo introduttivo). Anche settore, metrica e testo alternativo della copertina sono stati scritti qui.
 title: "BistroFlow – POS Ristorante in Tempo Reale"
 meta_title: "BistroFlow: POS ristorante in tempo reale | Monte del Gallo"
-description: "BistroFlow è un POS per ristoranti: i camerieri ordinano dal telefono, la cucina vede i ticket live sui tablet, con divisione del conto e zero refresh."
+description: "BistroFlow è un POS per ristoranti: ordini dal telefono dei camerieri, ticket live per la cucina, conto diviso e aggiornamenti senza ricaricare la pagina."
 lang: it
 page_id: project-bistroflow
 permalink: /progetti/bistroflow-pos-ristorante-tempo-reale/

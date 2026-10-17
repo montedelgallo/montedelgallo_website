@@ -12,6 +12,8 @@ require "yaml"
 #   - description: SEO_DESC_MIN to SEO_DESC_MAX characters, unique within its language, a
 #     whole sentence (ends with . ! ? or a closing bracket: never an ellipsis, never cut
 #     mid-word);
+#   - neither says "software house": the company positions itself as a boutique del software / software
+#     boutique, not a software house (the About h1 says so), and a search result must not contradict it;
 #   - neither is the site default of its language (_data/site_meta.yml), except on the two
 #     homes, which ARE the defaults;
 #   - a page and its translation never share a title or a description (a copy of the other
@@ -81,6 +83,7 @@ def seo_meta_page_errors(entry, defaults, homes, errors)
     errors << "#{at}: no <title>"
   else
     errors << "#{at}: <title> is #{title.size} characters (at most #{SEO_TITLE_MAX}): #{title.inspect}" if title.size > SEO_TITLE_MAX
+    errors << "#{at}: <title> says \"software house\", which the site rejects as a label: #{title.inspect}" if title.match?(/software house/i)
     errors << "#{at}: <title> has stray spaces or line breaks: #{title.inspect}" if title != title.gsub(/\s+/, " ").strip
     errors << "#{at}: <title> is the site default #{title.inspect}: this page needs a title of its own" if default && !home && title == default["title"]
     errors << "#{at}: the home's <title> should be the site default #{default["title"].inspect}, it is #{title.inspect}" if default && home && title != default["title"]
@@ -92,6 +95,7 @@ def seo_meta_page_errors(entry, defaults, homes, errors)
     errors << "#{at}: meta description is #{description.size} characters (#{SEO_DESC_MIN} to #{SEO_DESC_MAX}): #{description.inspect}" unless (SEO_DESC_MIN..SEO_DESC_MAX).cover?(description.size)
     errors << "#{at}: meta description has stray spaces or line breaks: #{description.inspect}" if description != description.gsub(/\s+/, " ").strip
     errors << "#{at}: meta description ends with an ellipsis: #{description.inspect}" if description.end_with?("…", "...")
+    errors << "#{at}: meta description says \"software house\", which the site rejects as a label: #{description.inspect}" if description.match?(/software house/i)
     errors << "#{at}: meta description does not end like a sentence (. ! ? or a closing bracket), it may be cut mid-word: #{description.inspect}" unless description.match?(/[.!?)”»]\z/)
     errors << "#{at}: meta description is the site default: this page needs a description of its own" if default && !home && description == default["description"]
     errors << "#{at}: the home's meta description should be the site default #{default["description"].inspect}, it is #{description.inspect}" if default && home && description != default["description"]
