@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Serve a built site locally the way production does: the headers of its /_headers file are
 applied to every response (Cloudflare Pages semantics: every rule that matches a path adds its
-headers, a header set by two rules is joined with ", "), and a missing URL answers with the 404
-page of its language.
+headers, a header set by two rules is joined with ", "), the rules of its /_redirects file
+(`/from /to 301`, exact paths, the static rules of Cloudflare Pages) answer with their redirect, and a
+missing URL answers with the 404 page of its language.
 
   python3 script/serve-built-site.py .check-site 8124
 
@@ -31,10 +32,29 @@ with open(os.path.join(root, "_headers"), encoding="utf-8") as handle:
             name, value = line.strip().split(":", 1)
             current["headers"].append((name.strip(), value.strip()))
 
+redirects = {}
+redirects_file = os.path.join(root, "_redirects")
+if os.path.isfile(redirects_file):
+    with open(redirects_file, encoding="utf-8") as handle:
+        for line in handle:
+            parts = line.split()
+            if len(parts) == 3 and parts[0].startswith("/") and parts[0] not in redirects:
+                redirects[parts[0]] = (parts[1], int(parts[2]))
+
 
 class Handler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=root, **kwargs)
+
+    def send_head(self):
+        target = redirects.get(self.path.split("?")[0].split("#")[0])
+        if target:
+            self.send_response(target[1])
+            self.send_header("Location", target[0])
+            self.send_header("Content-Length", "0")
+            self.end_headers()
+            return None
+        return super().send_head()
 
     def end_headers(self):
         path = self.path.split("?")[0]

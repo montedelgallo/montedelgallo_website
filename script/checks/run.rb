@@ -79,6 +79,7 @@ AREAS = %w[
   analytics
   perf
   csp
+  deploy
 ].freeze
 
 AREAS.each { |area| require_relative area }

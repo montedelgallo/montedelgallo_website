@@ -41,7 +41,8 @@ def check_csp(ctx)
   pass "nothing of deploy/ is published: no /deploy/ and no /it/deploy/ in the built site (deploy/ is excluded in _config.yml)"
 
   file = csp_headers_file(site_dir)
-  rules = csp_rules(file)
+  host_rules, rules = csp_rules(file).partition { |path, _| path.start_with?("https://") }.map(&:to_h)
+  host_rules.each_value { |headers| fail!("#{file}: a host rule may only set X-Robots-Tag, it sets #{headers.keys.inspect}") unless headers.keys == ["X-Robots-Tag"] }
   all_rules = rules.fetch("/*") { fail!("#{file} has no /* rule: the security headers must apply to every URL") }
   policy_text = all_rules["Content-Security-Policy"] || fail!("#{file}: the /* rule has no Content-Security-Policy")
   policy = csp_policy(policy_text)
@@ -93,7 +94,7 @@ def csp_rules(file)
     next if line.strip.empty? || line.start_with?("#")
 
     if line.match?(/\A\S/)
-      fail!("#{file}: a path rule must start with / : #{line.inspect}") unless line.start_with?("/")
+      fail!("#{file}: a rule must start with / (a path) or https:// (a host, the *.pages.dev noindex rules) : #{line.inspect}") unless line.start_with?("/", "https://")
       fail!("#{file}: the path #{line.inspect} appears twice") if rules.key?(line)
       current = rules[line] = {}
     else

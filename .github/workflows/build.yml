@@ -40,3 +40,112 @@ jobs:
 
       - name: Lighthouse CI (desktop)
         run: npx --yes @lhci/cli@0.15.1 autorun --config=.lighthouserc.desktop.json
+
+      # The reports of both runs, also (especially) when a score is below its threshold.
+      - name: Upload the Lighthouse reports
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: lighthouse-reports
+          path: .lighthouseci/
+          include-hidden-files: true # the folder itself starts with a dot
+          if-no-files-found: ignore
+          retention-days: 14
+
+      # Everything above passed: keep the production build for the deploy job. The deploy
+      # uploads this exact folder (the site needs its Jekyll plugins, so Cloudflare Pages must
+      # never build it): the artifact carries /_headers and /_redirects, which Pages reads.
+      - name: Upload the built site
+        uses: actions/upload-artifact@v7
+        with:
+          name: site
+          path: _site
+          if-no-files-found: error
+          retention-days: 7
+
+  # Deploys the site that the build job built and checked, to Cloudflare Pages (Direct Upload).
+  # Setup, secrets and token scope: deploy/cloudflare/README.md. Go-live: tasks/launch-runbook.md.
+  #
+  #   push to main      -> production (montedelgallo.com once the domain is moved to Pages)
+  #   push to any other -> preview deployment at https://<branch>.<project>.pages.dev
+  #                        (Cloudflare sends X-Robots-Tag: noindex on every preview itself)
+  #
+  # Pull requests are not deployed: the push of their branch already is, and a pull request from a
+  # fork has no access to the secrets.
+  deploy:
+    name: Deploy to Cloudflare Pages
+    needs: build
+    if: github.event_name == 'push' && github.ref_type == 'branch'
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.ref == 'refs/heads/main' && 'production' || 'preview' }}
+      url: ${{ steps.deploy.outputs.deployment-url }}
+    # One deploy at a time per branch. A newer push to a branch replaces its queued/running
+    # preview; production is never cancelled halfway.
+    concurrency:
+      group: cloudflare-pages-${{ github.ref }}
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+    permissions:
+      contents: read
+      deployments: write # the deployment shown on the GitHub repository page (gitHubToken below)
+    env:
+      # Overridable with a repository variable of the same name.
+      PAGES_PROJECT: ${{ vars.CLOUDFLARE_PAGES_PROJECT || 'montedelgallo' }}
+    steps:
+      - name: Download the built site
+        uses: actions/download-artifact@v8
+        with:
+          name: site
+          path: _site
+
+      # The branch becomes part of a command line and of the preview host name: only the
+      # characters of a normal branch name get through.
+      - name: Resolve the deployment branch
+        id: target
+        env:
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          if [[ ! "$BRANCH" =~ ^[A-Za-z0-9._/-]+$ ]]; then
+            echo "::error::Branch name '$BRANCH' has characters that are not allowed in a deployment branch"
+            exit 1
+          fi
+          echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
+
+      # --branch=main is the production deployment of the Pages project (its production branch
+      # is main, see deploy/cloudflare/README.md); any other branch is a preview.
+      - name: Deploy to Cloudflare Pages
+        id: deploy
+        uses: cloudflare/wrangler-action@953926a2e2182532811c01a25e53647d93bf07c0 # v4.1.3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          wranglerVersion: "4.151.1"
+          command: pages deploy _site --project-name=${{ env.PAGES_PROJECT }} --branch=${{ steps.target.outputs.branch }} --commit-hash=${{ github.sha }}
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+
+      # The deployed URL must answer with the security headers, and every *.pages.dev URL
+      # (previews, the production alias, the per-deployment URLs) must say noindex: the custom
+      # domain is the only address that may be indexed. Pages needs a few seconds to serve a new
+      # deployment, hence the retries.
+      - name: Verify the headers of the deployment
+        env:
+          DEPLOYMENT_URL: ${{ steps.deploy.outputs.deployment-url }}
+          ALIAS_URL: ${{ steps.deploy.outputs.pages-deployment-alias-url }}
+        run: |
+          set -euo pipefail
+          verify() {
+            local url="$1" headers
+            headers="$(curl --silent --show-error --head --location --retry 6 --retry-delay 5 --retry-all-errors --max-time 30 "$url")"
+            grep -qi '^content-security-policy:' <<<"$headers" || { echo "::error::$url sends no Content-Security-Policy"; return 1; }
+            grep -qi '^x-robots-tag:.*noindex' <<<"$headers" || { echo "::error::$url does not send X-Robots-Tag: noindex"; return 1; }
+            echo "OK $url: Content-Security-Policy and X-Robots-Tag: noindex"
+          }
+          [[ -n "$DEPLOYMENT_URL" ]] || { echo "::error::wrangler returned no deployment URL"; exit 1; }
+          verify "$DEPLOYMENT_URL"
+          if [[ -n "$ALIAS_URL" ]]; then verify "$ALIAS_URL"; fi
+          {
+            echo "### Cloudflare Pages"
+            echo "- Environment: \`${{ github.ref == 'refs/heads/main' && 'production' || 'preview' }}\` (branch \`${{ steps.target.outputs.branch }}\`)"
+            echo "- Deployment: $DEPLOYMENT_URL"
+            if [[ -n "$ALIAS_URL" ]]; then echo "- Branch alias: $ALIAS_URL"; fi
+          } >> "$GITHUB_STEP_SUMMARY"
