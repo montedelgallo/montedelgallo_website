@@ -25,10 +25,10 @@ jobs:
           ruby-version: "3.3" # jekyll-polyglot requires Ruby >= 3.2
           bundler-cache: true # runs `bundle install` and caches the gems
 
-      - name: Build site
-        run: bundle exec jekyll build
-
-      - name: Check bilingual build output
+      # Builds the production site into .check-site (the one build folder, see
+      # script/checks/lib/site.rb), asserts it, and leaves it in place: it is what Lighthouse
+      # audits and what the deploy uploads. There is deliberately no other build step.
+      - name: Build and check the site (EN + IT)
         run: bash script/check-build.sh
 
       # The built site (.check-site, from the step above) is served by script/serve-built-site.py with
@@ -52,14 +52,16 @@ jobs:
           if-no-files-found: ignore
           retention-days: 14
 
-      # Everything above passed: keep the production build for the deploy job. The deploy
-      # uploads this exact folder (the site needs its Jekyll plugins, so Cloudflare Pages must
-      # never build it): the artifact carries /_headers and /_redirects, which Pages reads.
+      # Everything above passed: keep the checked production build for the deploy job. The deploy
+      # uploads this exact folder, the one the checks and Lighthouse ran on (the site needs its
+      # Jekyll plugins, so Cloudflare Pages must never build it): the artifact carries /_headers
+      # and /_redirects, which Pages reads.
       - name: Upload the built site
         uses: actions/upload-artifact@v7
         with:
           name: site
-          path: _site
+          path: .check-site
+          include-hidden-files: true # the folder itself starts with a dot
           if-no-files-found: error
           retention-days: 7
 
@@ -96,7 +98,7 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: site
-          path: _site
+          path: .check-site
 
       # The branch becomes part of a command line and of the preview host name: only the
       # characters of a normal branch name get through.
@@ -120,7 +122,7 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           wranglerVersion: "4.151.1"
-          command: pages deploy _site --project-name=${{ env.PAGES_PROJECT }} --branch=${{ steps.target.outputs.branch }} --commit-hash=${{ github.sha }}
+          command: pages deploy .check-site --project-name=${{ env.PAGES_PROJECT }} --branch=${{ steps.target.outputs.branch }} --commit-hash=${{ github.sha }}
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
 
       # The deployed URL must answer with the security headers, and every *.pages.dev URL
@@ -135,7 +137,7 @@ jobs:
           set -euo pipefail
           verify() {
             local url="$1" headers
-            headers="$(curl --silent --show-error --head --location --retry 6 --retry-delay 5 --retry-all-errors --max-time 30 "$url")"
+            headers="$(curl --silent --show-error --fail --head --location --retry 6 --retry-delay 5 --retry-all-errors --max-time 30 "$url")"
             grep -qi '^content-security-policy:' <<<"$headers" || { echo "::error::$url sends no Content-Security-Policy"; return 1; }
             grep -qi '^x-robots-tag:.*noindex' <<<"$headers" || { echo "::error::$url does not send X-Robots-Tag: noindex"; return 1; }
             echo "OK $url: Content-Security-Policy and X-Robots-Tag: noindex"

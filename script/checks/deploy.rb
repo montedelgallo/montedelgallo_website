@@ -10,9 +10,10 @@ require "yaml"
 # The deploy pipeline (Cloudflare Pages, Direct Upload from GitHub Actions) and the launch kit.
 #
 #   - .github/workflows/build.yml: the `build` job builds, runs script/check-build.sh and both
-#     Lighthouse runs, and only then uploads the production `_site` as an artifact; the `deploy`
+#     Lighthouse runs, and only then uploads the production build (.check-site, the folder that
+#     was checked: there is no second build) as an artifact; the `deploy`
 #     job `needs: build`, downloads that artifact and uploads it with the official wrangler-action
-#     (`pages deploy _site`). Production = the branch `main` only (environment, --branch from the
+#     (`pages deploy .check-site`). Production = the branch `main` only (environment, --branch from the
 #     ref, never hard-coded); every other branch is a preview. One deploy at a time per ref
 #     (`concurrency`), least-privilege `permissions`, and a post-deploy step that asserts the
 #     headers of the deployed URL (CSP everywhere, noindex on *.pages.dev).
@@ -27,6 +28,8 @@ require "yaml"
 #     _headers/_redirects (script/serve-built-site.py) and FAILS on a wrong redirect, on a
 #     missing page and on a site that does not answer.
 
+# What CI deploys is the folder the checks ran on: Checks::SITE_DIR, never a second build.
+DEPLOY_SITE_DIR = Checks::SITE_DIR
 DEPLOY_WORKFLOW = ".github/workflows/build.yml"
 DEPLOY_README = "deploy/cloudflare/README.md"
 DEPLOY_RUNBOOK = "tasks/launch-runbook.md"
@@ -58,7 +61,7 @@ def check_deploy(ctx)
 
   workflow = YAML.safe_load(Checks::Site.read(DEPLOY_WORKFLOW)) || {}
   fail_list!(deploy_workflow_errors(workflow), "#{DEPLOY_WORKFLOW}: the deploy job is wrong (see the list above)")
-  pass "#{DEPLOY_WORKFLOW}: `deploy` needs `build` (which checks, runs Lighthouse, then uploads the production _site), pushes only, production = main only, one deploy per ref, least-privilege permissions, headers verified after the deploy"
+  pass "#{DEPLOY_WORKFLOW}: `deploy` needs `build` (which checks, runs Lighthouse, then uploads the production .check-site), pushes only, production = main only, one deploy per ref, least-privilege permissions, headers verified after the deploy"
 
   fail_list!(deploy_lighthouse_errors, "the Lighthouse assertions are optimistic (see the list above)")
   pass "both Lighthouse configs assert the median run (a score below the threshold in most runs fails, not only in all of them)"
@@ -97,23 +100,28 @@ def deploy_workflow_errors(workflow)
   index = ->(&matcher) { steps.index { |s| matcher.call(s) } }
   check_at = index.call { |s| s["run"].to_s.include?("script/check-build.sh") }
   lhci_at = steps.each_index.select { |i| steps[i]["run"].to_s.include?("autorun") }
-  upload_at = index.call { |s| s["uses"].to_s.start_with?("actions/upload-artifact@") && s.dig("with", "path").to_s.strip == "_site" }
+  upload_at = index.call { |s| s["uses"].to_s.start_with?("actions/upload-artifact@") && s.dig("with", "path").to_s.strip == DEPLOY_SITE_DIR }
   if check_at.nil? || lhci_at.size < 2 || upload_at.nil?
-    errors << "the `build` job must run script/check-build.sh, both Lighthouse runs (autorun) and an actions/upload-artifact step for `_site`"
+    errors << "the `build` job must run script/check-build.sh, both Lighthouse runs (autorun) and an actions/upload-artifact step for `#{DEPLOY_SITE_DIR}`"
   else
-    errors << "the `_site` artifact must be uploaded AFTER the check and both Lighthouse runs (a failed gate must leave nothing to deploy)" unless upload_at > check_at && upload_at > lhci_at.max
+    errors << "the `#{DEPLOY_SITE_DIR}` artifact must be uploaded AFTER the check and both Lighthouse runs (a failed gate must leave nothing to deploy)" unless upload_at > check_at && upload_at > lhci_at.max
     upload = steps[upload_at]["with"] || {}
-    errors << "the `_site` upload must not run `if: always()` (a failed gate must leave nothing to deploy)" if steps[upload_at]["if"]
+    errors << "the `#{DEPLOY_SITE_DIR}` upload must not run `if: always()` (a failed gate must leave nothing to deploy)" if steps[upload_at]["if"]
     download = (deploy["steps"] || []).find { |s| s["uses"].to_s.start_with?("actions/download-artifact@") }
     if download.nil?
       errors << "`deploy` must download the artifact with actions/download-artifact"
     else
       errors << "`deploy` downloads #{download.dig("with", "name").inspect}, `build` uploads #{upload["name"].inspect}" unless download.dig("with", "name") == upload["name"]
-      errors << "`deploy` must download the artifact into `_site`" unless download.dig("with", "path").to_s.strip == "_site"
+      errors << "`deploy` must download the artifact into `#{DEPLOY_SITE_DIR}`" unless download.dig("with", "path").to_s.strip == DEPLOY_SITE_DIR
     end
   end
   reports = steps.find { |s| s["uses"].to_s.start_with?("actions/upload-artifact@") && s.dig("with", "path").to_s.include?(".lighthouseci") }
   errors << "the build job must upload .lighthouseci/ with `if: always()` (a failed run needs its reports)" unless reports && reports["if"].to_s.include?("always()")
+  rebuilt = steps.select { |st| st["run"].to_s.match?(/jekyll build/) }
+  errors << "the build job must not build the site itself (script/check-build.sh is the only build; what is deployed is what was checked), found #{rebuilt.map { |st| st["name"] }.inspect}" unless rebuilt.empty?
+  errors << "the artifact upload of #{DEPLOY_SITE_DIR} needs include-hidden-files: true (the folder starts with a dot, or the upload is empty)" if upload_at && steps[upload_at].dig("with", "include-hidden-files") != true
+  deploy_curl = (deploy["steps"] || []).map { |st| st["run"].to_s }.join("\n").scan(/curl[^\n]*/)
+  errors << "every curl of the deploy job needs --fail (so --retry-all-errors retries a 404/5xx): #{deploy_curl.reject { |c| c.include?("--fail") }.inspect}" unless deploy_curl.all? { |c| c.include?("--fail") }
   errors << "the build job must build with JEKYLL_ENV=production (the artifact IS the production site)" unless build.dig("env", "JEKYLL_ENV") == "production"
 
   condition = deploy["if"].to_s
@@ -143,7 +151,7 @@ def deploy_workflow_errors(workflow)
   else
     with = action["with"] || {}
     command = with["command"].to_s
-    errors << "the deploy command must be `pages deploy _site --project-name=... --branch=...`, it is #{command.inspect}" unless command.match?(/\Apages deploy _site\b/) && command.include?("--project-name=") && command.include?("--branch=")
+    errors << "the deploy command must be `pages deploy #{DEPLOY_SITE_DIR} --project-name=... --branch=...`, it is #{command.inspect}" unless command.match?(/\Apages deploy #{Regexp.escape(DEPLOY_SITE_DIR)}\b/) && command.include?("--project-name=") && command.include?("--branch=")
     errors << "--branch must come from the ref (so `main` is production and the rest are previews), never be hard-coded: #{command.inspect}" if command.match?(/--branch=(main|master|production)\b/) || !command.match?(/--branch=\S*(steps\.|github\.|\$)/)
     errors << "apiToken must be secrets.CLOUDFLARE_API_TOKEN" unless with["apiToken"].to_s.include?("secrets.CLOUDFLARE_API_TOKEN")
     errors << "accountId must be secrets.CLOUDFLARE_ACCOUNT_ID" unless with["accountId"].to_s.include?("secrets.CLOUDFLARE_ACCOUNT_ID")

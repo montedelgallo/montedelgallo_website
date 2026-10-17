@@ -2,14 +2,15 @@
 
 The site is **built by GitHub Actions** and uploaded to Cloudflare Pages as a **Direct Upload**.
 Pages never builds it: the site needs Ruby, the Jekyll plugins and jekyll-polyglot, which Pages'
-own build image does not run. The folder that is uploaded is exactly the `_site` that the `build`
-job has just built (`JEKYLL_ENV=production`) and checked (`script/check-build.sh`, Lighthouse CI).
+own build image does not run. The folder that is uploaded is exactly the `.check-site` that the `build`
+job built (`JEKYLL_ENV=production`, by `script/check-build.sh`, the only build step of the job) and then
+checked and audited in place (the assertions, html-proofer, Lighthouse CI). Nothing is rebuilt in between.
 
 ```
-push ──► build job: jekyll build, check-build.sh, Lighthouse (mobile + desktop), upload _site
+push ──► build job: check-build.sh (builds .check-site and checks it), Lighthouse (mobile + desktop), upload .check-site
                       │  all green
                       ▼
-         deploy job: download _site ──► wrangler pages deploy _site --project-name=… --branch=<branch>
+         deploy job: download .check-site ──► wrangler pages deploy .check-site --project-name=… --branch=<branch>
                       │                                      │
                       │                    main ─────────────┴──► production (montedelgallo.com)
                       │                    any other branch ─────► preview   (<branch>.<project>.pages.dev)
@@ -18,7 +19,7 @@ push ──► build job: jekyll build, check-build.sh, Lighthouse (mobile + des
 ```
 
 `/_headers` (CSP, security headers, cache lifetimes) and `/_redirects` (the 301 map of the old
-WordPress URLs) are part of `_site`, so Pages applies them without any dashboard setting. This folder
+WordPress URLs) are part of `.check-site`, so Pages applies them without any dashboard setting. This folder
 is not published (`deploy/` is in `exclude:` of `_config.yml`); the nginx fallback is in `deploy/nginx/`.
 
 ## 1. Create the Pages project (once)
