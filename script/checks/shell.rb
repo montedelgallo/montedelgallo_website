@@ -90,6 +90,13 @@ def check_shell(ctx)
     require_match home, /rel="stylesheet" href="\/assets\/css\/main\.css\?v=\d+"/,
                    "the stylesheet link must stay at /assets/css/main.css, with the ?v=<build time> cache-buster"
   end
+  # One stamp per build on every page, in both languages (_plugins/asset_version.rb): a per-language
+  # stamp would make a visitor fetch the same CSS and JS twice when switching language.
+  stamps = Dir.glob("#{ctx.site_dir}/**/*.html").flat_map do |f|
+    File.read(f, encoding: "UTF-8").scan(%r{/assets/(?:css/main\.css|js/nav\.js)\?v=(\d+)}).flatten
+  end.uniq
+  stamps.size == 1 || fail!("the ?v= cache-buster on main.css/nav.js must be one value across the build, found #{stamps.inspect}")
+  pass "main.css and nav.js carry the same ?v=#{stamps.first} on every page, EN and IT"
   if Checks::Site.read(it_home).include?("/it/assets/")
     fail!("#{it_home} links to /it/assets/...: assets are shared at /assets/ (exclude_from_localization)")
   end

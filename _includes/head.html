@@ -131,8 +131,8 @@
 <link rel="preload" href="{{ '/assets/fonts/archivo-latin-wght-normal.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="{{ '/assets/fonts/hanken-grotesk-latin-wght-normal.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="{{ '/assets/fonts/ibm-plex-mono-latin-500-normal.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}?v={{ site.time | date: '%s' }}">
-<script src="{{ '/assets/js/nav.js' | relative_url }}?v={{ site.time | date: '%s' }}" defer></script>
+<link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}?v={{ site.asset_version }}">
+<script src="{{ '/assets/js/nav.js' | relative_url }}?v={{ site.asset_version }}" defer></script>
 {%- include analytics.html -%}
 <link rel="alternate" type="application/atom+xml" href="{{ '/feed.xml' | relative_url }}" title="{{ site.data.i18n[lang].blog.feed | escape }}">
 {%- include jsonld.html lang=own_lang origin=origin canonical=canonical_path -%}

@@ -19,20 +19,18 @@ def check_language_switch(ctx)
     pass "#{page}: the switch to #{lang} leads to #{got}, which exists"
   end
 
-  # WCAG 2.5.3 (Label in Name): the accessible name of a switch link contains its visible text. An
-  # aria-label that replaces "IT" with "Italiano" does not start with it, so there is none.
+  # WCAG 2.5.3 (Label in Name): the accessible name of a switch link is its visible text ("EN", "IT").
+  # No aria-label at all: a prefix test would be vacuous ("Italiano" starts with "it").
   [ctx.en_home, ctx.it_home].each do |page|
     links = Checks::Site.page(page).css("a.langsw__link")
     links.empty? && fail!("#{page} has no language switch link")
     links.each do |a|
       label = a["aria-label"]
-      next if label.nil?
-
-      label.strip.downcase.start_with?(a.text.strip.downcase) ||
-        fail!("#{page}: the language switch link '#{a.text.strip}' has aria-label=\"#{label}\", which does not contain its visible text (WCAG 2.5.3 Label in Name): remove the aria-label")
+      label.nil? ||
+        fail!("#{page}: the language switch link '#{a.text.strip}' has aria-label=\"#{label}\": remove it, the visible text is the accessible name (WCAG 2.5.3 Label in Name)")
     end
   end
-  pass "the language switch links have no aria-label that omits their visible text (WCAG 2.5.3)"
+  pass "the language switch links have no aria-label: their visible text is their name (WCAG 2.5.3)"
 
   # polyglot turns a static_href link into ferh="..." and back into href="..." only
   # when the URL matches its pattern. One that does not match (say, a permalink with
