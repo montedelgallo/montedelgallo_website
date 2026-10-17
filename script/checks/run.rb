@@ -70,6 +70,7 @@ AREAS = %w[
   home
   blog
   company
+  downloads
   contact
   sitemap
   jsonld

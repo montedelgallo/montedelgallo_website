@@ -13,13 +13,18 @@ permalink: /motioforge/
   /it/motioforge/ (polyglot aggiunge /it/); stesso page_id della pagina inglese
   (motioforge.html). Il testo è quello della pagina italiana attuale.
 
-  I download NON sono nel repository: l'archivio Beta (circa 200 MB) e i due PDF restano
-  dov'erano, nella cartella uploads del sito attuale, e sono collegati con il loro URL
-  assoluto https://montedelgallo.com/wp-content/uploads/ (script/check-build.sh lo
-  verifica, e che nessun archivio o PDF sia nel repository). Le tre schermate sono
-  copiate in assets/img/motioforge/ (WebP). La demo è un link al video su YouTube, non un
-  frame incorporato. I tre link di download sono dentro {% raw %}{% static_href %}{% endraw %}: senza, jekyll-polyglot metterebbe /it/ nell'indirizzo dei link
-  della pagina italiana (https://montedelgallo.com/it/wp-content/...), che non esistono.
+  Download. L'archivio Beta (circa 214 MB) NON è nel repository: il pulsante "Scarica la Beta"
+  porta all'URL di download di Soshiki di _data/site_meta.yml (motioforge_download_url), gestito dal
+  cliente; per l'archivio non si mostrano né dimensione né checksum. I due PDF di panoramica (circa 2,9 MB
+  ciascuno) SONO nel repository, in assets/downloads/, collegati con la loro dimensione
+  (site_meta.yml downloads:). I vecchi indirizzi WordPress dei tre file reindirizzano qui
+  (_data/redirects.yml). script/checks/downloads.rb verifica tutto, e script/checks/company.rb lascia entrare
+  nel repository esattamente questi due PDF (qualunque altro archivio o PDF fa fallire la build). I link sono
+  href semplici, non {% raw %}{% static_href %}{% endraw %}: il link di Soshiki è su un altro host e jekyll-polyglot riscrive solo i link
+  relativi alla radice e quelli sotto l'url del sito, quindi la pagina italiana li lascia com'è (un
+  static_href su un host esterno resterebbe addirittura ferh="..." nell'output); /assets/ è escluso dalla
+  localizzazione, quindi /assets/downloads/... non prende mai il prefisso /it/. Le tre schermate sono
+  copiate in assets/img/motioforge/ (WebP). La demo è un link al video su YouTube, non un frame incorporato.
 {%- endcomment -%}
 <section class="hero hero--page hero--split">
   <svg class="hero__range" aria-hidden="true" focusable="false"><use href="#mdg-range"/></svg>
@@ -211,20 +216,20 @@ permalink: /motioforge/
       <div class="dl">
         <p class="pcell__tag">Beta 4.0.0 · Windows · x64</p>
         <h3>MotioForge Studio 4.0.0 Beta</h3>
-        <p>L’applicazione completa in un unico archivio ZIP (circa 200 MB), con il software Deimos incluso. Estrai ed esegui.</p>
-        <p><a class="btn btn--solid" {% static_href %}href="https://montedelgallo.com/wp-content/uploads/motioforge/MotioForge_Studio.zip"{% endstatic_href %}>Scarica la Beta</a></p>
+        <p>L’applicazione completa in un unico archivio ZIP, con il software Deimos incluso. Estrai ed esegui.</p>
+        <p><a class="btn btn--solid" href="{{ site.data.site_meta.motioforge_download_url }}" data-track="download_click" data-track-location="motioforge">Scarica la Beta</a></p>
       </div>
       <div class="dl">
         <p class="pcell__tag">PDF · Italiano</p>
         <h3>Panoramica (IT)</h3>
         <p>Il documento completo in italiano: funzionalità, hardware e installazione.</p>
-        <p><a class="btn btn--ghost" {% static_href %}href="https://montedelgallo.com/wp-content/uploads/2026/09/MotioForge_Studio_overview_it.pdf"{% endstatic_href %}>Documento IT</a></p>
+        <p><a class="btn btn--ghost" href="/assets/downloads/MotioForge_Studio_overview_it.pdf" data-track="download_click" data-track-location="motioforge_pdf_it">Documento IT</a> <span class="dl__size">{% include download-size.html file="MotioForge_Studio_overview_it.pdf" %}</span></p>
       </div>
       <div class="dl">
         <p class="pcell__tag">PDF · English</p>
         <h3>Overview (EN)</h3>
         <p>Il documento completo in inglese: funzionalità, hardware e installazione.</p>
-        <p><a class="btn btn--ghost" {% static_href %}href="https://montedelgallo.com/wp-content/uploads/2026/09/MotioForge_Studio_overview_en.pdf"{% endstatic_href %}>Documento EN</a></p>
+        <p><a class="btn btn--ghost" href="/assets/downloads/MotioForge_Studio_overview_en.pdf" data-track="download_click" data-track-location="motioforge_pdf_en">Documento EN</a> <span class="dl__size">{% include download-size.html file="MotioForge_Studio_overview_en.pdf" %}</span></p>
       </div>
     </div>
     <p class="pnote">Requisiti: Windows 10/11 64-bit · scheda Arduino Mega (o compatibile) via USB</p>

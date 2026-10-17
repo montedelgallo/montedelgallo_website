@@ -40,13 +40,29 @@ booking_url: "https://soshiki.io/book/mdg/short-call-with-giovanni"
 #               Site installation) can be pasted here instead; it needs no data-domain and is
 #               still one deferred, external script. Umami defaults to https://cloud.umami.is/script.js
 #               (a self-hosted Umami: its own script URL here, and add its host to the CSP).
-# Events (book_call_click, contact_submit, phone_click, email_click, whatsapp_click) are
+# Events (book_call_click, contact_submit, phone_click, email_click, whatsapp_click, download_click) are
 # declared in the markup with data-track / data-track-location and sent by events.js.
 analytics:
   provider: plausible
   domain: montedelgallo.com
   website_id: ""
   src: ""
+
+# MotioForge downloads.
+#   motioforge_download_url  the "Download Beta" button of both MotioForge pages. The archive (about
+#                            214 MB) is served by Soshiki and managed by the client there; it is not
+#                            in this repository and no size or checksum is shown for it. The old
+#                            WordPress address of the archive redirects here (_data/redirects.yml).
+#   downloads                the two overview PDFs, self-hosted in assets/downloads/<file> (about 2.9 MB
+#                            each) and linked from both pages with their size. `bytes` must equal the
+#                            file (stat -f%z); script/checks/downloads.rb compares them. To replace a
+#                            PDF: overwrite the file under assets/downloads/ and update its bytes.
+motioforge_download_url: "https://soshiki.io/cf/p3F7GT5iZGBEo8Fh8met6D2f/download"
+downloads:
+  - file: "MotioForge_Studio_overview_it.pdf"
+    bytes: 2912514
+  - file: "MotioForge_Studio_overview_en.pdf"
+    bytes: 2913060
 
 # Facts about the company, the same in every language.
 company:

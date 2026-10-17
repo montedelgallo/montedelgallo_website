@@ -1,0 +1,12 @@
+{%- comment -%}
+  The size of one download, in decimal megabytes ("214.3 MB", "214,3 MB" on the Italian
+  page), from _data/site_meta.yml downloads:. Usage: {% include download-size.html file="MotioForge_Studio.zip" %}
+  Prints the size only, with no newline, so it sits inside a line of text. Its variables
+  start with dlz_: an include shares the page's variables, never assign t, lang or p here.
+{%- endcomment -%}
+{%- for dlz_item in site.data.site_meta.downloads -%}
+  {%- if dlz_item.file == include.file -%}
+    {%- assign dlz_mb = dlz_item.bytes | divided_by: 1000000.0 | round: 1 -%}
+    {%- if page.lang == "it" -%}{{ dlz_mb | replace: ".", "," }}{%- else -%}{{ dlz_mb }}{%- endif %} MB
+  {%- endif -%}
+{%- endfor -%}

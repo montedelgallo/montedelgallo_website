@@ -13,14 +13,19 @@ permalink: /motioforge/
   same page_id); the live Italian page was /it/motioforge-2/, which _data/redirects.yml
   sends here.
 
-  The downloads are NOT in this repository: the Beta archive (about 200 MB) and the two
-  PDFs stay where they are, on the live site's uploads folder, and are linked by their
-  absolute https://montedelgallo.com/wp-content/uploads/ URLs (script/check-build.sh checks
-  that, and that no archive or PDF is in the repo). Moving them is a hosting decision for
-  later: change the three hrefs then. The three screenshots are copied to
+  Downloads. The Beta archive (about 214 MB) is NOT in this repository: the "Download Beta" button
+  links the Soshiki download URL of _data/site_meta.yml (motioforge_download_url), which the
+  client manages; no size or checksum is shown for it. The two overview PDFs (about 2.9 MB each) ARE in
+  the repository, in assets/downloads/, linked with their size (site_meta.yml downloads:). The old
+  WordPress addresses of the three files redirect to these (_data/redirects.yml). script/checks/downloads.rb
+  checks all of it, and script/checks/company.rb lets exactly these two PDFs into the repository (any other
+  archive or PDF fails the build). The links are plain hrefs, not {% raw %}{% static_href %}{% endraw %}: the Soshiki link is on another
+  host, and jekyll-polyglot only rewrites root-relative links and links under the site's own url, so
+  the Italian page keeps them as they are (a static_href on a foreign host is even left as
+  ferh="..." in the output: polyglot repairs it only for the site's own url); /assets/ is excluded from
+  localization, so /assets/downloads/... is never prefixed with /it/. The three screenshots are copied to
   assets/img/motioforge/ (WebP). The demo is a link to the video on YouTube, not an
-  embedded frame. The three download links are wrapped in {% raw %}{% static_href %}{% endraw %}: without it jekyll-polyglot would put /it/ into the
-  address of the Italian page's links (https://montedelgallo.com/it/wp-content/...), which do not exist. Styles: _sass/foundry/_pages.scss.
+  embedded frame. Styles: _sass/foundry/_pages.scss.
 {%- endcomment -%}
 <section class="hero hero--page hero--split">
   <svg class="hero__range" aria-hidden="true" focusable="false"><use href="#mdg-range"/></svg>
@@ -212,20 +217,20 @@ permalink: /motioforge/
       <div class="dl">
         <p class="pcell__tag">Beta 4.0.0 · Windows · x64</p>
         <h3>MotioForge Studio 4.0.0 Beta</h3>
-        <p>The complete application in a single ZIP archive (about 200 MB), with the Deimos software included. Extract and run.</p>
-        <p><a class="btn btn--solid" {% static_href %}href="https://montedelgallo.com/wp-content/uploads/motioforge/MotioForge_Studio.zip"{% endstatic_href %}>Download Beta</a></p>
+        <p>The complete application in a single ZIP archive, with the Deimos software included. Extract and run.</p>
+        <p><a class="btn btn--solid" href="{{ site.data.site_meta.motioforge_download_url }}" data-track="download_click" data-track-location="motioforge">Download Beta</a></p>
       </div>
       <div class="dl">
         <p class="pcell__tag">PDF · Italiano</p>
         <h3>Overview (IT)</h3>
         <p>The full document in Italian: features, hardware and installation.</p>
-        <p><a class="btn btn--ghost" {% static_href %}href="https://montedelgallo.com/wp-content/uploads/2026/09/MotioForge_Studio_overview_it.pdf"{% endstatic_href %}>Italian PDF</a></p>
+        <p><a class="btn btn--ghost" href="/assets/downloads/MotioForge_Studio_overview_it.pdf" data-track="download_click" data-track-location="motioforge_pdf_it">Italian PDF</a> <span class="dl__size">{% include download-size.html file="MotioForge_Studio_overview_it.pdf" %}</span></p>
       </div>
       <div class="dl">
         <p class="pcell__tag">PDF · English</p>
         <h3>Overview (EN)</h3>
         <p>The full document in English: features, hardware and installation.</p>
-        <p><a class="btn btn--ghost" {% static_href %}href="https://montedelgallo.com/wp-content/uploads/2026/09/MotioForge_Studio_overview_en.pdf"{% endstatic_href %}>English PDF</a></p>
+        <p><a class="btn btn--ghost" href="/assets/downloads/MotioForge_Studio_overview_en.pdf" data-track="download_click" data-track-location="motioforge_pdf_en">English PDF</a> <span class="dl__size">{% include download-size.html file="MotioForge_Studio_overview_en.pdf" %}</span></p>
       </div>
     </div>
     <p class="pnote">Requirements: Windows 10/11 64-bit · Arduino Mega board (or compatible) via USB</p>

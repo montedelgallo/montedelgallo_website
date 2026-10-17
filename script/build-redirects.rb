@@ -11,8 +11,11 @@
 #
 # Rules (one source of truth, _data/redirects.yml, in file order):
 #   * every entry is a 301 from `from` (a /path/) to `to` (a path, optionally #anchor);
-#   * every `from` is also served without its trailing slash (/path): the old WordPress
-#     answered both, and a static host does not redirect a URL that has no file;
+#   * every page `from` (/path/) is also served without its trailing slash (/path): the old
+#     WordPress answered both, and a static host does not redirect a URL that has no file. A file
+#     `from` (/wp-content/uploads/.../file.zip, no trailing slash) is one rule, there is no variant;
+#   * a `to` is a path, or the absolute Soshiki URL of the MotioForge archive (motioforge_download_url
+#     in _data/site_meta.yml; script/checks/redirects.rb allows nothing else);
 #   * nothing else: no wildcard, no query rule (see the notes in _data/redirects.yml).
 
 require "yaml"
@@ -24,13 +27,13 @@ module BuildRedirects
   module_function
 
   # [[from, to], ...] in file order, one pair per source URL: the slash form first, then the
-  # form without the slash.
+  # form without the slash (a `from` that does not end in a slash, a file, has just the one).
   def rules
     YAML.safe_load(File.read(DATA, encoding: "utf-8")).flat_map do |entry|
       from = entry.fetch("from")
       raise ArgumentError, "_data/redirects.yml: a `from` of / cannot be redirected (its no-slash form is empty)" if from == "/"
 
-      [[from, entry.fetch("to")], [from.chomp("/"), entry.fetch("to")]]
+      [[from, entry.fetch("to")], [from.chomp("/"), entry.fetch("to")]].uniq
     end
   end
 
@@ -46,6 +49,7 @@ module BuildRedirects
       # change the data and run `bundle exec ruby script/build-redirects.rb`.
       # Include inside the server block of montedelgallo.com. The target is quoted because an
       # unquoted # starts a comment in nginx, and the #anchor of a target must reach the client.
+      # A target may be the absolute Soshiki URL of the MotioForge archive.
     CONF
     header + rules.map { |from, to| "location = #{from} { return 301 \"#{to}\"; }\n" }.join
   end

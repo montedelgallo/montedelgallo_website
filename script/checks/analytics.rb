@@ -24,7 +24,7 @@ require "yaml"
 # With the provider blank (a scratch build, as the fixture): no analytics script and no events.js
 # on any page, the privacy pages do not claim Plausible, and html-proofer still passes.
 
-ANALYTICS_EVENTS = %w[book_call_click contact_submit phone_click email_click whatsapp_click].freeze
+ANALYTICS_EVENTS = %w[book_call_click contact_submit phone_click email_click whatsapp_click download_click].freeze
 ANALYTICS_HOSTS = { "plausible" => "plausible.io", "umami" => "cloud.umami.is" }.freeze
 ANALYTICS_EVENTS_JS = "assets/js/events.js"
 

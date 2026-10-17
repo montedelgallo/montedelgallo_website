@@ -24,7 +24,6 @@ COMPANY_PAGES = [
 
 COMPANY_MIN_WORDS = { "about" => 900, "startup-studio" => 250, "product-lab" => 250, "careers" => 140, "motioforge" => 600, "contact" => 90, "privacy" => 90, "cookie" => 80 }.freeze
 
-MOTIOFORGE_UPLOADS = "https://montedelgallo.com/wp-content/uploads/"
 
 def check_company(ctx)
   section "Asserting the company pages (About hub, Startup Studio, Product Lab, Careers, MotioForge)"
@@ -331,20 +330,22 @@ def team_grid_errors(lang, file, root, mode)
   errors
 end
 
-# MotioForge: the download links point at the files that are already live on the old
-# server, as absolute external URLs (the 214 MB archive and the PDFs must not be copied
-# into the repository), the Robotic Lab project and the MotioForge page link to each
-# other in both languages.
+# MotioForge: the download links point at the downloads host (asserted by the `downloads`
+# area: the 214 MB archive and the PDFs must not be copied into the repository), the demo
+# is a YouTube link, the Robotic Lab project and the MotioForge page link to each other in
+# both languages.
 def company_motioforge(ctx)
   site_dir = ctx.site_dir
   fail_list!(motioforge_errors("en", "#{site_dir}/motioforge/index.html"), "the English MotioForge page is wrong (see the list above)")
   fail_list!(motioforge_errors("it", "#{site_dir}/it/motioforge/index.html"), "the Italian MotioForge page is wrong (see the list above)")
   # No archive, PDF or large file of any kind in the repository or in the output.
-  big_file = company_large_file(".", pruned: %W[./.git ./_site ./#{Checks::SITE_DIR} ./#{Checks::CACHE_DIR} ./vendor ./.bundle ./node_modules ./.jekyll-cache ./.superpowers], extensions: %w[.zip .pdf .exe .dmg])
-  big_file && fail!("a download or large file is in the repository: #{big_file} (the MotioForge files stay on #{MOTIOFORGE_UPLOADS})")
-  site_big = company_large_file(site_dir, pruned: [], extensions: %w[.zip .pdf])
+  # The one exception: the two overview PDFs, at exactly these paths and at most 3.5 MB each.
+  big_file = company_large_file(".", pruned: %W[./.git ./_site ./#{Checks::SITE_DIR} ./#{Checks::CACHE_DIR} ./vendor ./.bundle ./node_modules ./.jekyll-cache ./.superpowers],
+                                     extensions: %w[.zip .pdf .exe .dmg], allowed: company_allowed_downloads("."))
+  big_file && fail!("a download or large file is in the repository: #{big_file} (the MotioForge archive is the Soshiki link of site_meta.yml; only the two overview PDFs of assets/downloads/ may be here, at most 3.5 MB each)")
+  site_big = company_large_file(site_dir, pruned: [], extensions: %w[.zip .pdf], allowed: company_allowed_downloads(site_dir))
   site_big && fail!("the built site ships #{site_big}: a download or a large file was copied into the site")
-  pass "MotioForge (EN + IT): the Beta archive and both PDFs are absolute https://montedelgallo.com/wp-content/uploads/ links, the demo opens on YouTube (no embedded frame), mailto contact; no archive, PDF or file over 3 MB in the repository or in the built site"
+  pass "MotioForge (EN + IT): the demo opens on YouTube (no embedded frame), mailto contact; no archive, no PDF other than the two overview PDFs of assets/downloads/ (3.5 MB each at most) and no file over 3 MB in the repository or in the built site"
 
   # The Robotic Lab project links to MotioForge in its own language, and MotioForge links
   # back (above): both ends of the connection resolve to built pages.
@@ -359,11 +360,24 @@ def company_motioforge(ctx)
   company_redirects
 end
 
-# The first file under `root` that is an archive or larger than 3 MB (nil when none).
-def company_large_file(root, pruned:, extensions:)
+# The only downloads that may be in the repository and in the built site, as path => largest size
+# in bytes: the two MotioForge overview PDFs (exactly these paths, nothing else, no wildcard).
+COMPANY_ALLOWED_PDF_BYTES = (3.5 * 1024 * 1024).to_i
+def company_allowed_downloads(root)
+  %w[MotioForge_Studio_overview_it.pdf MotioForge_Studio_overview_en.pdf].to_h do |name|
+    [File.join(root, "assets", "downloads", name), COMPANY_ALLOWED_PDF_BYTES]
+  end
+end
+
+# The first file under `root` that is an archive or larger than 3 MB (nil when none), except the
+# `allowed` files (path => largest size in bytes): those pass up to that size, and only them.
+def company_large_file(root, pruned:, extensions:, allowed: {})
   Find.find(root) do |path|
     Find.prune if pruned.include?(path)
     next unless File.file?(path) && !File.symlink?(path)
+
+    key = allowed.keys.find { |a| File.expand_path(a) == File.expand_path(path) }
+    next if key && File.size(path) <= allowed[key]
 
     return path if extensions.include?(File.extname(path).downcase) || File.size(path) > 3 * 1024 * 1024
   end
@@ -373,13 +387,8 @@ end
 def motioforge_errors(lang, file)
   errors = []
   main = load_file(file).at_css("main")
-  uploads = MOTIOFORGE_UPLOADS
-  wanted = [uploads + "motioforge/MotioForge_Studio.zip", uploads + "2026/09/MotioForge_Studio_overview_it.pdf", uploads + "2026/09/MotioForge_Studio_overview_en.pdf"]
   hrefs = main.css("a[href]").map { |a| a["href"] }
-  wanted.each { |url| errors << "#{lang}: no link to #{url}" unless hrefs.include?(url) }
-  hrefs.grep(/\.(zip|pdf)(\z|[?#])/i).each do |href|
-    errors << "#{lang}: the download link #{href} must be an absolute #{uploads} URL" unless href.start_with?(uploads)
-  end
+  # The download links themselves (downloads host, size, checksum) are the `downloads` area's.
   errors << "#{lang}: the Download section (#download) is missing" unless main.at_css("section#download")
   errors << "#{lang}: the demo section (#demo) is missing" unless main.at_css("#demo")
   errors << "#{lang}: the demo should link to the video on YouTube (https://www.youtube.com/watch?v=Rz0HOyaC8jU)" unless hrefs.include?("https://www.youtube.com/watch?v=Rz0HOyaC8jU")

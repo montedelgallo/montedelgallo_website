@@ -6,14 +6,16 @@
 #   * script/build-redirects.rb writes it to deploy/nginx/redirects.conf (the fallback
 #     if the site is served by nginx); run it after every change here, CI fails on a
 #     stale file.
-# Each `from` is served with and without its trailing slash (both are generated, list the
-# slash form only). script/check-build.sh checks that the file parses, that every `to` is
-# a page of the build, that no `from` is a built page, and what is emitted.
+# Each page `from` is served with and without its trailing slash (both are generated, list the
+# slash form only); a file `from` (the downloads below) has no trailing slash and is one rule.
+# script/check-build.sh checks that the file parses, that every `to` is a page of the build
+# (or, for a download, the Soshiki link), that no `from` is a built page,
+# and what is emitted.
 #
 # Not redirects, on purpose: the WordPress blog pagination (/blog/?mdg_blog_page=N) is the
 # built /blog/ page with a query string, which a static host ignores, and
-# _redirects cannot match a query anyway; /wp-content/uploads/* is added as ordinary
-# entries by the MotioForge downloads task.
+# _redirects cannot match a query anyway; the rest of /wp-content/uploads/ is not kept (the
+# MotioForge files are, see the end of this file).
 #
 # Paths are public URL paths, with the /it/ prefix for the Italian site.
 
@@ -115,3 +117,17 @@
 # Feed. WordPress served the feed at /feed/; it is /feed.xml here.
 - from: /feed/
   to: /feed.xml
+
+# MotioForge downloads. The three files lived in the uploads folder of the old WordPress, which
+# this site replaces. The archive is now served by Soshiki (site_meta.yml motioforge_download_url,
+# managed by the client) and the two overview PDFs are in the repository (assets/downloads/).
+# External pages, mails and search results still link the old addresses, so each is a 301 to the
+# new one. These are the only entries whose `from` is a file path; script/checks/redirects.rb allows
+# exactly that: a file under /wp-content/uploads/ to motioforge_download_url or to a listed PDF of
+# /assets/downloads/, nothing broader.
+- from: /wp-content/uploads/motioforge/MotioForge_Studio.zip
+  to: https://soshiki.io/cf/p3F7GT5iZGBEo8Fh8met6D2f/download
+- from: /wp-content/uploads/2026/09/MotioForge_Studio_overview_it.pdf
+  to: /assets/downloads/MotioForge_Studio_overview_it.pdf
+- from: /wp-content/uploads/2026/09/MotioForge_Studio_overview_en.pdf
+  to: /assets/downloads/MotioForge_Studio_overview_en.pdf

@@ -42,8 +42,8 @@ def redirects_emit_rules(file)
   lines = File.read(file, encoding: "utf-8").lines.map(&:chomp)
   rules = lines.reject { |line| line.empty? || line.start_with?("#") }.map do |line|
     parts = line.split(" ", -1)
-    unless parts.size == 3 && parts[0].match?(%r{\A/\S*\z}) && parts[1].match?(%r{\A/\S*\z}) && parts[2] == "301"
-      fail!("#{file}: not a `/from /to 301` line (one space between the fields, no space inside a path): #{line.inspect}")
+    unless parts.size == 3 && parts[0].match?(%r{\A/\S*\z}) && parts[1].match?(%r{\A(/|https://)\S*\z}) && parts[2] == "301"
+      fail!("#{file}: not a `/from /to 301` line (or `/from https://... 301` for a download; one space between the fields, no space inside a path): #{line.inspect}")
     end
     parts
   end
@@ -55,8 +55,8 @@ end
 def redirects_emit_errors(file, rules, site_dir)
   errors = []
   entries = redirect_entries
-  expected = entries.flat_map { |e| [[e["from"], e["to"], "301"], [e["from"].chomp("/"), e["to"], "301"]] }
-  errors << "#{file} does not list, in the order of _data/redirects.yml, each entry with its no-slash variant (expected #{expected.size} rules, found #{rules.size})" unless rules == expected
+  expected = entries.flat_map { |e| [[e["from"], e["to"], "301"], [e["from"].chomp("/"), e["to"], "301"]].uniq }
+  errors << "#{file} does not list, in the order of _data/redirects.yml, each entry with its no-slash variant (a file `from` has none) (expected #{expected.size} rules, found #{rules.size})" unless rules == expected
   errors << "#{file} differs from what script/build-redirects.rb computes (BuildRedirects.cloudflare)" unless File.read(file, encoding: "utf-8").lines.grep_v(/\A(#|\s*$)/).join == BuildRedirects.cloudflare
 
   froms = rules.map(&:first)
@@ -65,7 +65,8 @@ def redirects_emit_errors(file, rules, site_dir)
     to_path = to.split("#", 2).first
     errors << "#{from} redirects to itself" if from == to_path || from == to
     errors << "#{from} -> #{to}: the target is itself redirected (a chain: point it at the final page)" if froms.include?(to_path) || froms.include?(to_path.chomp("/"))
-    errors << "#{from} -> #{to}: the target is neither a built page nor a built file" unless built_url?(site_dir, to_path)
+    # An absolute target is the Soshiki archive link; redirects.rb has already proved it is exactly that.
+    errors << "#{from} -> #{to}: the target is neither a built page nor a built file" unless to.start_with?("https://") ? redirect_download_to?(to) : built_url?(site_dir, to_path)
   end
   # The #anchor of a target must reach the Location header untouched.
   entries.select { |e| e["to"].include?("#") }.each do |e|
@@ -78,8 +79,8 @@ def redirects_emit_nginx_errors(nginx)
   errors = []
   rules = nginx.lines.reject { |line| line.start_with?("#") || line.strip.empty? }
   rules.each do |line|
-    errors << "not a quoted `location = /from { return 301 \"/to\"; }` rule: #{line.strip}" unless line.match?(%r{\Alocation = /\S* \{ return 301 "/\S+"; \}\n\z})
+    errors << "not a quoted `location = /from { return 301 \"/to\"; }` rule (or \"https://...\" for a download): #{line.strip}" unless line.match?(%r{\Alocation = /\S* \{ return 301 "(/|https://)\S+"; \}\n\z})
   end
-  errors << "#{rules.size} nginx rules, but _redirects holds #{redirect_entries.size * 2}" unless rules.size == redirect_entries.size * 2
+  errors << "#{rules.size} nginx rules, but _redirects holds #{BuildRedirects.rules.size}" unless rules.size == BuildRedirects.rules.size
   errors
 end
