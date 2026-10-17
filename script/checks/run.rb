@@ -72,6 +72,7 @@ AREAS = %w[
   company
   contact
   sitemap
+  jsonld
 ].freeze
 
 AREAS.each { |area| require_relative area }

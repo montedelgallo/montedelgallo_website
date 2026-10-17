@@ -1,0 +1,126 @@
+{%- comment -%}
+  The schema.org structured data of a page: ONE <script type="application/ld+json"> holding an
+  @graph, included once by head.html. script/checks/jsonld.rb derives what each page must carry
+  from the sources and asserts it, so read its header for the rules; in short:
+
+    every page        Organization + ProfessionalService (one node) and WebSite
+    noindex pages     the Organization only (the legal drafts, a future 404)
+    the home          nothing more
+    every other page  BreadcrumbList: the brand > [the index >] this page
+    posts             BlogPosting          services   Service (+ FAQPage when `faq` is declared)
+    projects, case studies   CreativeWork
+
+  Only facts the repo already holds go in: the company facts of _data/site_meta.yml, the page's
+  own front matter and canonical URL. No address beyond city and postal code, no geo, hours,
+  rating, review, price or social profile (none is stated anywhere).
+
+  The objects are built with the ld_object filter (_plugins/jsonld_object.rb: a flat key / value
+  list becomes a Hash) and serialized with jsonify, never glued together as text. `<` is written
+  as <, so no text can end the script early.
+
+  Parameters: lang (the page's own language, see head.html), origin (site.url + baseurl) and
+  canonical (the page's canonical path, language prefix included). Every variable here is
+  prefixed ld_: an include shares the page's variables, and t, lang and p must stay untouched.
+{%- endcomment -%}
+{%- assign ld_lang = include.lang -%}
+{%- assign ld_origin = include.origin -%}
+{%- assign ld_url = ld_origin | append: include.canonical -%}
+{%- assign ld_prefix = "" -%}
+{%- if ld_lang != site.default_lang -%}{%- assign ld_prefix = "/" | append: ld_lang -%}{%- endif -%}
+{%- assign ld_home = ld_origin | append: ld_prefix | append: "/" -%}
+{%- assign ld_root_url = ld_origin | append: "/" -%}
+{%- assign ld_org_id = ld_root_url | append: "#organization" -%}
+{%- assign ld_site_id = ld_home | append: "#website" -%}
+{%- assign ld_company = site.data.site_meta.company -%}
+{%- assign ld_meta = site.data.site_meta[ld_lang] -%}
+{%- assign ld_new = "" | split: "," -%}
+{%- assign ld_org_ref = ld_new | push: "@id" | push: ld_org_id | ld_object -%}
+
+{%- comment -%} The company: one node with two types. The name is the brand; the legal name is the company's. {%- endcomment -%}
+{%- assign ld_org_types = "Organization,ProfessionalService" | split: "," -%}
+{%- assign ld_address = ld_new | push: "@type" | push: "PostalAddress" | push: "addressLocality" | push: ld_company.locality | push: "postalCode" | push: ld_company.postal_code | push: "addressCountry" | push: "IT" | ld_object -%}
+{%- assign ld_org = ld_new | push: "@type" | push: ld_org_types | push: "@id" | push: ld_org_id | push: "name" | push: site.title | push: "legalName" | push: ld_company.name | push: "url" | push: ld_root_url | push: "description" | push: ld_meta.description | push: "email" | push: ld_company.email | push: "telephone" | push: ld_company.phone | push: "vatID" | push: ld_company.vat | push: "address" | push: ld_address | ld_object -%}
+{%- assign ld_graph = ld_new | push: ld_org -%}
+
+{%- unless page.noindex -%}
+
+{%- comment -%} One WebSite per language: its address is the language's home, its inLanguage the page's. {%- endcomment -%}
+{%- assign ld_website = ld_new | push: "@type" | push: "WebSite" | push: "@id" | push: ld_site_id | push: "url" | push: ld_home | push: "name" | push: site.title | push: "inLanguage" | push: ld_lang | push: "publisher" | push: ld_org_ref | ld_object -%}
+{%- assign ld_graph = ld_graph | push: ld_website -%}
+
+{%- if ld_url != ld_home -%}
+
+{%- comment -%}
+  The breadcrumb: the brand, the index of the section (detail pages only) and the page. The names
+  are what the visitor sees: the brand of the header, the label of the header or footer link to
+  the index, the page title. The index is the one the layout's way back leads to (index_path).
+{%- endcomment -%}
+{%- assign ld_layout = page.layout -%}
+{%- assign ld_index_path = nil -%}
+{%- assign ld_index_name = nil -%}
+{%- if ld_layout == "project" -%}
+  {%- assign ld_index_path = site.data.i18n[ld_lang].projects.index_path -%}
+  {%- assign ld_index_name = site.data.i18n[ld_lang].nav.work -%}
+{%- elsif ld_layout == "case_study" -%}
+  {%- assign ld_index_path = site.data.i18n[ld_lang].case_studies.index_path -%}
+  {%- assign ld_index_name = site.data.i18n[ld_lang].footer.links.case_studies -%}
+{%- elsif ld_layout == "service" -%}
+  {%- assign ld_index_path = site.data.i18n[ld_lang].services.index_path -%}
+  {%- assign ld_index_name = site.data.i18n[ld_lang].nav.services -%}
+{%- elsif ld_layout == "post" -%}
+  {%- assign ld_index_path = site.data.i18n[ld_lang].blog.index_path -%}
+  {%- assign ld_index_name = site.data.i18n[ld_lang].nav.blog -%}
+{%- endif -%}
+{%- assign ld_position = 1 -%}
+{%- assign ld_crumb = ld_new | push: "@type" | push: "ListItem" | push: "position" | push: ld_position | push: "name" | push: site.title | push: "item" | push: ld_home | ld_object -%}
+{%- assign ld_crumbs = ld_new | push: ld_crumb -%}
+{%- if ld_index_path -%}
+  {%- assign ld_position = ld_position | plus: 1 -%}
+  {%- assign ld_index_url = ld_origin | append: ld_prefix | append: ld_index_path -%}
+  {%- assign ld_crumb = ld_new | push: "@type" | push: "ListItem" | push: "position" | push: ld_position | push: "name" | push: ld_index_name | push: "item" | push: ld_index_url | ld_object -%}
+  {%- assign ld_crumbs = ld_crumbs | push: ld_crumb -%}
+{%- endif -%}
+{%- assign ld_position = ld_position | plus: 1 -%}
+{%- assign ld_crumb = ld_new | push: "@type" | push: "ListItem" | push: "position" | push: ld_position | push: "name" | push: page.title | push: "item" | push: ld_url | ld_object -%}
+{%- assign ld_crumbs = ld_crumbs | push: ld_crumb -%}
+{%- assign ld_breadcrumb_id = ld_url | append: "#breadcrumb" -%}
+{%- assign ld_breadcrumb = ld_new | push: "@type" | push: "BreadcrumbList" | push: "@id" | push: ld_breadcrumb_id | push: "itemListElement" | push: ld_crumbs | ld_object -%}
+{%- assign ld_graph = ld_graph | push: ld_breadcrumb -%}
+
+{%- assign ld_image = nil -%}
+{%- if page.cover -%}{%- assign ld_image = page.cover | absolute_url -%}{%- endif -%}
+
+{%- if ld_layout == "post" -%}
+  {%- assign ld_author = ld_new | push: "@type" | push: "Person" | push: "name" | push: page.author | ld_object -%}
+  {%- assign ld_published = page.date | date_to_xmlschema -%}
+  {%- assign ld_modified = nil -%}
+  {%- if page.last_modified_at -%}{%- assign ld_modified = page.last_modified_at | date_to_xmlschema -%}{%- endif -%}
+  {%- assign ld_excerpt = page.excerpt | strip_html | normalize_whitespace | strip -%}
+  {%- assign ld_article_id = ld_url | append: "#article" -%}
+  {%- assign ld_article = ld_new | push: "@type" | push: "BlogPosting" | push: "@id" | push: ld_article_id | push: "url" | push: ld_url | push: "mainEntityOfPage" | push: ld_url | push: "headline" | push: page.title | push: "description" | push: ld_excerpt | push: "datePublished" | push: ld_published | push: "dateModified" | push: ld_modified | push: "author" | push: ld_author | push: "image" | push: ld_image | push: "inLanguage" | push: ld_lang | push: "publisher" | push: ld_org_ref | ld_object -%}
+  {%- assign ld_graph = ld_graph | push: ld_article -%}
+{%- elsif ld_layout == "service" -%}
+  {%- assign ld_service_id = ld_url | append: "#service" -%}
+  {%- assign ld_service = ld_new | push: "@type" | push: "Service" | push: "@id" | push: ld_service_id | push: "url" | push: ld_url | push: "name" | push: page.title | push: "description" | push: page.summary | push: "provider" | push: ld_org_ref | ld_object -%}
+  {%- assign ld_graph = ld_graph | push: ld_service -%}
+  {%- if page.faq -%}
+    {%- assign ld_questions = ld_new -%}
+    {%- for ld_entry in page.faq -%}
+      {%- assign ld_answer = ld_new | push: "@type" | push: "Answer" | push: "text" | push: ld_entry.a | ld_object -%}
+      {%- assign ld_question = ld_new | push: "@type" | push: "Question" | push: "name" | push: ld_entry.q | push: "acceptedAnswer" | push: ld_answer | ld_object -%}
+      {%- assign ld_questions = ld_questions | push: ld_question -%}
+    {%- endfor -%}
+    {%- assign ld_faq_id = ld_url | append: "#faq" -%}
+    {%- assign ld_faq = ld_new | push: "@type" | push: "FAQPage" | push: "@id" | push: ld_faq_id | push: "url" | push: ld_url | push: "inLanguage" | push: ld_lang | push: "mainEntity" | push: ld_questions | ld_object -%}
+    {%- assign ld_graph = ld_graph | push: ld_faq -%}
+  {%- endif -%}
+{%- elsif ld_layout == "project" or ld_layout == "case_study" -%}
+  {%- assign ld_work_id = ld_url | append: "#creativework" -%}
+  {%- assign ld_work = ld_new | push: "@type" | push: "CreativeWork" | push: "@id" | push: ld_work_id | push: "url" | push: ld_url | push: "name" | push: page.title | push: "description" | push: page.summary | push: "image" | push: ld_image | push: "inLanguage" | push: ld_lang | push: "creator" | push: ld_org_ref | ld_object -%}
+  {%- assign ld_graph = ld_graph | push: ld_work -%}
+{%- endif -%}
+
+{%- endif -%}
+{%- endunless -%}
+{%- assign ld_root = ld_new | push: "@context" | push: "https://schema.org" | push: "@graph" | push: ld_graph | ld_object -%}
+<script type="application/ld+json">{{ ld_root | jsonify | replace: "<", "<" }}</script>

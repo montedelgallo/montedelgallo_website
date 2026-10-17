@@ -35,7 +35,7 @@ named areas (for example `home nav`).
 
 - `script/checks/run.rb` lists the areas in the order they run. Each area is one file,
   `script/checks/<area>.rb`, that defines `check_<area>(ctx)`: `build`, `styles`, `shell`, `nav`, `projects`,
-  `language_switch`, `case_studies`, `redirects`, `redirects_emit`, `services`, `i18n`, `home`, `blog`, `company`, `contact`.
+  `language_switch`, `case_studies`, `redirects`, `redirects_emit`, `services`, `i18n`, `home`, `blog`, `company`, `contact`, `sitemap`, `jsonld`.
 - The build folder is one setting, `Checks::SITE_DIR` in `script/checks/lib/site.rb`: `check-build.sh` reads it for
   `jekyll build --destination` and html-proofer, and the checks read it as `ctx.site_dir`. The cache folder,
   `Checks::CACHE_DIR`, is repeated in `script/checks/check-config.yml` (the `build` area asserts they agree).
@@ -129,6 +129,17 @@ served with and without its trailing slash. Two files are generated from it:
 `/sitemap.xml` lists a page if and only if it is built and not `noindex`. The English and Italian builds each
 write their own entries; `_plugins/sitemap_merge.rb` merges the Italian ones into the root file and removes
 `/it/sitemap.xml`, so there is one sitemap and one `robots.txt`, both at the root. `script/checks/sitemap.rb` asserts it.
+
+## Structured data
+
+`_includes/jsonld.html` (included once by `head.html`) writes one `application/ld+json` block per page: the company
+(`Organization` + `ProfessionalService`, facts from `site_meta.company`) and a `WebSite` on every indexable page, a
+`BreadcrumbList` on every page but the home, `BlogPosting` on posts, `Service` (+ `FAQPage` when the service declares
+`faq`) on services and `CreativeWork` on projects and case studies; a `noindex` page gets the company only. Nothing
+that is not in the repo goes in (no street address, geo, hours, rating, review, price or social profile). The
+objects are built with the `ld_object` filter (`_plugins/jsonld_object.rb`: alternating keys and values become a
+Hash) and serialized with `jsonify`. `script/checks/jsonld.rb` derives what each page must carry from the sources
+and holds every node to a per-type property allow-list.
 
 ## Continuous integration
 
