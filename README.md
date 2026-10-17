@@ -1,5 +1,7 @@
 # Monte del Gallo - website
 
+porting from wp
+
 Bilingual (English + Italian) static site for [Monte del Gallo](https://montedelgallo.com),
 built with [Jekyll](https://jekyllrb.com) and [jekyll-polyglot](https://polyglot.untra.io/).
 English is served from the site root, Italian from `/it/`.
