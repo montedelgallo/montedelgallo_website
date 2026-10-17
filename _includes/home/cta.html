@@ -12,8 +12,8 @@
     <h2>{{ t.home.cta.title | escape }}</h2>
     <p>{{ t.home.cta.text | escape }}</p>
     <div class="cta__btns">
-      <a class="btn btn--solid" href="{{ site.data.site_meta.booking_url }}">{{ t.home.cta.book | escape }}</a>
-      <a class="btn btn--ghost" href="https://wa.me/{{ site.data.site_meta.company.phone | remove: ' ' | remove: '+' }}">{{ t.home.cta.whatsapp | escape }}</a>
+      <a class="btn btn--solid" href="{{ site.data.site_meta.booking_url }}" data-track="book_call_click" data-track-location="cta">{{ t.home.cta.book | escape }}</a>
+      <a class="btn btn--ghost" href="https://wa.me/{{ site.data.site_meta.company.phone | remove: ' ' | remove: '+' }}" data-track="whatsapp_click" data-track-location="cta">{{ t.home.cta.whatsapp | escape }}</a>
     </div>
   </div>
 </section>

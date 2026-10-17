@@ -12,7 +12,7 @@
 {%- endcomment -%}
 {%- assign cf_t = site.data.i18n[site.active_lang].contact.form -%}
 <div class="cform">
-  <form class="cform__form" action="https://soshiki.io/f/l3opjfhj10ocxgca" method="POST">
+  <form class="cform__form" action="https://soshiki.io/f/l3opjfhj10ocxgca" method="POST" data-track="contact_submit" data-track-location="contact_form">
     <div class="cform__field">
       <label class="cform__label" for="sk-nome">{{ cf_t.nome | escape }} <span class="cform__req" aria-hidden="true">*</span></label>
       <input class="cform__control" type="text" id="sk-nome" name="nome" autocomplete="name" required>

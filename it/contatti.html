@@ -26,8 +26,8 @@ permalink: /contatti/
       <h1>Hai un progetto da costruire?</h1>
       <p class="hero__sub">Raccontaci il contesto, il problema e il risultato che vuoi ottenere. Ti aiuteremo a capire il primo passo tecnico e strategico.</p>
       <div class="hero__cta">
-        <a class="btn btn--solid" href="{{ site.data.site_meta.booking_url }}">{{ t.contact.book | escape }}</a>
-        <a class="btn btn--ghost" href="https://wa.me/{{ company.phone | remove: ' ' | remove: '+' }}">{{ t.contact.whatsapp | escape }}</a>
+        <a class="btn btn--solid" href="{{ site.data.site_meta.booking_url }}" data-track="book_call_click" data-track-location="contact_hero">{{ t.contact.book | escape }}</a>
+        <a class="btn btn--ghost" href="https://wa.me/{{ company.phone | remove: ' ' | remove: '+' }}" data-track="whatsapp_click" data-track-location="contact_hero">{{ t.contact.whatsapp | escape }}</a>
       </div>
     </div>
   </div>
@@ -45,15 +45,15 @@ permalink: /contatti/
         <dl class="contact__list">
           <div>
             <dt>WhatsApp</dt>
-            <dd><a href="https://wa.me/{{ company.phone | remove: ' ' | remove: '+' }}">{{ t.contact.whatsapp | escape }}</a></dd>
+            <dd><a href="https://wa.me/{{ company.phone | remove: ' ' | remove: '+' }}" data-track="whatsapp_click" data-track-location="contact_list">{{ t.contact.whatsapp | escape }}</a></dd>
           </div>
           <div>
             <dt>Telefono</dt>
-            <dd><a href="tel:{{ company.phone | remove: ' ' }}">{{ company.phone }}</a></dd>
+            <dd><a href="tel:{{ company.phone | remove: ' ' }}" data-track="phone_click" data-track-location="contact_list">{{ company.phone }}</a></dd>
           </div>
           <div>
             <dt>Email</dt>
-            <dd><a href="mailto:{{ company.email }}">{{ company.email }}</a></dd>
+            <dd><a href="mailto:{{ company.email }}" data-track="email_click" data-track-location="contact_list">{{ company.email }}</a></dd>
           </div>
           <div>
             <dt>Indirizzo</dt>

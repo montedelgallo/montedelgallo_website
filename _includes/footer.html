@@ -32,8 +32,8 @@
       <h2 class="foot__title">{{ t.footer.contact | escape }}</h2>
       <address class="contact">
         <div>{{ company.locality }}, {{ company.postal_code }}</div>
-        <div><a href="tel:{{ company.phone | remove: ' ' }}">{{ company.phone }}</a></div>
-        <div><a href="mailto:{{ company.email }}">{{ company.email }}</a></div>
+        <div><a href="tel:{{ company.phone | remove: ' ' }}" data-track="phone_click" data-track-location="footer">{{ company.phone }}</a></div>
+        <div><a href="mailto:{{ company.email }}" data-track="email_click" data-track-location="footer">{{ company.email }}</a></div>
       </address>
     </div>
   </div>

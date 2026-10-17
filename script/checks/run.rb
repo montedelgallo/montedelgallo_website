@@ -75,6 +75,7 @@ AREAS = %w[
   jsonld
   seo_meta
   share_404
+  analytics
 ].freeze
 
 AREAS.each { |area| require_relative area }

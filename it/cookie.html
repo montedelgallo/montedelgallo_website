@@ -28,13 +28,17 @@ sitemap: false
     <p class="draft" role="note"><strong>Bozza</strong> — il testo legale sarà fornito da Monte del Gallo prima del lancio.</p>
     <div class="project__body">
       <h2>Azienda</h2>
-      <p>{{ company.name }}, P.IVA {{ company.vat }}, {{ company.locality }} {{ company.postal_code }}. Email: <a href="mailto:{{ company.email }}">{{ company.email }}</a>.</p>
+      <p>{{ company.name }}, P.IVA {{ company.vat }}, {{ company.locality }} {{ company.postal_code }}. Email: <a href="mailto:{{ company.email }}" data-track="email_click" data-track-location="legal">{{ company.email }}</a>.</p>
       <h2>Cookie e tecnologie simili</h2>
       <p>L’elenco dei cookie e delle tecnologie simili usati da questo sito, con finalità e durata, è <span class="tbd">da completare.</span></p>
       <h2>Servizi usati su questo sito</h2>
       <ul>
         <li><strong>Soshiki</strong>: pagina di prenotazione e modulo di contatto. <span class="tbd">Dettagli da completare.</span></li>
+        {%- if site.data.site_meta.analytics.provider == "plausible" %}
+        <li><strong>Plausible Analytics</strong>: statistiche sulle visite. Senza cookie: non imposta cookie e non salva nulla sul tuo dispositivo. <span class="tbd">Dettagli da completare.</span></li>
+        {%- else %}
         <li><strong>Analytics</strong>: <span class="tbd">da confermare.</span></li>
+        {%- endif %}
       </ul>
       <h2>Gestire le tue scelte</h2>
       <p><span class="tbd">Da fornire a cura di Monte del Gallo prima del lancio.</span></p>

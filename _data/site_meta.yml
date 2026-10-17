@@ -30,6 +30,24 @@ it:
 # Booking page: the primary call to action on every page.
 booking_url: "https://soshiki.io/book/mdg/short-call-with-giovanni"
 
+# Cookieless, consent-banner-free analytics (_includes/analytics.html, assets/js/events.js).
+#   provider    plausible | umami | "" (empty: no analytics script, no events script, nothing renders)
+#   domain      plausible: the site's domain as added in Plausible (data-domain)
+#   website_id  umami: the website id
+#   src         optional: the provider's script URL. Plausible defaults to
+#               https://plausible.io/js/script.js (the data-domain embed). Plausible's newer
+#               per-site embed (https://plausible.io/js/pa-<id>.js, shown in the site's settings under
+#               Site installation) can be pasted here instead; it needs no data-domain and is
+#               still one deferred, external script. Umami defaults to https://cloud.umami.is/script.js
+#               (a self-hosted Umami: its own script URL here, and add its host to the CSP).
+# Events (book_call_click, contact_submit, phone_click, email_click, whatsapp_click) are
+# declared in the markup with data-track / data-track-location and sent by events.js.
+analytics:
+  provider: plausible
+  domain: montedelgallo.com
+  website_id: ""
+  src: ""
+
 # Facts about the company, the same in every language.
 company:
   name: "Monte del Gallo SRLS"

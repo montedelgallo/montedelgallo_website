@@ -28,14 +28,18 @@ sitemap: false
     <p class="draft" role="note"><strong>Draft</strong> — legal text to be provided by Monte del Gallo before launch.</p>
     <div class="project__body">
       <h2>Company</h2>
-      <p>{{ company.name }}, VAT {{ company.vat }}, {{ company.locality }} {{ company.postal_code }}. Email: <a href="mailto:{{ company.email }}">{{ company.email }}</a>.</p>
+      <p>{{ company.name }}, VAT {{ company.vat }}, {{ company.locality }} {{ company.postal_code }}. Email: <a href="mailto:{{ company.email }}" data-track="email_click" data-track-location="legal">{{ company.email }}</a>.</p>
       <h2>Data collected through this website</h2>
       <p>The contact form asks for your name, your email address, your phone number (optional) and your message. <span class="tbd">Full description to be provided.</span></p>
       <h2>Services used on this site</h2>
       <ul>
         <li><strong>Soshiki</strong>: booking page and contact form. <span class="tbd">Details to be completed.</span></li>
         <li><strong>Hosting</strong>: <span class="tbd">to be confirmed.</span></li>
+        {%- if site.data.site_meta.analytics.provider == "plausible" %}
+        <li><strong>Plausible Analytics</strong>: audience statistics, and the clicks on the booking and contact links and the contact form submissions. Cookieless: it sets no cookie and stores nothing on your device. <span class="tbd">Details to be completed.</span></li>
+        {%- else %}
         <li><strong>Analytics</strong>: <span class="tbd">to be confirmed.</span></li>
+        {%- endif %}
       </ul>
       <h2>Purposes, legal basis, retention and your rights</h2>
       <p><span class="tbd">To be provided by Monte del Gallo before launch.</span></p>

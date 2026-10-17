@@ -74,7 +74,7 @@ layout: default
     <h2>{{ sv_t.cta_title | escape }}</h2>
     <p>{{ sv_t.cta_text | escape }}</p>
     <div class="cta__btns">
-      <a class="btn btn--solid" href="{{ site.data.site_meta.booking_url }}">{{ sv_t.book | escape }}</a>
+      <a class="btn btn--solid" href="{{ site.data.site_meta.booking_url }}" data-track="book_call_click" data-track-location="service_cta">{{ sv_t.book | escape }}</a>
     </div>
   </div>
 </section>

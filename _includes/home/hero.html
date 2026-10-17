@@ -16,7 +16,7 @@
       <h1>{{ t.home.hero.title | escape }}</h1>
       <p class="hero__sub">{{ t.home.hero.sub | escape }}</p>
       <div class="hero__cta">
-        <a class="btn btn--solid" href="{{ site.data.site_meta.booking_url }}">{{ t.home.hero.cta_primary | escape }}</a>
+        <a class="btn btn--solid" href="{{ site.data.site_meta.booking_url }}" data-track="book_call_click" data-track-location="hero">{{ t.home.hero.cta_primary | escape }}</a>
         <a class="btn btn--ghost" href="#work">{{ t.home.hero.cta_secondary | escape }} <span class="arrow" aria-hidden="true">→</span></a>
       </div>
       <div class="stats">

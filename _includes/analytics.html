@@ -1,0 +1,21 @@
+{%- comment -%}
+  The analytics script, in <head> of every page (head.html). Cookieless: no cookie, no
+  consent banner, no storage; it loads from the provider's host only, `defer`, and there is no
+  inline script (nothing for a Content-Security-Policy to allow but that host). The provider
+  and its settings are in _data/site_meta.yml (`analytics:`); when `provider` is empty this
+  renders nothing at all, not even events.js (which would have nobody to talk to).
+
+  Plausible: data-domain + script.js (or the per-site pa-<id>.js given as `src`).
+  Umami: data-website-id + script.js.
+
+  events.js then reports the clicks and the form submit that the markup declares with
+  data-track (see that file); it never blocks them.
+{%- endcomment -%}
+{%- assign an_cfg = site.data.site_meta.analytics -%}
+{%- if an_cfg.provider == "plausible" and an_cfg.domain != blank -%}
+<script defer data-domain="{{ an_cfg.domain | escape }}" src="{{ an_cfg.src | default: 'https://plausible.io/js/script.js' | escape }}"></script>
+<script defer src="{{ '/assets/js/events.js' | relative_url }}"></script>
+{%- elsif an_cfg.provider == "umami" and an_cfg.website_id != blank -%}
+<script defer data-website-id="{{ an_cfg.website_id | escape }}" src="{{ an_cfg.src | default: 'https://cloud.umami.is/script.js' | escape }}"></script>
+<script defer src="{{ '/assets/js/events.js' | relative_url }}"></script>
+{%- endif -%}

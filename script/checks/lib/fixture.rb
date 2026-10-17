@@ -249,21 +249,27 @@ module Checks
 
     # Copies the source tree to a scratch directory, adds PAGES and builds it.
     # Returns the path of the built scratch site (<fixture>/_site).
-    def build
+    #
+    # `pages:` replaces PAGES (pages: {} builds the plain site); a block receives the scratch
+    # directory after the copy and the pages are written, to patch the copy before the build
+    # (a data file, say). Report.fixture_root stays the first fixture's, so messages keep
+    # their <fixture> shortening.
+    def build(pages: PAGES)
       root_dir = Dir.pwd
       dir = Dir.mktmpdir("mdg-check.")
-      Report.fixture_root = dir
+      Report.fixture_root ||= dir
       at_exit { FileUtils.rm_rf(dir) }
 
       excludes = EXCLUDES.map { |name| "--exclude=#{name}" }.join(" ")
       copied = system({ "COPYFILE_DISABLE" => "1" }, "tar -cf - #{excludes} . | tar -xf - -C #{Shellwords.escape(dir)}")
       fail!("could not copy the site to the scratch directory") unless copied
 
-      PAGES.each do |path, content|
+      pages.each do |path, content|
         file = File.join(dir, path)
         FileUtils.mkdir_p(File.dirname(file))
         File.write(file, content)
       end
+      yield dir if block_given?
 
       built = Bundler.with_unbundled_env do
         system({ "BUNDLE_GEMFILE" => File.join(root_dir, "Gemfile") }, "bundle", "exec", "jekyll", "build", "--quiet", chdir: dir)
