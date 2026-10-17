@@ -13,8 +13,8 @@ en:
   description: "Monte del Gallo is a software boutique in Rome. We build custom software, automate the work you repeat and put AI where it pays off. Book a 30-minute call."
   locale: "en_US" # Open Graph locale
 it:
-  title: "Monte del Gallo | Software su misura, automazione e AI a Roma"
-  description: "Monte del Gallo è una software boutique a Roma: software su misura, automazione dei processi e AI dove rende davvero. Prenota una call di 30 minuti."
+  title: "Monte del Gallo | Software su misura, AI, automazione a Roma"
+  description: "Monte del Gallo è una software house boutique a Roma: software su misura, automazione dei processi e AI dove rende davvero. Prenota una call di 30 minuti."
   locale: "it_IT"
 
 # Share image for pages that set none (Open Graph and Twitter cards): a path

@@ -1,5 +1,7 @@
 ---
 title: "Design Minimalista: La Semplicità come Chiave per il Successo Digitale nel 2025"
+meta_title: "Design minimalista: la semplicità nel 2025 | Monte del Gallo"
+description: "Perché il design minimalista conta nel 2025: usabilità, velocità di caricamento e posizionamento, con esempi come Apple e Airbnb e un caso di Consultala HR."
 lang: it
 page_id: post-design-minimalista-la-semplicita-come-chiave-per-il-successo-digitale-nel-2025
 permalink: /articoli/design-minimalista-la-semplicita-come-chiave-per-il-successo-digitale-nel-2025/

@@ -5,6 +5,8 @@
 # inglese live (/case-study-property-management-tourism-rome/), che li ha. La durata
 # "5 months" della pagina italiana live era rimasta in inglese.
 title: "Piattaforma di Property Management – Turismo a Roma"
+meta_title: "Case study property management a Roma | Monte del Gallo"
+description: "Una piattaforma di prenotazioni e property management per il turismo a Roma: prenotazioni totali +140% in sei mesi, dirette +65%, doppie prenotazioni −90%."
 lang: it
 page_id: case-property-management
 permalink: /casi-di-studio/caso-studio-property-management-turismo-roma/

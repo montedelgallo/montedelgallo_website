@@ -3,6 +3,8 @@
 # old site). The challenge, solution and results blocks are the three summary
 # paragraphs of that page; the body is the rest of its text.
 title: "E-commerce Platform — Italian Fashion Brand"
+meta_title: "E-commerce Case Study: +150% Online Sales | Monte del Gallo"
+description: "How we rebuilt an Italian fashion brand's e-commerce platform in 8 months: online sales up 150%, cart abandonment down 40%, pages loading in about 2 seconds."
 lang: en
 page_id: case-ecommerce-platform
 permalink: /case-studies/ecommerce-platform/

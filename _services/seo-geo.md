@@ -4,6 +4,8 @@
 # live site has no page of its own for SEO & GEO, and the live English /services/ page
 # does not list it. For Giovanni to review.
 title: "SEO & GEO"
+meta_title: "SEO and GEO: Visibility in Search and AI | Monte del Gallo"
+description: "SEO for search engines and GEO for AI answers: structured content, JSON-LD, clean markup and speed, so people and AI assistants can find and cite your business."
 lang: en
 page_id: service-seo-geo
 permalink: /services/seo-geo/

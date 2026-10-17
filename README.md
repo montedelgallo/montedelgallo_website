@@ -35,7 +35,7 @@ named areas (for example `home nav`).
 
 - `script/checks/run.rb` lists the areas in the order they run. Each area is one file,
   `script/checks/<area>.rb`, that defines `check_<area>(ctx)`: `build`, `styles`, `shell`, `nav`, `projects`,
-  `language_switch`, `case_studies`, `redirects`, `redirects_emit`, `services`, `i18n`, `home`, `blog`, `company`, `contact`, `sitemap`, `jsonld`.
+  `language_switch`, `case_studies`, `redirects`, `redirects_emit`, `services`, `i18n`, `home`, `blog`, `company`, `contact`, `sitemap`, `jsonld`, `seo_meta`.
 - The build folder is one setting, `Checks::SITE_DIR` in `script/checks/lib/site.rb`: `check-build.sh` reads it for
   `jekyll build --destination` and html-proofer, and the checks read it as `ctx.site_dir`. The cache folder,
   `Checks::CACHE_DIR`, is repeated in `script/checks/check-config.yml` (the `build` area asserts they agree).

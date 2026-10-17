@@ -1,5 +1,7 @@
 ---
 title: "Software development done right – the MdG way"
+meta_title: "Software Development Done Right: MdG's Way | Monte del Gallo"
+description: "How MdG runs software projects: client and team co-design and co-develop, test the code and take accountability. What to expect when you build with us."
 lang: en
 page_id: post-software-development-done-right-the-mdg-way
 permalink: /blog/software-development-done-right-the-mdg-way/

@@ -1,5 +1,7 @@
 ---
 title: "Ace Your React Interview: Comprehensive Guide & Key Concepts"
+meta_title: "30+ React Interview Questions and Answers | Monte del Gallo"
+description: "A guide to over 30 questions that come up in React interviews, from the Virtual DOM and JSX to components and rendering, each with a short, clear answer."
 lang: en
 page_id: post-get-ready-for-your-next-react-job-interview
 permalink: /blog/get-ready-for-your-next-react-job-interview/

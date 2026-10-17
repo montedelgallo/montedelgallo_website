@@ -3,6 +3,8 @@
 # principali" e "Note tecniche" sono tradotte dalla pagina inglese live (la pagina italiana live ha solo il
 # paragrafo introduttivo). Anche settore, metrica e testo alternativo della copertina sono stati scritti qui.
 title: "FatturaLa – SaaS per Fatturazione Elettronica Italiana"
+meta_title: "FatturaLa: SaaS fatturazione elettronica | Monte del Gallo"
+description: "FatturaLa è un SaaS per la fatturazione elettronica FatturaPA: dalla bozza alla consegna allo SDI, con più organizzazioni, team, calcolo IVA e firma XML."
 lang: it
 page_id: project-fatturala
 permalink: /progetti/fatturala-saas-fatturazione-elettronica-italiana/

@@ -2,6 +2,8 @@
 # Bozza da rivedere: non esiste una pagina italiana live. Titolo, testo, settore, metrica e testi alternativi
 # sono stati scritti traducendo la pagina inglese live.
 title: "MdG Robotic Lab"
+meta_title: "MdG Robotic Lab: studio per animatronica | Monte del Gallo"
+description: "MdG Robotic Lab è uno studio desktop per creare e riprodurre movimenti con servomotori: timeline multitraccia da 1 ms, playback seriale, lip-sync e AI."
 lang: it
 page_id: project-mdg-robotic-lab
 permalink: /progetti/mdg-robotic-lab/

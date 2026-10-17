@@ -1,5 +1,7 @@
 ---
 title: "PhotoAlbum — Retro Photo Sharing SaaS"
+meta_title: "PhotoAlbum: Retro Photo Sharing SaaS | Monte del Gallo"
+description: "PhotoAlbum is a 90s-style photo and video album SaaS with Free to Ultimate plans via Stripe, EXIF extraction, FFmpeg video processing and shared albums."
 lang: en
 page_id: project-photoalbum
 permalink: /projects/photoalbum-retro-photo-sharing-saas/

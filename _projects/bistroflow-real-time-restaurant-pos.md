@@ -1,5 +1,7 @@
 ---
 title: "BistroFlow — Real-Time Restaurant POS"
+meta_title: "BistroFlow: Real-Time Restaurant POS | Monte del Gallo"
+description: "BistroFlow is a restaurant POS where waiters order from their phones and the kitchen sees live tickets on tablets, with split billing and no page refreshes."
 lang: en
 page_id: project-bistroflow
 permalink: /projects/bistroflow-real-time-restaurant-pos/

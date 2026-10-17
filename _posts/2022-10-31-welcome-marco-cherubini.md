@@ -1,5 +1,7 @@
 ---
 title: "Welcome, Marco Cherubini!"
+meta_title: "Welcome Marco Cherubini, Junior Developer | Monte del Gallo"
+description: "Marco Cherubini joins Monte del Gallo as a junior developer, bringing his eagerness to learn and a creative background as a Hip-Hop Lofi beats producer."
 lang: en
 page_id: post-welcome-marco-cherubini
 permalink: /blog/welcome-marco-cherubini/

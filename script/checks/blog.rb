@@ -173,7 +173,7 @@ def blog_posts(wanted, min_body)
       { "file" => file, "slug" => slug, "migrated" => LIVE_POSTS.include?(slug), "lang" => lang, "title" => data["title"], "page_id" => data["page_id"],
         "permalink" => data["permalink"], "date" => time.is_a?(Time) ? time.utc.strftime("%Y-%m-%d %H:%M:%S") : nil,
         "day" => time.is_a?(Time) ? time.utc.strftime("%Y-%m-%d") : nil,
-        "author" => data["author"], "categories" => cats, "excerpt" => excerpt, "cover" => data["cover"], "cover_alt" => data["cover_alt"],
+        "author" => data["author"], "categories" => cats, "excerpt" => excerpt, "meta_title" => data["meta_title"], "description" => data["description"], "cover" => data["cover"], "cover_alt" => data["cover_alt"],
         "cover_width" => data["cover_width"], "cover_height" => data["cover_height"],
         "images" => images, "code_blocks" => fences / 2, "body_chars" => plain.size,
         "body_images" => images.count { |i| i["kind"] == "body" } }
@@ -213,9 +213,10 @@ def post_page_errors(posts, site_dir, site_url, min_body)
     errors << "#{at}: <main> carries a lang attribute: the page is in the language being built" if main["lang"]
     headings = main.css("h1").map { |node| text_of(node) }
     errors << "#{at}: the <h1> should be #{post["title"].inspect}, found #{headings.inspect}" unless headings == [post["title"]]
-    errors << "#{at}: the <title> should start with the article title" unless text_of(page.at_css("title")).start_with?(post["title"])
-    errors << "#{at}: the meta description should be the excerpt" unless meta_description(page) == post["excerpt"]
-    errors << "#{at}: og:description should be the excerpt" unless page.at_css('meta[property="og:description"]')&.[]("content") == post["excerpt"]
+    errors << "#{at}: the <title> should start with the article title" unless post["meta_title"] ? text_of(page.at_css("title")) == post["meta_title"] : text_of(page.at_css("title")).start_with?(post["title"])
+    wanted_description = post["description"] || post["excerpt"]
+    errors << "#{at}: the meta description should be its `description` (the excerpt when it sets none)" unless meta_description(page) == wanted_description
+    errors << "#{at}: og:description should be the meta description" unless page.at_css('meta[property="og:description"]')&.[]("content") == wanted_description
 
     labels = post["categories"].map { |slug| blog["categories"][slug] }
     errors << "#{at}: the eyebrow should read the categories #{labels.join(" · ").inspect}, found #{text_of(main.at_css("header .eyebrow")).inspect}" unless text_of(main.at_css("header .eyebrow")) == labels.join(" · ")

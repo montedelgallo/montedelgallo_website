@@ -1,5 +1,7 @@
 ---
 title: "Alloggiati.pro – Piattaforma compliance per ospitalità"
+meta_title: "Alloggiati.pro: compliance ospitalità | Monte del Gallo"
+description: "Alloggiati.pro automatizza Alloggiati Web e i report ISTAT per le strutture ricettive: scansione documenti con AI, self check-in e gestione multi-proprietà."
 lang: it
 page_id: project-alloggiati-pro
 permalink: /progetti/alloggiati-pro-piattaforma-compliance-ospitalita/

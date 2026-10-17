@@ -3,6 +3,8 @@
 # principali" e "Note tecniche" sono tradotte dalla pagina inglese live (la pagina italiana live ha solo il
 # paragrafo introduttivo). Anche settore, metrica e testo alternativo della copertina sono stati scritti qui.
 title: "Diet Assistant – Tracker Salute con AI"
+meta_title: "Diet Assistant: tracker pasti con AI | Monte del Gallo"
+description: "Diet Assistant analizza la foto o la descrizione di un pasto, stima calorie e macro e genera con l'AI piani di allenamento personalizzati."
 lang: it
 page_id: project-diet-assistant
 permalink: /progetti/diet-assistant-tracker-salute-ai/

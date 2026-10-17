@@ -1,5 +1,7 @@
 ---
 title: "MdG Robotic Lab"
+meta_title: "MdG Robotic Lab: Animatronic Motion Studio | Monte del Gallo"
+description: "MdG Robotic Lab is a desktop studio to author and play back servo-driven motion: a 1 ms multi-track timeline, serial hardware playback, lip-sync and AI help."
 lang: en
 page_id: project-mdg-robotic-lab
 permalink: /projects/mdg-robotic-lab/

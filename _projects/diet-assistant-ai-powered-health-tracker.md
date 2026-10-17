@@ -1,5 +1,7 @@
 ---
 title: "Diet Assistant — AI-Powered Health Tracker"
+meta_title: "Diet Assistant: AI Meal and Macro Tracker | Monte del Gallo"
+description: "Diet Assistant analyzes a photo or a description of your meal, estimates calories and macros, and generates personalized workout plans with AI."
 lang: en
 page_id: project-diet-assistant
 permalink: /projects/diet-assistant-ai-powered-health-tracker/

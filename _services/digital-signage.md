@@ -4,6 +4,8 @@
 # describes this service. There is no related project or case study. For Giovanni to
 # review, and to extend with real details (hardware, content tools, examples).
 title: "Digital signage"
+meta_title: "Digital Signage for Venues & Retail Chains | Monte del Gallo"
+description: "Screens, players, playlists and the network behind them, managed and monitored for a single venue, retail chains and franchise locations."
 lang: en
 page_id: service-digital-signage
 permalink: /services/digital-signage/

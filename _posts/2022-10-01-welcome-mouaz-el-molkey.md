@@ -1,5 +1,7 @@
 ---
 title: "Welcome, Mouaz El Molkey!"
+meta_title: "Welcome Mouaz El Molkey, Web Developer | Monte del Gallo"
+description: "Mouaz El Molkey joins the Monte del Gallo engineering team: a web developer who moved from accounting to code, starting as a WordPress developer in 2018."
 lang: en
 page_id: post-welcome-mouaz-el-molkey
 permalink: /blog/welcome-mouaz-el-molkey/

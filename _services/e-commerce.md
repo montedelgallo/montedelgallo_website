@@ -4,6 +4,8 @@
 # PhotoAlbum project. The live site has no page of its own for e-commerce. For Giovanni
 # to review.
 title: "E-commerce"
+meta_title: "Custom E-commerce Development | Monte del Gallo"
+description: "Fast, mobile-first online stores with checkout optimization and automation across inventory, CRM and logistics. For a fashion brand, online sales grew 150%."
 lang: en
 page_id: service-e-commerce
 permalink: /services/e-commerce/

@@ -4,6 +4,8 @@
 # pagina live non ha una pagina dedicata alla SEO e GEO, e l'elenco inglese dei servizi non la
 # comprende.
 title: "SEO e GEO"
+meta_title: "SEO e GEO: visibilità su motori e AI | Monte del Gallo"
+description: "SEO per i motori di ricerca e GEO per le risposte AI: contenuti strutturati, JSON-LD, markup pulito e velocità, per farti trovare da persone e assistenti AI."
 lang: it
 page_id: service-seo-geo
 permalink: /servizi/seo-e-geo/

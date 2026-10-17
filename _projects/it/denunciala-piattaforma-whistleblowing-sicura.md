@@ -3,6 +3,8 @@
 # principali" e "Note tecniche" sono tradotte dalla pagina inglese live (la pagina italiana live ha solo il
 # paragrafo introduttivo). Anche settore, metrica e testo alternativo della copertina sono stati scritti qui.
 title: "DenunciaLa – Piattaforma Sicura per Whistleblowing"
+meta_title: "DenunciaLa: piattaforma whistleblowing | Monte del Gallo"
+description: "DenunciaLa è una piattaforma multi-tenant per il whistleblowing: segnalazioni anonime, messaggi cifrati tra segnalante e amministratore, stati e audit trail."
 lang: it
 page_id: project-denunciala
 permalink: /progetti/denunciala-piattaforma-whistleblowing-sicura/

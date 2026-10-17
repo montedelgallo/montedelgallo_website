@@ -1,5 +1,7 @@
 ---
 title: "Welcome, Claudio Aiello!"
+meta_title: "Welcome Claudio Aiello, Software Engineer | Monte del Gallo"
+description: "Claudio Aiello, software engineer and professional cellist, joins Monte del Gallo for software and mobile development. Meet him and his violin-class app Dancla."
 lang: en
 page_id: post-welcome-claudio-aiello
 permalink: /blog/welcome-claudio-aiello/

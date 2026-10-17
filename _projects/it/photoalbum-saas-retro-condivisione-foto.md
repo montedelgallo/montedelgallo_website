@@ -3,6 +3,8 @@
 # principali" e "Note tecniche" sono tradotte dalla pagina inglese live (la pagina italiana live ha solo il
 # paragrafo introduttivo). Anche settore, metrica e testo alternativo della copertina sono stati scritti qui.
 title: "PhotoAlbum – SaaS Retro per Condivisione Foto"
+meta_title: "PhotoAlbum: SaaS retro per foto e video | Monte del Gallo"
+description: "PhotoAlbum è un album foto e video in stile anni 90 con piani da Free a Ultimate pagati con Stripe, estrazione EXIF, video con FFmpeg e album condivisi."
 lang: it
 page_id: project-photoalbum
 permalink: /progetti/photoalbum-saas-retro-condivisione-foto/

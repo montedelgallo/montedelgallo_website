@@ -1,5 +1,7 @@
 ---
 title: "Alloggiati.pro — Guest Compliance Platform"
+meta_title: "Alloggiati.pro: Guest Compliance Software | Monte del Gallo"
+description: "Alloggiati.pro automates Alloggiati Web and ISTAT reporting for Italian hospitality: AI document scanning, guest self check-in and multi-property management."
 lang: en
 page_id: project-alloggiati-pro
 permalink: /projects/alloggiati-pro-guest-compliance-platform/

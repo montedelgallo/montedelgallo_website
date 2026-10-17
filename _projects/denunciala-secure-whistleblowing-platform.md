@@ -1,5 +1,7 @@
 ---
 title: "DenunciaLa — Secure Whistleblowing Platform"
+meta_title: "DenunciaLa: Whistleblowing Platform | Monte del Gallo"
+description: "DenunciaLa is a multi-tenant whistleblowing platform for Italian compliance: anonymous reports, encrypted two-way messaging, status tracking and an audit trail."
 lang: en
 page_id: project-denunciala
 permalink: /projects/denunciala-secure-whistleblowing-platform/

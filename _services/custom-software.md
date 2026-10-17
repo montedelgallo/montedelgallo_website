@@ -5,6 +5,8 @@
 # The live site has no page called "custom software" of its own; this page gathers
 # what it says in those places.
 title: "Custom software"
+meta_title: "Custom Software Development in Rome | Monte del Gallo"
+description: "Custom software built around how your business works: internal tools, SaaS products and dashboards. We also modernize legacy systems. Book a 30-minute call."
 lang: en
 page_id: service-custom-software
 permalink: /services/custom-software/

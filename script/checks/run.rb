@@ -73,6 +73,7 @@ AREAS = %w[
   contact
   sitemap
   jsonld
+  seo_meta
 ].freeze
 
 AREAS.each { |area| require_relative area }

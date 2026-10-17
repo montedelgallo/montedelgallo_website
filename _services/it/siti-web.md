@@ -3,6 +3,8 @@
 # performanti"), dal testo della home, dallo stack della pagina /it/tecnologie/ live e dal progetto
 # ActiveCanvas. La pagina live non ha una pagina dedicata ai siti web.
 title: "Siti web"
+meta_title: "Realizzazione siti web a Roma | Monte del Gallo"
+description: "Siti vetrina e landing page veloci e mobile-first, pensati per trasformare le visite in richieste di contatto, con un editor visuale quando serve."
 lang: it
 page_id: service-websites
 permalink: /servizi/siti-web/

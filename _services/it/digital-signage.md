@@ -4,6 +4,8 @@
 # c'è un progetto né un caso di studio collegato. Da rivedere e da arricchire con dettagli reali
 # (hardware, strumenti per i contenuti, esempi).
 title: "Digital signage"
+meta_title: "Digital signage per locali e catene | Monte del Gallo"
+description: "Schermi, player, playlist e la rete che li fa funzionare, gestiti e monitorati per un singolo locale, catene retail e punti vendita in franchising."
 lang: it
 page_id: service-digital-signage
 permalink: /servizi/digital-signage/

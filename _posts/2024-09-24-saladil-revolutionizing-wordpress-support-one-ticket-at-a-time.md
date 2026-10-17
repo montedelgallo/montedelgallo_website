@@ -1,5 +1,7 @@
 ---
 title: "Saladil: Revolutionizing WordPress Support, One Ticket at a Time"
+meta_title: "Saladil: WordPress Support Ticket System | Monte del Gallo"
+description: "Saladil is a SaaS ticketing system that connects to WordPress through a simple plugin, so users can ask for support without ever leaving your site."
 lang: en
 page_id: post-saladil-revolutionizing-wordpress-support-one-ticket-at-a-time
 permalink: /blog/saladil-revolutionizing-wordpress-support-one-ticket-at-a-time/

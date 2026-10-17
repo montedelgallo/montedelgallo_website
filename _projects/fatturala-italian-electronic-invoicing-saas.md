@@ -1,5 +1,7 @@
 ---
 title: "FatturaLa — Italian Electronic Invoicing SaaS"
+meta_title: "FatturaLa: Italian E-Invoicing SaaS | Monte del Gallo"
+description: "FatturaLa is a SaaS for FatturaPA electronic invoicing: from draft to SDI delivery, with multiple organizations, team roles, VAT calculation and XML signatures."
 lang: en
 page_id: project-fatturala
 permalink: /projects/fatturala-italian-electronic-invoicing-saas/

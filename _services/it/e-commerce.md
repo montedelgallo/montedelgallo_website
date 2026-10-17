@@ -3,6 +3,8 @@
 # SaaS"), dal testo della home, dal caso di studio e-commerce e dal progetto PhotoAlbum. La pagina
 # live non ha una pagina dedicata all'e-commerce.
 title: "E-commerce"
+meta_title: "Sviluppo e-commerce su misura | Monte del Gallo"
+description: "Negozi online veloci e mobile-first, checkout ottimizzato e automazione tra magazzino, CRM e logistica. Per un brand di moda: vendite online +150%."
 lang: it
 page_id: service-e-commerce
 permalink: /servizi/e-commerce/

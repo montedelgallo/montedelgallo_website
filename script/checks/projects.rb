@@ -80,7 +80,7 @@ def project_page_errors(pairs, site_dir, min_body)
 
       headings = page.css("main h1").map { |node| text_of(node) }
       errors << "#{file}: the <h1> should be #{doc["title"].inspect}, found #{headings.inspect}" unless headings == [doc["title"]]
-      errors << "#{file}: the <title> should start with the project title" unless text_of(page.at_css("title")).start_with?(doc["title"])
+      errors << "#{file}: the <title> should start with the project title" unless doc["meta_title"] ? text_of(page.at_css("title")) == doc["meta_title"] : text_of(page.at_css("title")).start_with?(doc["title"])
 
       cover = page.at_css("main img.project__cover")
       if cover.nil?
@@ -91,7 +91,7 @@ def project_page_errors(pairs, site_dir, min_body)
       end
 
       errors << "#{file}: the summary is not shown as the lede" unless text_of(page.at_css("main .lede")) == doc["summary"]
-      errors << "#{file}: the meta description should be the summary" unless meta_description(page) == doc["summary"]
+      errors << "#{file}: the meta description should be its `description` (the summary when it sets none)" unless meta_description(page) == (doc["description"] || doc["summary"])
       metric = "#{doc["metric"]["value"]} #{doc["metric"]["label"]}"
       errors << "#{file}: the headline metric should read #{metric.inspect}" unless text_of(page.at_css("main .project__metric")) == metric
       errors << "#{file}: the stack should list #{doc["stack"].inspect}" unless page.css("main .project__stack li").map { |node| text_of(node) } == doc["stack"]

@@ -4,6 +4,8 @@
 # testo è tradotto dalla pagina inglese live /mobile-development/; l'introduzione riprende quella
 # italiana.
 title: "App mobile"
+meta_title: "Sviluppo app mobile per iOS e Android | Monte del Gallo"
+description: "App native per iOS e Android o con un unico codice cross-platform, dalla ricerca UX al lancio sugli store, collegate al tuo backend e ai sistemi che usi già."
 lang: it
 page_id: service-mobile-apps
 permalink: /servizi/app-mobile/

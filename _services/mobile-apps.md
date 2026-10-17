@@ -4,6 +4,8 @@
 # the link with backend and operational systems. Rewritten into the home's "Mobile apps"
 # scope.
 title: "Mobile apps"
+meta_title: "Mobile App Development for iOS and Android | Monte del Gallo"
+description: "Native iOS and Android apps, or one cross-platform codebase, from UX research to App Store launch, connected to your backend and the systems you already run."
 lang: en
 page_id: service-mobile-apps
 permalink: /services/mobile-apps/

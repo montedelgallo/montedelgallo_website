@@ -3,6 +3,8 @@
 # principali" e "Note tecniche" sono tradotte dalla pagina inglese live (la pagina italiana live ha solo il
 # paragrafo introduttivo). Anche settore, metrica e testo alternativo della copertina sono stati scritti qui.
 title: "Frame – IDE Desktop per Coding AI"
+meta_title: "Frame: IDE desktop per Claude Code | Monte del Gallo"
+description: "Frame è un'app desktop leggera in Electron per lavorare con Claude Code: fino a 9 terminali in tab, split o griglia, file explorer e storico dei prompt."
 lang: it
 page_id: project-frame
 permalink: /progetti/frame-ide-desktop-coding-ai/

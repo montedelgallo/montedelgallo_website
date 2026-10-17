@@ -3,6 +3,8 @@
 # principali" e "Note tecniche" sono tradotte dalla pagina inglese live (la pagina italiana live ha solo il
 # paragrafo introduttivo). Anche settore, metrica e testo alternativo della copertina sono stati scritti qui.
 title: "Soshiki – Piattaforma CRM Multi-Tenant"
+meta_title: "Soshiki: piattaforma CRM multi-tenant | Monte del Gallo"
+description: "Soshiki è un CRM multi-tenant con pipeline Kanban, dashboard di ricavi e margini, import degli estratti conto e un LLM che smista le email in arrivo."
 lang: it
 page_id: project-soshiki
 permalink: /progetti/soshiki-piattaforma-crm-multi-tenant/

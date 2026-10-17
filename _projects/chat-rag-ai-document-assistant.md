@@ -1,5 +1,7 @@
 ---
 title: "Chat RAG — AI Document Assistant"
+meta_title: "Chat RAG: AI Document Assistant | Monte del Gallo"
+description: "Chat RAG lets you upload PDFs and text files and chat with them: semantic search with pgvector, streamed AI answers and a source citation on every reply."
 lang: en
 page_id: project-chat-rag
 permalink: /projects/chat-rag-ai-document-assistant/

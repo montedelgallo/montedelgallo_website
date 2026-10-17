@@ -3,6 +3,8 @@
 # principali" e "Note tecniche" sono tradotte dalla pagina inglese live (la pagina italiana live ha solo il
 # paragrafo introduttivo). Anche settore, metrica e testo alternativo della copertina sono stati scritti qui.
 title: "Gestione Immobili – Gestione Portfolio Immobiliare"
+meta_title: "Gestione Immobili: portfolio immobiliare | Monte del Gallo"
+description: "Gestione Immobili tiene sotto controllo entrate, spese e inquilini di un portfolio: dashboard finanziarie, mappa interattiva e report PDF per i proprietari."
 lang: it
 page_id: project-gestione-immobili
 permalink: /progetti/gestione-immobili-portfolio-immobiliare/

@@ -4,6 +4,8 @@
 # _data/redirects.yml). The live page is short: the "What we built" and "Results"
 # sections of the body only restate its Solution and Results paragraphs.
 title: "Property Management Platform – Tourism Rome"
+meta_title: "Property Management Platform Case Study | Monte del Gallo"
+description: "A booking and property management platform for tourism in Rome: total bookings up 140% in six months, direct bookings up 65%, double bookings down 90%."
 lang: en
 page_id: case-property-management
 permalink: /case-studies/property-management-tourism-rome/

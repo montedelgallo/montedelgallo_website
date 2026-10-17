@@ -1,5 +1,7 @@
 ---
 title: "Frame — Desktop IDE for AI Coding"
+meta_title: "Frame: Desktop IDE for Claude Code | Monte del Gallo"
+description: "Frame is a lightweight Electron desktop app for Claude Code workflows: up to 9 terminals in tab, split or grid view, a file explorer and prompt history."
 lang: en
 page_id: project-frame
 permalink: /projects/frame-desktop-ide-for-ai-coding/

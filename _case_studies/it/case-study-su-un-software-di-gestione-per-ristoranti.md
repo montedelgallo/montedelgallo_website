@@ -5,6 +5,8 @@
 # settore e dettagli sono condensati dal testo della pagina, nella stessa forma della
 # versione inglese. Le cifre sono quelle della pagina.
 title: "Case Study su un Software di Gestione per Ristoranti"
+meta_title: "Case study software per ristoranti | Monte del Gallo"
+description: "Software su misura per ordini e gestione di una catena di 15 ristoranti italiani, realizzato in sei mesi: costi operativi −25% ed errori negli ordini −40%."
 lang: it
 page_id: case-restaurant-management
 permalink: /casi-di-studio/case-study-su-un-software-di-gestione-per-ristoranti/

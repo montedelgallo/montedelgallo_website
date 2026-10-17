@@ -104,6 +104,18 @@ def jsonld_sources(origin)
   end
 end
 
+# canonical URL => front-matter title, for every source page (posts, projects, case studies, services and the
+# standalone pages at the root and under it/).
+def jsonld_page_titles(origin)
+  @jsonld_page_titles ||= (Dir.glob(%w[_posts/*.md _projects/**/*.md _case_studies/**/*.md _services/**/*.md *.html it/*.html])).each_with_object({}) do |path, map|
+    fm = Checks::Manifest.front_matter(path) or next
+    next unless fm["permalink"] && fm["title"]
+
+    prefix = fm["lang"] == "it" ? "/it" : ""
+    map["#{origin}#{prefix}#{fm["permalink"]}"] = jsonld_squish(fm["title"])
+  end
+end
+
 def jsonld_squish(text)
   text.to_s.gsub(/\s+/, " ").strip
 end
@@ -277,7 +289,8 @@ def jsonld_breadcrumb(node, canonical, origin, prefix, src, page, html_lang, mar
   errors << "#{mark}: BreadcrumbList has #{items.size} items, expected #{want_size}" unless items.size == want_size
   errors << "#{mark}: BreadcrumbList does not start at the language's home #{origin}#{prefix}/" unless items.first&.dig("item") == "#{origin}#{prefix}/"
   errors << "#{mark}: BreadcrumbList does not end at the current page #{canonical}" unless items.last&.dig("item") == canonical
-  title = jsonld_squish(page.at_css("title")&.text).sub(/ \| Monte del Gallo\z/, "")
+  # The page's name is its front-matter `title`, whatever its <title> says (meta_title writes the <title> for the search result).
+  title = jsonld_page_titles(origin)[canonical] || jsonld_squish(page.at_css("title")&.text).sub(/ \| Monte del Gallo\z/, "")
   errors << "#{mark}: BreadcrumbList last name #{items.last&.dig("name").inspect} is not the page title #{title.inspect}" unless items.last&.dig("name") == title
   errors << "#{mark}: BreadcrumbList first name #{items.first&.dig("name").inspect} is not the brand #{page.at_css(".brand")&.text.to_s.strip.inspect}" unless items.first&.dig("name") == page.at_css(".brand")&.text.to_s.strip
 

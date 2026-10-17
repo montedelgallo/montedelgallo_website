@@ -3,6 +3,8 @@
 # all'AI e all'automazione); la sintesi dei servizi AI viene dalla pagina italiana live /it/servizi/
 # ("AI, RAG e automazioni").
 title: "AI e automazione"
+meta_title: "AI e automazione dei processi per aziende | Monte del Gallo"
+description: "Porta l'intelligenza artificiale in un'azienda vera: flussi con LLM, elaborazione di documenti, automazione di CRM e back office, copilot che citano le fonti."
 lang: it
 page_id: service-ai-automation
 permalink: /servizi/ai-e-automazione/

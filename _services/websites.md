@@ -4,6 +4,8 @@
 # ActiveCanvas project. The live site has no page of its own for websites. For Giovanni
 # to review.
 title: "Websites"
+meta_title: "Website Design and Development in Rome | Monte del Gallo"
+description: "Fast, mobile-first marketing sites and landing pages built to turn visitors into enquiries, with a visual editor when the site needs one."
 lang: en
 page_id: service-websites
 permalink: /services/websites/

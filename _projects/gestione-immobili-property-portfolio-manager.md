@@ -1,5 +1,7 @@
 ---
 title: "Gestione Immobili — Property Portfolio Manager"
+meta_title: "Gestione Immobili: Property Portfolio App | Monte del Gallo"
+description: "Gestione Immobili tracks income, expenses and tenants across a property portfolio, with financial dashboards, an interactive map and PDF owner statements."
 lang: en
 page_id: project-gestione-immobili
 permalink: /projects/gestione-immobili-property-portfolio-manager/

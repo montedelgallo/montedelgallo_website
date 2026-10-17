@@ -3,6 +3,8 @@
 # principali" e "Note tecniche" sono tradotte dalla pagina inglese live (la pagina italiana live ha solo il
 # paragrafo introduttivo). Anche settore, metrica e testo alternativo della copertina sono stati scritti qui.
 title: "ActiveCanvas – CMS Engine per Rails"
+meta_title: "ActiveCanvas: CMS open source per Rails | Monte del Gallo"
+description: "ActiveCanvas è un engine Rails open source che aggiunge un CMS a qualsiasi app: page builder drag-and-drop, contenuti con AI, versioning e controlli SEO."
 lang: it
 page_id: project-activecanvas
 permalink: /progetti/activecanvas-cms-engine-rails/

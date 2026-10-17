@@ -3,6 +3,8 @@
 # paragrafi introduttivi ("Trasformare dati in decisioni", "Dati chiari, azioni concrete"). Il testo
 # è tradotto dalla pagina inglese live /data-analysis/; l'introduzione riprende quella italiana.
 title: "Sistemi di dati"
+meta_title: "Sistemi di dati, dashboard e reportistica | Monte del Gallo"
+description: "Trasforma i dati che hai già in decisioni più chiare: dashboard, pipeline, piattaforme di analytics e modelli di AI, dall'audit al monitoraggio continuo."
 lang: it
 page_id: service-data-systems
 permalink: /servizi/sistemi-di-dati/

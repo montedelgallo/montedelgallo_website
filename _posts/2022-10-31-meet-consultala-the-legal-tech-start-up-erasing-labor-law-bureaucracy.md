@@ -1,5 +1,7 @@
 ---
 title: "Meet ConsultaLa: The Legal Tech start-up erasing labor law bureaucracy"
+meta_title: "ConsultaLa: Legal Tech for Labor Law | Monte del Gallo"
+description: "Meet ConsultaLa, the legal tech start-up built on Monte del Gallo technology: a cloud platform that produces legally vetted labor law documents in a click."
 lang: en
 page_id: post-meet-consultala-the-legal-tech-start-up-erasing-labor-law-bureaucracy
 permalink: /blog/meet-consultala-the-legal-tech-start-up-erasing-labor-law-bureaucracy/

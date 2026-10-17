@@ -4,6 +4,8 @@
 # una persona. Nessuna cifra è stata aggiunta o modificata. Lo slug è nuovo (nessun
 # URL italiano live da mantenere).
 title: "Piattaforma E-commerce — Brand di Moda Italiano"
+meta_title: "Case study e-commerce: vendite +150% | Monte del Gallo"
+description: "Il rifacimento dell'e-commerce di un brand di moda italiano in 8 mesi: vendite online +150%, abbandono del carrello −40%, pagine caricate in circa 2 secondi."
 lang: it
 page_id: case-ecommerce-platform
 permalink: /casi-di-studio/piattaforma-ecommerce-brand-moda-italiano/

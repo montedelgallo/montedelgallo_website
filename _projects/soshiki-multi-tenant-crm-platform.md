@@ -1,5 +1,7 @@
 ---
 title: "Soshiki — Multi-Tenant CRM Platform"
+meta_title: "Soshiki: Multi-Tenant CRM Platform | Monte del Gallo"
+description: "Soshiki is a multi-tenant CRM with a Kanban sales pipeline, revenue and margin dashboards, bank statement import and an LLM that routes incoming emails."
 lang: en
 page_id: project-soshiki
 permalink: /projects/soshiki-multi-tenant-crm-platform/

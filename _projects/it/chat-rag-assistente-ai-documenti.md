@@ -3,6 +3,8 @@
 # principali" e "Note tecniche" sono tradotte dalla pagina inglese live (la pagina italiana live ha solo il
 # paragrafo introduttivo). Anche settore, metrica e testo alternativo della copertina sono stati scritti qui.
 title: "Chat RAG – Assistente AI per Documenti"
+meta_title: "Chat RAG: assistente AI per documenti | Monte del Gallo"
+description: "Chat RAG ti fa caricare PDF e testi e conversare con i tuoi documenti: ricerca semantica con pgvector, risposte AI in streaming e citazione delle fonti."
 lang: it
 page_id: project-chat-rag
 permalink: /progetti/chat-rag-assistente-ai-documenti/

@@ -1,5 +1,7 @@
 ---
 title: "ActiveCanvas — Rails CMS Engine"
+meta_title: "ActiveCanvas: Open-Source Rails CMS Engine | Monte del Gallo"
+description: "ActiveCanvas is an open-source Rails engine that adds a CMS to any app: drag-and-drop page builder, AI content generation, page versioning and SEO controls."
 lang: en
 page_id: project-activecanvas
 permalink: /projects/activecanvas-rails-cms-engine/

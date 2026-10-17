@@ -3,6 +3,8 @@
 # the four services, the technologies and the four-step process. Rewritten into the home's
 # "Data systems" scope; the page's numbers about other case studies are left out.
 title: "Data systems"
+meta_title: "Data Systems, Dashboards & Reporting | Monte del Gallo"
+description: "Turn the data you already have into clearer decisions: dashboards, data pipelines, analytics platforms and AI models, from audit to ongoing monitoring."
 lang: en
 page_id: service-data-systems
 permalink: /services/data-systems/

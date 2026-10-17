@@ -4,6 +4,8 @@
 # "Software Management" della pagina /services/ live, stack della pagina /technologies/ live), con
 # il paragrafo sul metodo preso dalla pagina italiana live (/it/servizi/, /it/tecnologie/).
 title: "Software su misura"
+meta_title: "Sviluppo software su misura a Roma | Monte del Gallo"
+description: "Sviluppo di software su misura costruito sui tuoi processi: strumenti interni, prodotti SaaS, dashboard e modernizzazione dei sistemi esistenti."
 lang: it
 page_id: service-custom-software
 permalink: /servizi/software-su-misura/

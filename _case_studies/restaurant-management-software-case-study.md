@@ -4,6 +4,8 @@
 # "Case Study Details" sidebar are empty, so the summary, challenge, solution, sector
 # and facts here are condensed from its body text; every figure is the page's own.
 title: "Restaurant Management Software Case Study"
+meta_title: "Restaurant Management Software Case Study | Monte del Gallo"
+description: "Custom ordering and management software for a 15-location Italian restaurant chain, built in six months: operating costs down 25% and order errors down 40%."
 lang: en
 page_id: case-restaurant-management
 permalink: /case-studies/restaurant-management-software-case-study/
