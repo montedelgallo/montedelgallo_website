@@ -17,8 +17,10 @@ default_lang: "en"
 serial_default_lang: true
 # Emitted once at the site root; not duplicated under /it/, and links to them
 # are not language-prefixed. `redirects` is the source of /_redirects (the 301 map for
-# Cloudflare Pages / Netlify): written once at the root, not under /it/.
-exclude_from_localization: ["assets", "redirects"]
+# Cloudflare Pages / Netlify): written once at the root, not under /it/. `robots.txt` is
+# the one robots file. (sitemap.xml is NOT listed: each language builds its own entries and
+# _plugins/sitemap_merge.rb merges them into the one /sitemap.xml, see that file.)
+exclude_from_localization: ["assets", "redirects", "robots.txt"]
 
 # --- Content -----------------------------------------------------------------
 permalink: pretty
@@ -89,7 +91,6 @@ sass:
 # --- Plugins -----------------------------------------------------------------
 plugins:
   - jekyll-polyglot
-  - jekyll-sitemap
   - jekyll-feed
 
 # --- Repo files that must not be published -----------------------------------

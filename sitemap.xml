@@ -1,0 +1,68 @@
+---
+layout: null
+permalink: /sitemap.xml
+sitemap: false
+---
+{%- comment -%}
+  The sitemap, written by this page in each language's build and merged into ONE file at the
+  root by _plugins/sitemap_merge.rb (jekyll-sitemap is not used: under jekyll-polyglot it wrote
+  the Italian pages without their /it/ prefix, in a second sitemap at /it/sitemap.xml).
+
+  Why each language lists its own pages: a build sees only the documents of its language
+  (jekyll-polyglot hides the others, and a page left out of a language by `lang-exclusive`
+  does not exist in that build at all), so the English build lists the English pages and
+  the Italian one the Italian pages, among them the articles that exist in Italian only.
+  This is why this page is NOT in `exclude_from_localization`. The merge takes the <url>
+  entries of /it/sitemap.xml into /sitemap.xml and deletes /it/sitemap.xml; an entry listed
+  by both builds (a page without a version in the other language, shown there as a fallback
+  copy) is kept once.
+
+  Each entry is computed like the page's own head (_includes/head.html), by the same
+  _includes/lang-url.html: <loc> is its canonical URL, and the hreflang alternates are the
+  <link rel="alternate"> set of the page (a page of one language only lists itself and
+  x-default). script/checks/sitemap.rb compares both against the built pages.
+
+  Left out: noindex pages (the legal drafts, the 404 page), `sitemap: false` pages, and
+  everything that is not an HTML page (feeds, the sitemap itself, /_redirects, assets).
+  <lastmod> is `last_modified_at` or the date of the document, and is left out for a page
+  with neither (a collection document without a date gets the build time as its date: that is
+  not when it changed, so it is not listed). The variables are prefixed (sm_).
+
+  The URLs of the xhtml:link elements are wrapped in static_href: jekyll-polyglot would
+  otherwise put /it/ on the English ones in the Italian build.
+{%- endcomment -%}
+{%- assign sm_origin = site.url | append: site.baseurl -%}
+{%- assign sm_docs = site.pages | concat: site.documents -%}
+{%- assign sm_built = site.time | date_to_xmlschema -%}
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+{%- for sm_doc in sm_docs -%}
+  {%- assign sm_url = sm_doc.url -%}
+  {%- assign sm_last = sm_url | slice: -1 -%}
+  {%- assign sm_ext = sm_url | slice: -5, 5 -%}
+  {%- if sm_last != "/" and sm_ext != ".html" -%}{%- continue -%}{%- endif -%}
+  {%- if sm_url == "/404.html" or sm_doc.noindex or sm_doc.sitemap == false -%}{%- continue -%}{%- endif -%}
+  {%- assign sm_own = sm_doc.lang | default: site.active_lang -%}
+  {%- capture sm_loc %}{% include lang-url.html lang=sm_own page=sm_doc %}{% endcapture -%}
+  {%- assign sm_loc = sm_loc | strip -%}
+  {%- if sm_loc == "" -%}{%- continue -%}{%- endif -%}
+  {%- capture sm_default %}{% include lang-url.html lang=site.default_lang page=sm_doc %}{% endcapture -%}
+  {%- assign sm_default = sm_default | strip | default: sm_loc -%}
+  {%- assign sm_lastmod = sm_doc.last_modified_at | default: sm_doc.date -%}
+  {%- if sm_lastmod -%}{%- assign sm_lastmod = sm_lastmod | date_to_xmlschema -%}{%- if sm_lastmod == sm_built -%}{%- assign sm_lastmod = nil -%}{%- endif -%}{%- endif %}
+<url>
+  <loc>{{ sm_origin | append: sm_loc | xml_escape }}</loc>
+  {%- if sm_lastmod %}
+  <lastmod>{{ sm_lastmod }}</lastmod>
+  {%- endif -%}
+  {%- for sm_lang in site.languages -%}
+    {%- capture sm_alt %}{% include lang-url.html lang=sm_lang page=sm_doc %}{% endcapture -%}
+    {%- assign sm_alt = sm_alt | strip -%}
+    {%- if sm_alt != "" %}
+  <xhtml:link rel="alternate" hreflang="{{ sm_lang }}" {% static_href %}href="{{ sm_origin | append: sm_alt | xml_escape }}"{% endstatic_href %} />
+    {%- endif -%}
+  {%- endfor %}
+  <xhtml:link rel="alternate" hreflang="x-default" {% static_href %}href="{{ sm_origin | append: sm_default | xml_escape }}"{% endstatic_href %} />
+</url>
+{%- endfor %}
+</urlset>

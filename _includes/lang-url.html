@@ -7,7 +7,8 @@
     {% raw %}{% capture path %}{% include lang-url.html lang="it" %}{% endcapture %}
     {% assign path = path | strip %}{% endraw %}
 
-  Parameter: lang, a code from site.languages.
+  Parameters: lang, a code from site.languages; page (optional), the page or document to
+  answer for instead of the one being rendered (sitemap.xml asks for every page in turn).
 
   The two kinds of page are told apart by `lang:` in their front matter:
 
@@ -27,13 +28,14 @@
   fails on that instead of letting double-prefixed URLs ship.
 {%- endcomment -%}
 {%- assign target = include.lang -%}
+{%- assign subject = include.page | default: page -%}
 {%- assign path = "" -%}
-{%- if page.lang -%}
-  {%- assign path = page.permalink_lang[target] -%}
+{%- if subject.lang -%}
+  {%- assign path = subject.permalink_lang[target] -%}
 {%- else -%}
-  {%- assign path = page.url -%}
-  {%- if page.lang-exclusive -%}
-    {%- unless page.lang-exclusive contains target -%}{%- assign path = "" -%}{%- endunless -%}
+  {%- assign path = subject.url -%}
+  {%- if subject.lang-exclusive -%}
+    {%- unless subject.lang-exclusive contains target -%}{%- assign path = "" -%}{%- endunless -%}
   {%- endif -%}
 {%- endif -%}
 {%- if path and path != "" -%}

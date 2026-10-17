@@ -10,7 +10,6 @@ gem "jekyll", "~> 4.4"
 # any static host.
 group :jekyll_plugins do
   gem "jekyll-polyglot", "~> 1.14" # EN at the root, IT under /it/
-  gem "jekyll-sitemap", "~> 1.4"
   gem "jekyll-feed", "~> 0.18"
 end
 

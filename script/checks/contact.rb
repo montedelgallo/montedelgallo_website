@@ -148,17 +148,13 @@ def contact_legal_pages(ctx)
     fail_list!(legal_page_errors("en", legal, "#{site_dir}/#{legal}/index.html"), "the English #{legal} draft is wrong (see the list above)")
     fail_list!(legal_page_errors("it", legal, "#{site_dir}/it/#{legal}/index.html"), "the Italian #{legal} draft is wrong (see the list above)")
   end
-  # (polyglot writes the Italian pages into _site/it/sitemap.xml, so far with their URLs
-  # lacking the /it/ prefix: a known quirk of the sitemap, outside this check.)
-  sitemaps = ["#{site_dir}/sitemap.xml", "#{site_dir}/it/sitemap.xml"]
-  Checks::Site.read(sitemaps[0]).include?("/contact/</loc>") || fail!("#{sitemaps[0]} does not list /contact/: the contact page must be in the sitemap")
-  Checks::Site.read(sitemaps[1]).include?("/contatti/</loc>") || fail!("#{sitemaps[1]} does not list /contatti/: the Italian contact page must be in the sitemap")
-  sitemaps.each do |sitemap|
-    ["/privacy/", "/cookie/"].each do |hit|
-      if Checks::Site.read(sitemap).include?("#{hit}</loc>")
-        fail!("#{sitemap} lists #{hit}: a draft legal page must not be in the sitemap (sitemap: false)")
-      end
-    end
+  # One sitemap, at the root, with both languages (the `sitemap` area asserts it in full).
+  sitemap = "#{site_dir}/sitemap.xml"
+  text = Checks::Site.read(sitemap)
+  text.include?("/contact/</loc>") || fail!("#{sitemap} does not list /contact/: the contact page must be in the sitemap")
+  text.include?("/it/contatti/</loc>") || fail!("#{sitemap} does not list /it/contatti/: the Italian contact page must be in the sitemap")
+  ["/privacy/", "/cookie/", "/it/privacy/", "/it/cookie/"].each do |hit|
+    fail!("#{sitemap} lists #{hit}: a draft legal page must not be in the sitemap (sitemap: false)") if text.include?("#{hit}</loc>")
   end
   pass "privacy + cookie drafts (EN + IT): noindex, bannered, out of the sitemap, company facts and services listed neutrally, every other section marked 'to be completed', no invented duration or legal basis; the contact pages are in the sitemap"
 

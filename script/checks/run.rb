@@ -71,6 +71,7 @@ AREAS = %w[
   blog
   company
   contact
+  sitemap
 ].freeze
 
 AREAS.each { |area| require_relative area }
