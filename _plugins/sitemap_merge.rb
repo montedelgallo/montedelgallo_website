@@ -23,7 +23,7 @@ Jekyll::Hooks.register :polyglot, :post_write do |site|
     xml = File.read(root, encoding: "utf-8")
     known = xml.scan(/<loc>(.*?)<\/loc>/m).flatten
     added = File.read(other, encoding: "utf-8").scan(entry).reject { |url| known.include?(url[/<loc>(.*?)<\/loc>/m, 1]) }
-    xml = xml.sub("</urlset>", "#{added.join("\n")}\n</urlset>") unless added.empty?
+    xml = xml.sub("</urlset>") { "#{added.join("\n")}\n</urlset>" } unless added.empty?
     File.write(root, xml)
     File.delete(other)
   end

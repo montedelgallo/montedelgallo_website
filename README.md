@@ -124,6 +124,12 @@ served with and without its trailing slash. Two files are generated from it:
   `bundle exec ruby script/build-redirects.rb`. Run it after every change to `_data/redirects.yml`:
   `script/check-build.sh` fails when the committed file is stale (`ruby script/build-redirects.rb --check` tells too).
 
+## Sitemap
+
+`/sitemap.xml` lists a page if and only if it is built and not `noindex`. The English and Italian builds each
+write their own entries; `_plugins/sitemap_merge.rb` merges the Italian ones into the root file and removes
+`/it/sitemap.xml`, so there is one sitemap and one `robots.txt`, both at the root. `script/checks/sitemap.rb` asserts it.
+
 ## Continuous integration
 
 `.github/workflows/build.yml` runs on every push and pull request. It installs Ruby and the
