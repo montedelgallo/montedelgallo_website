@@ -31,5 +31,6 @@ company:
   vat: "IT15153051006"
   locality: "Roma"
   postal_code: "00100"
+  country: "IT" # ISO 3166-1 alpha-2, for the structured data
   phone: "+39 389 972 2602"
   email: "info@montedelgallo.com"

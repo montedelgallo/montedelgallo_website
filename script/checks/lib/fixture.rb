@@ -140,7 +140,7 @@ module Checks
         {%- assign t = "keep" -%}
         {%- assign lang = "keep" -%}
         {%- assign p = "keep" -%}
-        {%- assign pc_all = site.posts | where: "lang", site.active_lang | sort: "date" | reverse -%}
+        {%- assign pc_all = site.posts | where: "lang", site.active_lang | where_exp: "pc_post", "pc_post.fx_script_test != true" | sort: "date" | reverse -%}
         <div class="pgrid">
         {%- for pc_item in pc_all %}
         {% include post-card.html post=pc_item %}
@@ -180,6 +180,24 @@ module Checks
         {%- assign p = "keep" -%}
         {% include team-grid.html founders=page.fx_founders members=page.fx_members %}
         <p id="canary">{{ t }} {{ lang }} {{ p }}</p>
+      PAGE
+      # An article whose title and excerpt are hostile to the JSON-LD block: a quote, a closing
+      # script tag, markup, an ampersand, accents and an HTML comment opener. The structured data
+      # must still be strict JSON that gives the title back exactly, with no `<` inside the block
+      # and nothing of the markup reaching the page (script/checks/jsonld.rb).
+      "_posts/2024-01-01-fixture-script.md" => <<~'PAGE',
+        ---
+        title: 'A "quote" </script><b>x</b> & Più è <!-- ok'
+        lang: en
+        lang-exclusive: [en]
+        permalink: /blog/fixture-script/
+        date: 2024-01-01 09:00:00 +0000
+        author: Fixture Author
+        fx_script_test: true # keeps the article out of the card canary page (post-cards-test)
+        categories: [story]
+        excerpt: 'A "quote" </script><b>x</b> & Più è <!-- ok'
+        ---
+        A fixture article, there to prove that nothing in a title can close the JSON-LD script.
       PAGE
       # A project with `featured: false`, as an English and an Italian document tied by
       # page_id, like the real ones. Only 3 of the 12 real projects are featured, so the

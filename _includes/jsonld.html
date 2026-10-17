@@ -11,12 +11,14 @@
     projects, case studies   CreativeWork
 
   Only facts the repo already holds go in: the company facts of _data/site_meta.yml, the page's
-  own front matter and canonical URL. No address beyond city and postal code, no geo, hours,
+  own front matter and canonical URL. No street address (city, postal code and country only), no geo, hours,
   rating, review, price or social profile (none is stated anywhere).
 
   The objects are built with the ld_object filter (_plugins/jsonld_object.rb: a flat key / value
-  list becomes a Hash) and serialized with jsonify, never glued together as text. `<` is written
-  as <, so no text can end the script early.
+  list becomes a Hash), serialized with jsonify and passed through ld_escape, which writes every
+  less-than sign as its JSON escape, so no title or excerpt can close the script or open a comment.
+  Nothing is glued together as text. script/checks/jsonld.rb proves it with a fixture article whose
+  title is `</script><b>x</b>` and asserts that no real page has a raw less-than sign in its block.
 
   Parameters: lang (the page's own language, see head.html), origin (site.url + baseurl) and
   canonical (the page's canonical path, language prefix included). Every variable here is
@@ -38,7 +40,7 @@
 
 {%- comment -%} The company: one node with two types. The name is the brand; the legal name is the company's. {%- endcomment -%}
 {%- assign ld_org_types = "Organization,ProfessionalService" | split: "," -%}
-{%- assign ld_address = ld_new | push: "@type" | push: "PostalAddress" | push: "addressLocality" | push: ld_company.locality | push: "postalCode" | push: ld_company.postal_code | push: "addressCountry" | push: "IT" | ld_object -%}
+{%- assign ld_address = ld_new | push: "@type" | push: "PostalAddress" | push: "addressLocality" | push: ld_company.locality | push: "postalCode" | push: ld_company.postal_code | push: "addressCountry" | push: ld_company.country | ld_object -%}
 {%- assign ld_org = ld_new | push: "@type" | push: ld_org_types | push: "@id" | push: ld_org_id | push: "name" | push: site.title | push: "legalName" | push: ld_company.name | push: "url" | push: ld_root_url | push: "description" | push: ld_meta.description | push: "email" | push: ld_company.email | push: "telephone" | push: ld_company.phone | push: "vatID" | push: ld_company.vat | push: "address" | push: ld_address | ld_object -%}
 {%- assign ld_graph = ld_new | push: ld_org -%}
 
@@ -123,4 +125,4 @@
 {%- endif -%}
 {%- endunless -%}
 {%- assign ld_root = ld_new | push: "@context" | push: "https://schema.org" | push: "@graph" | push: ld_graph | ld_object -%}
-<script type="application/ld+json">{{ ld_root | jsonify | replace: "<", "<" }}</script>
+<script type="application/ld+json">{{ ld_root | jsonify | ld_escape }}</script>

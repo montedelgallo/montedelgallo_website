@@ -45,7 +45,7 @@ JSONLD_ALLOWED = {
 
 JSONLD_REQUIRED = {
   "Organization+ProfessionalService" => %w[@type @id name legalName url email telephone vatID address],
-  "PostalAddress" => %w[@type addressLocality postalCode],
+  "PostalAddress" => %w[@type addressLocality postalCode addressCountry],
   "WebSite" => %w[@type @id url name inLanguage publisher],
   "BreadcrumbList" => %w[@type @id itemListElement],
   "ListItem" => %w[@type position name item],
@@ -88,7 +88,8 @@ def check_jsonld(ctx)
   floor = { "BlogPosting" => ctx.min_posts, "CreativeWork" => ctx.min_projects + ctx.min_case_studies, "Service" => ctx.min_services, "FAQPage" => 1, "WebSite" => 2, "BreadcrumbList" => 1, "Organization+ProfessionalService" => 2 }
   fail_list!(floor.filter_map { |type, min| "only #{counts[type]} #{type} node(s) in #{site_dir}, at least #{min} expected" if counts[type] < min }, "the built site lacks structured data it must have (see the list above)")
   summary = counts.sort.map { |type, n| "#{n} #{type}" }.join(", ")
-  pass "#{files.size} pages, each with one strict-JSON JSON-LD block of exactly the types its kind needs, only allow-listed properties and every fact equal to its source (#{summary})"
+  jsonld_hostile_title(ctx)
+  pass "#{files.size} pages and a fixture article titled with a closing script tag, markup and a comment opener: each has one strict-JSON JSON-LD block with no raw `<`, of exactly the types its kind needs, only allow-listed properties and every fact equal to its source (#{summary})"
 end
 
 # canonical URL => { kind:, fm:, path: } for the posts, projects, case studies and services.
@@ -115,6 +116,8 @@ def jsonld_page_errors(file, origin, sources, company, errors, counts)
 
   raw = blocks.first.text
   errors << "#{mark}: the JSON-LD contains `</` or `<!--`, which can end the script early" if raw.include?("</") || raw.include?("<!--")
+  source = Checks::Site.read(file)[%r{<script type="application/ld\+json">(.*?)</script>}m, 1].to_s
+  errors << "#{mark}: the raw JSON-LD block contains a `<` (it must be written \\u003c): #{source[/.{0,30}<.{0,30}/m].inspect}" if source.include?("<")
   begin
     data = JSON.parse(raw)
   rescue JSON::ParserError => e
@@ -245,7 +248,7 @@ def jsonld_organization(node, org_id, origin, company, html_lang, mark, errors)
   address = node["address"] || {}
   errors << "#{mark}: Organization address locality #{address["addressLocality"].inspect} is not company.locality #{company["locality"].inspect}" unless address["addressLocality"] == company["locality"]
   errors << "#{mark}: Organization address postalCode #{address["postalCode"].inspect} is not company.postal_code #{company["postal_code"].inspect}" unless address["postalCode"] == company["postal_code"]
-  errors << "#{mark}: Organization address country #{address["addressCountry"].inspect} must be IT (the company is in Roma, Italy, the VAT number is Italian)" unless address["addressCountry"] == "IT"
+  errors << "#{mark}: Organization address country #{address["addressCountry"].inspect} is not company.country #{company["country"].inspect}" unless company["country"].to_s.match?(/\A[A-Z]{2}\z/) && address["addressCountry"] == company["country"]
   meta = YAML.load_file("_data/site_meta.yml", aliases: true)[html_lang] || {}
   errors << "#{mark}: Organization description #{node["description"].inspect} is not the #{html_lang} description of site_meta" unless node["description"] == meta["description"]
   errors << "#{mark}: Organization address must be a PostalAddress" unless address["@type"] == "PostalAddress"
@@ -338,4 +341,32 @@ def jsonld_references(nodes, ids, mark, errors)
     end
   end
   nodes.each { |n| walk.call(n, true) }
+end
+
+JSONLD_HOSTILE_TITLE = 'A "quote" </script><b>x</b> & Più è <!-- ok'
+
+# The fixture article (lib/fixture.rb) has a title and an excerpt that try to close the
+# script block and inject markup. Its structured data must stay strict JSON, give the title
+# back exactly, hold no `<` at all, and none of the markup may reach the page unescaped.
+def jsonld_hostile_title(ctx)
+  file = "#{ctx.fx}/blog/fixture-script/index.html"
+  fail!("the fixture article was not built at #{file}") unless File.file?(file)
+  html = File.read(file, encoding: "utf-8")
+  blocks = html.scan(%r{<script type="application/ld\+json">(.*?)</script>}m).flatten
+  fail!("fixture article: expected one JSON-LD block, found #{blocks.size}") unless blocks.size == 1
+  block = blocks.first
+  fail!("fixture article: the raw JSON-LD block contains a `<` (it must be written as \\u003c)") if block.include?("<")
+  begin
+    graph = JSON.parse(block)["@graph"]
+  rescue JSON::ParserError => e
+    fail!("fixture article: its JSON-LD is not strict JSON (#{e.message[0, 100]})")
+  end
+  posting = graph.find { |n| n["@type"] == "BlogPosting" } or fail!("fixture article: no BlogPosting")
+  fail!("fixture article: headline #{posting["headline"].inspect} is not the title #{JSONLD_HOSTILE_TITLE.inspect}") unless posting["headline"] == JSONLD_HOSTILE_TITLE
+  crumb = graph.find { |n| n["@type"] == "BreadcrumbList" }["itemListElement"].last["name"]
+  fail!("fixture article: breadcrumb name #{crumb.inspect} is not the title") unless crumb == JSONLD_HOSTILE_TITLE
+  fail!("fixture article: the injected <b>x</b> reached the page unescaped") if html.include?("<b>x</b>")
+  after = html.split("</script>", -1)
+  fail!("fixture article: the JSON-LD script was closed early by the title") unless html.scan("</script>").size == html.scan("<script").size
+  fail!("fixture article: something follows the JSON-LD block from the title") if after.any? { |part| part.start_with?("<b>") }
 end

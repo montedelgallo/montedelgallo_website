@@ -14,6 +14,13 @@
 
 module Jekyll
   module JsonLdObject
+    # JSON text for a <script> block: every `<` becomes the JSON escape backslash-u-0-0-3-c, so no
+    # title or excerpt can write `</script>` or `<!--` into the page. Done here, in Ruby, because
+    # a Liquid string literal cannot carry a backslash reliably (script/checks/jsonld.rb proves it).
+    def ld_escape(json)
+      json.to_s.gsub("<") { '\\u003c' }
+    end
+
     def ld_object(pairs)
       list = Array(pairs)
       raise Liquid::ArgumentError, "ld_object needs alternating keys and values, got #{list.size} items" if list.size.odd?
