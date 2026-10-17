@@ -402,8 +402,10 @@
 }
 
 // ---------- the team ----------
-// A square portrait per member. Where there is no portrait the tile carries the
-// initials on the blueprint grid of the hero.
+// A round portrait per member, ringed in emerald: an outline set a few pixels off the
+// circle, so the ring follows the round shape, adds nothing to the layout and leaves a
+// transparent gap that works on any band colour. Where there is no portrait the circle
+// carries the initials on the blueprint grid of the hero.
 // Two rows: the founders (.team--founders) and the team (.team--members).
 // Two columns on a phone for both rows (one column is thousands of pixels of scroll). From
 // the tablet width up the team row has four columns and the founders row three, drawn on
@@ -441,7 +443,7 @@
 .team__member{
   display:flex;
   flex-direction:column;
-  gap:14px;
+  gap:20px;
   min-width:0;
 }
 
@@ -450,8 +452,10 @@
   display:block;
   width:min(100%,260px);
   aspect-ratio:1 / 1;
-  border:1px solid var(--line);
-  border-radius:10px;
+  border:0;
+  border-radius:50%;
+  outline:2px solid var(--emerald);
+  outline-offset:4px;
 }
 
 .team__photo{
