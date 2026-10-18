@@ -45,6 +45,14 @@
   width: 1200
   height: 630
   variants: [480, 800]
+/assets/img/blog/github-weekly-body.webp:
+  width: 1200
+  height: 500
+  variants: [480, 800]
+/assets/img/blog/github-weekly-cover.webp:
+  width: 1200
+  height: 630
+  variants: [480, 800]
 /assets/img/blog/marco-cherubini-cover.webp:
   width: 300
   height: 259
