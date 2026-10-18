@@ -89,6 +89,14 @@
   width: 1200
   height: 587
   variants: [480, 800]
+/assets/img/blog/rassegna-ai-cover.webp:
+  width: 1200
+  height: 630
+  variants: [480, 800]
+/assets/img/blog/rassegna-ai-tools.webp:
+  width: 1200
+  height: 500
+  variants: [480, 800]
 /assets/img/blog/react-interview-cover.webp:
   width: 1200
   height: 800
