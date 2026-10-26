@@ -61,6 +61,10 @@
   width: 1200
   height: 630
   variants: [480, 800]
+/assets/img/blog/github-weekly-20261026-skills-body.webp:
+  width: 1200
+  height: 500
+  variants: [480, 800]
 /assets/img/blog/github-weekly-body.webp:
   width: 1200
   height: 500
