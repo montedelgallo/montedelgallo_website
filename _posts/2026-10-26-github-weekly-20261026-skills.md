@@ -19,7 +19,7 @@ Every Monday we take a lap around [r/BestGitHubRepos](https://www.reddit.com/r/B
 
 ## 1. mattpocock/skills, a senior engineer's real working files
 
-Matt Pocock open-sourced his entire `.agents` directory ([repo](https://github.com/mattpocock/skills)). These are production engineering skills: code review patterns, refactoring workflows, debugging chains. Not tutorials, not blog posts, the files he uses day to day. The repo is mostly Shell and JavaScript, MIT licensed, and it passed 300,000 stars during this week, one of the fastest climbs GitHub has seen. The latest release is [v1.3.1 from 4 October](https://github.com/mattpocock/skills/releases).
+Matt Pocock open-sourced his entire `.agents` directory ([repo](https://github.com/mattpocock/skills)). These are production engineering skills: code review patterns, refactoring workflows, debugging chains. Not tutorials, not blog posts, the files he uses day to day. The repo is mostly Shell and JavaScript, MIT licensed, and it passed 300,000 stars during this week, the fastest star climb we tracked this week. The latest release is [v1.3.1 from 4 October](https://github.com/mattpocock/skills/releases).
 
 My take: the star count tells you people are tired of generic advice. They want the actual working files of a senior engineer, not a cleaned-up version. Curation is the product here, and it shows what a mounted skill directory should look like.
 
