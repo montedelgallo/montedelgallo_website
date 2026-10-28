@@ -141,6 +141,14 @@
   width: 1200
   height: 678
   variants: [480, 800]
+/assets/img/blog/seo-geo-poisoned-body.webp:
+  width: 1200
+  height: 500
+  variants: [480, 800]
+/assets/img/blog/seo-geo-poisoned-cover.webp:
+  width: 1200
+  height: 630
+  variants: [480, 800]
 /assets/img/motioforge/audio-properties.webp:
   width: 590
   height: 537
