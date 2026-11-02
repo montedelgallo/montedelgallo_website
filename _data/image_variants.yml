@@ -73,6 +73,10 @@
   width: 1200
   height: 500
   variants: [480, 800]
+/assets/img/blog/github-weekly-20261102-control-body.webp:
+  width: 1200
+  height: 500
+  variants: [480, 800]
 /assets/img/blog/github-weekly-body.webp:
   width: 1200
   height: 500
