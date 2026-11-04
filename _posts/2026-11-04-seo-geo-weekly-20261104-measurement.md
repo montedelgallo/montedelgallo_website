@@ -1,21 +1,21 @@
 ---
 title: "SEO and GEO Weekly: When Even Search Console Wobbles"
 meta_title: "SEO & GEO Weekly: When Even Search Console Wobbles | Monte del Gallo"
-description: "Search Console click spikes, scrapers inflating your own data, ChatGPT ad economics from a working paper, Alphabet's AI-driven Q3, and the first live-web GEO benchmark. With a strong conclusion."
+description: "Search Console click spikes, scrapers inflating your own data, ChatGPT ad economics from a working paper, Alphabet's AI-driven Q3, and a live-web GEO benchmark. With a strong conclusion."
 lang: en
 page_id: post-seo-geo-weekly-20261104-measurement
 permalink: /blog/seo-geo-weekly-20261104-measurement/
 date: 2026-11-04 11:30:00 +0000
 author: Giovanni Panasiti
 categories: [products]
-excerpt: "Search Console click spikes, scrapers inflating your own data, ChatGPT ad economics from a working paper, Alphabet's AI-driven Q3, and the first live-web GEO benchmark. With a strong conclusion."
+excerpt: "Search Console click spikes, scrapers inflating your own data, ChatGPT ad economics from a working paper, Alphabet's AI-driven Q3, and a live-web GEO benchmark. With a strong conclusion."
 cover: /assets/img/blog/seo-geo-weekly-20261104-measurement-cover.webp
 cover_alt: "Dark green graphic reading SEO GEO Weekly, 28 October to 4 November 2026, measurement, economics and live-web GEO"
 cover_width: 1200
 cover_height: 630
 lang-exclusive: [en]
 ---
-This is the weekly SEO and GEO digest, 28 October to 4 November 2026. Last week the trackers were showing poisoned data. This week the story goes deeper: the workaround dirties Search Console itself, the first working numbers on ChatGPT advertising look bad, and the first GEO benchmark run on the live web says some gains survive, and much of the per-brand gain does not. The theme is measurement again, because this is the week the instruments get questioned.
+This is the weekly SEO and GEO digest, 28 October to 4 November 2026. Last week the trackers were showing poisoned data. This week the story goes deeper: the workaround dirties Search Console itself, working numbers on ChatGPT advertising look bad, and a GEO benchmark run on the live web says some gains survive, and much of the per-brand gain does not. The theme is measurement again, because this is the week the instruments get questioned.
 
 ## Rank trackers work around the poison, and Search Console pays
 
@@ -31,9 +31,9 @@ Maximilian Kaiser, an economist at WU Vienna, and Christian Schulze of Frankfurt
 
 ## Alphabet's Q3: Search grows 12 percent, AI Mode queries run three times longer
 
-Alphabet's [official earnings release](https://s206.q4cdn.com/479360582/files/doc_news/2026/Oct/28/attachments/2026q3-alphabet-earnings-release.pdf) on 28 October 2026 reported revenue of $127.6 billion, up 25 percent, with net income down 25 percent to $26.2 billion and EPS of $2.12, below analyst expectations of about $3.00. Google Search and other advertising revenue grew 12 percent to $63.3 billion, Google Cloud grew 103 percent to $30.7 billion, and capital spending reached $51.4 billion in the quarter with $195 to $205 billion still guided for the year. Management said the year-over-year Search query growth rate is the highest in five years, AI Mode queries are on average three times longer than traditional searches, and one in five global AI Mode queries uses voice, images or documents. My take: classic search still pays the bills, and the AI surfaces get the bets. Three times longer queries mean more room for answers and citations, and that is exactly the surface where our measurement tools are weakest this week.
+Alphabet's [official earnings release](https://s206.q4cdn.com/479360582/files/doc_news/2026/Oct/28/attachments/2026q3-alphabet-earnings-release.pdf) on 28 October 2026 reported revenue of $127.6 billion, up 25 percent, net income down 25 percent to $26.2 billion and EPS of $2.12. Google Search and other advertising revenue grew 12 percent, Google Cloud grew 103 percent to $30.7 billion, and management kept full-year capital spending guidance at $195 to $205 billion ([earnings call transcript](https://www.fool.com/earnings/call-transcripts/2026/10/29/alphabet-googl-q3-2026-earnings-call-transcript/), 29 October 2026). On the same call, management said the year-over-year Search query growth rate is the highest in five years, that AI Mode queries run on average three times longer than traditional searches, and that one in five AI Mode searches uses voice, images or documents. My take: classic search still pays the bills, and the AI surfaces get the bets. Three times longer queries mean more room for answers and citations, and that is exactly the surface where our measurement tools are weakest this week.
 
-## LIVE-GEO runs the first honest GEO test on the live web
+## LIVE-GEO tests GEO strategies on the live web
 
 [LIVE-GEO](https://arxiv.org/abs/2611.01126), a paper from the University of Michigan and the University of Illinois posted on 31 October 2026, publishes GEO-rewritten product pages as real websites and lets deployed engines rank them: 80 fictional brands across 18 product families, five GEO strategies, and three engines, ChatGPT with GPT-6, Gemini 3.6 Thinking and Grok in Expert mode, plus five direct-text evaluators. Earlier benchmarks supplied text directly or built controlled retrieval, and the paper's point is that neither setting tests pages a real engine has to find. The CORE strategy took the top spot on 66.3 to 76.3 percent of engine runs, but the engines agreed on the winning product for only 48.8 to 66.3 percent of brands, and ChatGPT swung between 73.8 and 93.8 percent top-1 rates under opposite fixed URL orders, compared with 82.5 percent under randomization. The faithfulness check flagged 86 of 400 rewritten descriptions, including all 80 produced by Statistics Addition, the "add some numbers" heuristic that seeded the field. My take: this is the benchmark to ask about before trusting any GEO vendor number. Gains exist, but they are engine-specific and order-sensitive, and the tactic that produces the easy claims is the one that fails the truth check.
 
