@@ -1,60 +1,77 @@
 ---
-# Bozza da rivedere: la pagina italiana live non ha un testo dedicato. Il testo è tradotto dalla
-# versione inglese (blocchi "Software Development", "Custom Solutions", "Digital Transformation" e
-# "Software Management" della pagina /services/ live, stack della pagina /technologies/ live), con
-# il paragrafo sul metodo preso dalla pagina italiana live (/it/servizi/, /it/tecnologie/).
 title: "Software su misura"
-meta_title: "Sviluppo software su misura a Roma | Monte del Gallo"
-description: "Sviluppo di software su misura costruito sui tuoi processi: strumenti interni, prodotti SaaS, dashboard e modernizzazione dei sistemi esistenti."
+meta_title: "Sviluppo software su misura | Monte del Gallo"
+description: "Software su misura per processi operativi, prodotti SaaS e integrazioni. Scopri i progetti di Monte del Gallo e raccontaci cosa vuoi costruire o migliorare."
 lang: it
 page_id: service-custom-software
 permalink: /servizi/software-su-misura/
 icon: i-code
 order: 1
-summary: "Strumenti interni, prodotti SaaS, dashboard e piattaforme costruiti attorno ai flussi di lavoro reali."
+summary: "Aiutiamo responsabili operativi e fondatori a realizzare gestionali interni, prodotti SaaS e integrazioni attorno al lavoro da svolgere."
 related_projects:
   - project-soshiki
   - project-bistroflow
   - project-gestione-immobili
 faq:
-  - q: "La tecnologia la scegliete voi o io?"
-    a: "Non ci leghiamo a un framework: scegliamo lo strumento giusto per ogni lavoro e consigliamo l'architettura più adatta a ciò che stai costruendo. Il nostro stack di partenza è Ruby on Rails, Hotwire e PostgreSQL, e ne usiamo altri dove servono meglio al prodotto."
+  - q: "Conviene sviluppare un software su misura o acquistarne uno esistente?"
+    a: "Verifica prima se un prodotto esistente copre i flussi essenziali. Lo sviluppo su misura ha senso quando le esigenze del processo, le integrazioni o il prodotto da realizzare giustificano la costruzione e la manutenzione di un'applicazione propria."
   - q: "Potete lavorare sul software che abbiamo già?"
-    a: "Sì. Il ridisegno di sistemi legacy, la migrazione al cloud e l'automazione dei processi fanno parte del nostro lavoro, così come la manutenzione, l'assistenza e l'ottimizzazione continue che tengono il software efficiente dopo il rilascio."
-  - q: "Come parte un progetto?"
-    a: "Con una call di 30 minuti. Mappiamo dove la tua azienda può crescere tra software, automazione e AI, poi definiamo un percorso concreto verso risultati misurabili."
+    a: "Sì. Esaminiamo applicazione, dati e dipendenze prima di proporre modifiche. Possiamo valutare nuove funzionalità, integrazioni o la sostituzione di una parte specifica del sistema."
+  - q: "Dobbiamo scegliere prima la tecnologia?"
+    a: "No. Partiamo dal problema, dagli strumenti esistenti e dai vincoli per discutere l'architettura. Se usi già Rails o cerchi un intervento sul frontend, possiamo definire anche quel perimetro."
+  - q: "Cosa vi serve per valutare il progetto?"
+    a: "Una descrizione del processo attuale, di chi lo usa e dei punti in cui si blocca. Esempi di moduli, report e scambi di dati ci aiutano a individuare le dipendenze e definire da dove partire."
+  - q: "Come definite costi, consegna e manutenzione?"
+    a: "Discutiamo funzionalità, accesso ai dati, integrazioni e requisiti di rilascio prima di concordare una proposta. Nell'accordo definiamo anche documentazione, passaggio di consegne ed eventuale manutenzione successiva."
+  - q: "Posso affidarvi una parte specifica di un progetto?"
+    a: "Sì, possiamo valutare un intervento circoscritto su un'applicazione esistente. Affidi allo studio un lavoro di progetto: il servizio non consiste nella selezione di CV o nell'assunzione di un dipendente."
 ---
-## Cosa realizziamo
+## Partiamo dal lavoro che il software deve supportare
 
-Software web, desktop e mobile su misura, costruito da zero attorno al modo in cui la tua azienda lavora davvero. Sistemi performanti e scalabili, non un modello adattato a forza.
+Copi ordini da un sistema all'altro, riconcili fogli di calcolo o chiedi ai colleghi quale dato sia aggiornato. Clienti, pagamenti e attività restano in strumenti separati. Una dashboard in più non risolve un passaggio di responsabilità poco chiaro.
 
-- **Strumenti interni e piattaforme operative** che sostituiscono fogli di calcolo, app scollegate e passaggi manuali.
-- **Prodotti SaaS** con account, ruoli, pagamenti e dashboard, dalla prima versione alla decima.
-- **Dashboard e reportistica** che mettono davanti al tuo team i numeri che servono.
+Monte del Gallo sviluppa software su misura per chi deve coordinare le attività operative e per chi vuole costruire un prodotto. Partiamo dalle persone che svolgono il lavoro: cosa inseriscono, quali informazioni cercano e come gestiscono le eccezioni.
 
-Alcuni nostri lavori mostrano la gamma: [Soshiki](/progetti/soshiki-piattaforma-crm-multi-tenant/), un CRM multi-tenant con elaborazione delle email tramite LLM; [BistroFlow](/progetti/bistroflow-pos-ristorante-tempo-reale/), un sistema per ristoranti che si aggiorna in tempo reale su ogni dispositivo; e [Gestione Immobili](/progetti/gestione-immobili-portfolio-immobiliare/), un gestionale di portfolio immobiliare con dashboard finanziarie e mappe. Per i clienti, guarda come abbiamo costruito un [sistema di gestione per una catena di 15 ristoranti](/casi-di-studio/case-study-su-un-software-di-gestione-per-ristoranti/) e una [piattaforma di prenotazioni per operatori turistici a Roma](/casi-di-studio/caso-studio-property-management-turismo-roma/).
+Puoi portarci un'applicazione esistente o un processo ancora manuale. Per parlarne non serve un capitolato completo.
 
-## Dal problema operativo a un prodotto funzionante
+## Strumenti interni, prodotti SaaS e integrazioni
 
-Partiamo da obiettivi concreti, disegniamo flussi chiari e costruiamo iterazioni misurabili. Design, sviluppo e crescita restano in un solo team, senza separare strategia e implementazione.
+Definiamo l'applicazione in base a chi la usa e alle decisioni che deve prendere.
 
-1. **Mappiamo** i tuoi dati, i tuoi strumenti e i flussi di lavoro che il team ripete ogni giorno.
-2. **Costruiamo** il software su misura e le integrazioni di cui il lavoro ha davvero bisogno.
-3. **Automatizziamo** i passaggi manuali che restano, con l'AI dove rende.
-4. **Misuriamo** i risultati reali e continuiamo a migliorare ciò che muove i numeri.
+- **Strumenti interni:** piattaforme operative per ordini, clienti, immobili o amministrazione, con viste e report pertinenti.
+- **Prodotti SaaS:** applicazioni con account, ruoli e flussi dedicati ai clienti, inclusi i pagamenti quando servono al prodotto.
+- **Integrazioni:** collegamenti fra l'applicazione e i sistemi esistenti, per lavorare su informazioni condivise senza reinserirle a mano.
 
-## Modernizzare e mantenere
+Valutiamo anche il software già in uso. Estendere un'applicazione funzionante o sostituire un componente problematico può essere più sensato che rifare il sistema. Importazione, esportazione e migrazione dei dati richiedono un perimetro dedicato, insieme alle nuove funzionalità.
 
-Il software raramente parte da una pagina bianca. Ci occupiamo di migrazione al cloud, ridisegno dei sistemi legacy e automazione dei processi per modernizzare un'azienda senza fermarla. Dopo il rilascio, manutenzione, assistenza e ottimizzazione continue mantengono il software al massimo delle prestazioni.
+## Quando ha senso sviluppare su misura
 
-## Lo stack
+Vale la pena valutare il software su misura quando il tuo processo richiede regole che i prodotti standard non gestiscono, oppure quando vuoi realizzare un prodotto per i clienti. Serve un referente dalla tua parte che sappia chiarire le priorità e verificare il lavoro con noi.
 
-Siamo ingegneri poliglotti e scegliamo lo strumento in base al lavoro. Per i prodotti qui sopra di solito significa Ruby on Rails, Hotwire, Tailwind CSS e PostgreSQL. Oltre a questi, la nostra cassetta degli attrezzi comprende:
+Se un prodotto esistente copre il processo essenziale, configurarlo può essere l'investimento migliore. Se responsabilità o fonti dei dati restano poco chiare, conviene risolvere quei dubbi prima di commissionare un'applicazione estesa.
 
-- **Frontend:** React, Vue.js, Svelte, Next.js, TypeScript e Tailwind CSS.
-- **Backend e API:** Node.js, Python, Ruby on Rails, Go, PHP e Laravel, Django.
-- **Mobile:** Swift, Kotlin, React Native e Flutter.
-- **Cloud e DevOps:** AWS, Google Cloud, Docker, Kubernetes, CI/CD e Terraform.
-- **Dati e AI:** TensorFlow, PyTorch, OpenAI e altri LLM, PostgreSQL, Apache Kafka e BigQuery.
+Questo servizio parte dal progetto, non da un framework. Se cerchi continuità con uno stack esistente, consulta lo [sviluppo Ruby on Rails](/it/servizi/sviluppo-ruby-on-rails/). Per un'interfaccia web collegata a un backend già presente, consulta lo [sviluppo React e JavaScript](/it/servizi/sviluppo-react-javascript/).
 
-La tecnologia è un mezzo, non un fine: la scelta migliore è quella a cui i tuoi utenti non pensano mai.
+## Definire il perimetro, verificare il lavoro, preparare il rilascio
+
+Mappiamo con te il processo attuale, i dati e le dipendenze. Concordiamo poi il perimetro iniziale, cosa lasciamo fuori e come verificherai che il software supporti l'attività prevista.
+
+Durante lo sviluppo esaminiamo insieme i flussi funzionanti e usiamo i riscontri per decidere cosa modificare. Prima del rilascio concordiamo verifiche, trasferimento dei dati e modalità di avvio per chi userà l'applicazione.
+
+La proposta definisce le consegne: funzionalità, integrazioni, documentazione e passaggio di consegne dove necessari. Discutiamo manutenzione e modifiche successive nell'ambito dell'incarico. Per pianificare il lavoro servono perimetro e dipendenze: una scadenza generica nasconderebbe queste decisioni.
+
+## Progetti pertinenti dello studio
+
+Questi prodotti e progetti dello studio illustrano i flussi che realizziamo. Li distinguiamo dai casi clienti indicati sotto.
+
+- [Soshiki](/it/progetti/soshiki-piattaforma-crm-multi-tenant/) è il CRM dello studio. Riunisce pipeline commerciale, dashboard finanziarie ed elaborazione delle email in un'applicazione multi-tenant.
+- [BistroFlow](/it/progetti/bistroflow-pos-ristorante-tempo-reale/) è un progetto per la ristorazione con ordini al tavolo, comande per la cucina e divisione del conto.
+- [Gestione Immobili](/it/progetti/gestione-immobili-portfolio-immobiliare/) riunisce immobili, inquilini, entrate e spese in un gestionale con mappe e report PDF.
+
+I casi clienti descrivono un [sistema per ordini e gestione dei ristoranti](/it/casi-di-studio/case-study-su-un-software-di-gestione-per-ristoranti/) e una [piattaforma per prenotazioni e property management turistico a Roma](/it/casi-di-studio/caso-studio-property-management-turismo-roma/). Sono altri esempi di coordinamento fra ruoli e sistemi esistenti, non previsioni sui risultati del tuo progetto.
+
+## Parliamo del processo che vuoi migliorare
+
+[Prenota una chiamata con Giovanni](https://soshiki.io/book/mdg/short-call-with-giovanni). Porta un esempio dell'attività che crea difficoltà, gli strumenti coinvolti e cosa vorresti fare in modo diverso. Possiamo valutare se serve una nuova applicazione, un'integrazione o una modifica più circoscritta a ciò che usi già.
+
+Preferisci scrivere? [Contatta lo studio](/contatti/) con una breve descrizione del tuo processo.
