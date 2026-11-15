@@ -9,6 +9,14 @@
   width: 1200
   height: 630
   variants: [480, 800]
+/assets/img/blog/ai-weekly-20261115-trust-body.webp:
+  width: 1200
+  height: 500
+  variants: [480, 800]
+/assets/img/blog/ai-weekly-20261115-trust-cover.webp:
+  width: 1200
+  height: 630
+  variants: [480, 800]
 /assets/img/blog/ai-weekly-model-economy-body.webp:
   width: 1200
   height: 500
