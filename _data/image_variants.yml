@@ -25,6 +25,14 @@
   width: 1200
   height: 630
   variants: [480, 800]
+/assets/img/blog/ai-weekly-20261126-frontiera-body.webp:
+  width: 1200
+  height: 500
+  variants: [480, 800]
+/assets/img/blog/ai-weekly-20261126-frontiera-cover.webp:
+  width: 1200
+  height: 630
+  variants: [480, 800]
 /assets/img/blog/ai-weekly-model-economy-body.webp:
   width: 1200
   height: 500
@@ -112,6 +120,14 @@
 /assets/img/blog/github-weekly-20261123-verify-body.webp:
   width: 1200
   height: 500
+  variants: [480, 800]
+/assets/img/blog/github-weekly-20261126-verifica-body.webp:
+  width: 1200
+  height: 500
+  variants: [480, 800]
+/assets/img/blog/github-weekly-20261126-verifica-cover.webp:
+  width: 1200
+  height: 630
   variants: [480, 800]
 /assets/img/blog/github-weekly-body.webp:
   width: 1200
@@ -218,6 +234,14 @@
   height: 500
   variants: [480, 800]
 /assets/img/blog/seo-geo-weekly-20261118-hydrogen-cover.webp:
+  width: 1200
+  height: 630
+  variants: [480, 800]
+/assets/img/blog/seo-geo-weekly-20261126-idrogeno-body.webp:
+  width: 1200
+  height: 500
+  variants: [480, 800]
+/assets/img/blog/seo-geo-weekly-20261126-idrogeno-cover.webp:
   width: 1200
   height: 630
   variants: [480, 800]
